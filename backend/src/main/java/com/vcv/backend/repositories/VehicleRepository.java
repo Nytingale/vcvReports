@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VehicleRepository extends PagingAndSortingRepository<Vehicle, String> {
+    Vehicle findByVin(String vin);
+    Vehicle findByYearMakeModel(Integer year, String make, String model);
 }
