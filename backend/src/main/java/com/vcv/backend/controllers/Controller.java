@@ -27,9 +27,9 @@ public class Controller {
             String validVin = Utils.isValidVin(vin);
 
             if(validVin != null && validYear == null && make == null && model == null) {
-                return vehicleService.basicReport(validVin);
+                return new VehicleView.BasicReport().build(vehicleService.getVehicle(validVin));
             } else if(validVin == null && validYear != null && make != null && model != null) {
-                return vehicleService.basicReport(validYear, make, model);
+                return new VehicleView.BasicReport().build(vehicleService.getVehicle(validYear, make, model));
             } else throw new VcvInvalidParameterException("Error 100: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -43,11 +43,10 @@ public class Controller {
             String validVin = Utils.isValidVin(vin);
 
             if(validVin != null) {
-                return new VehicleView.FullReport()
-                        .vehicle(vehicleService.fullReport(validVin))
-                        .claims(claimService.vehicleClaims(validVin))
-                        .jobs(jobService.vehicleJobs(validVin))
-                        .build();
+                return new VehicleView.FullReport().build(
+                        vehicleService.getVehicle(validVin),
+                        claimService.getClaims(validVin),
+                        jobService.getJobs(validVin));
             } else throw new VcvInvalidParameterException("Error 100: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

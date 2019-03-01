@@ -15,41 +15,16 @@ public class VehicleView {
         private String manufacturer;
         private String colour;
 
-        public BasicReport vin(String vin) {
-            this.vin = vin;
-            return this;
-        }
-        public BasicReport year(Integer year) {
-            this.year = year;
-            return this;
-        }
-        public BasicReport make(String make) {
-            this.make = make;
-            return this;
-        }
-        public BasicReport model(String model) {
-            this.model = model;
-            return this;
-        }
-        public BasicReport manufacturer(String manufacturer) {
-            this.manufacturer = manufacturer;
-            return this;
-        }
-        public BasicReport colour(String colour) {
-            this.colour = colour;
-            return this;
-        }
-
         public BasicReport() {}
-        public BasicReport build() {
+        public BasicReport build(Vehicle vehicle) {
             BasicReport view = new BasicReport();
 
-            view.vin = vin;
-            view.year = year;
-            view.make = make;
-            view.model = model;
-            view.manufacturer = manufacturer;
-            view.colour = colour;
+            view.vin = vehicle.getVin();
+            view.year = vehicle.getYear();
+            view.make = vehicle.getMake();
+            view.model = vehicle.getModel();
+            view.colour = vehicle.getColour();
+            view.manufacturer = vehicle.getManufacturer();
 
             return view;
         }
@@ -60,21 +35,8 @@ public class VehicleView {
         private List<Claim> claims;
         private List<Job> jobs;
 
-        public FullReport vehicle(Vehicle vehicle) {
-            this.vehicle = vehicle;
-            return this;
-        }
-        public FullReport claims(List<Claim> claims) {
-            this.claims = claims;
-            return this;
-        }
-        public FullReport jobs(List<Job> jobs) {
-            this.jobs = jobs;
-            return this;
-        }
-
         public FullReport() {}
-        public FullReport build() {
+        public FullReport build(Vehicle vehicle, List<Claim> claims, List<Job> jobs) {
             FullReport view = new FullReport();
 
             view.vehicle = vehicle;
