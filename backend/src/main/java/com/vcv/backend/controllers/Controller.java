@@ -1,8 +1,5 @@
 package com.vcv.backend.controllers;
 
-import com.vcv.backend.entities.Claim;
-import com.vcv.backend.entities.Job;
-import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.VcvInvalidParameterException;
 import com.vcv.backend.views.VehicleView;
 import com.vcv.backend.services.*;
@@ -11,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 public class Controller {
@@ -32,9 +27,9 @@ public class Controller {
             String validVin = Utils.isValidVin(vin);
 
             if(validVin != null && validYear == null && make == null && model == null) {
-                return vehicleService.getBasicReport(validVin);
+                return vehicleService.basicReport(validVin);
             } else if(validVin == null && validYear != null && make != null && model != null) {
-                return VehicleView.basicReport(vehicleService.getBasicReport(validYear, make, model));
+                return vehicleService.basicReport(validYear, make, model);
             } else throw new VcvInvalidParameterException("Error 100: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -48,10 +43,11 @@ public class Controller {
             String validVin = Utils.isValidVin(vin);
 
             if(validVin != null) {
-                Vehicle vehicle = vehicleService.getBasicReport(validVin);
-                List<Job> jobs = jobService.getJobsOnVehicle(validVin);
-                List<Claim> claims = claimService.getClaimsOnVehicle(validVin);
-                return VehicleView.fullReport(vehicle, jobs, claims);
+                return new VehicleView.FullReport()
+                        .vehicle(vehicleService.fullReport(validVin))
+                        .claims(claimService.vehicleClaims(validVin))
+                        .jobs(jobService.vehicleJobs(validVin))
+                        .build();
             } else throw new VcvInvalidParameterException("Error 100: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

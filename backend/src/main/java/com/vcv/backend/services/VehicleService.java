@@ -12,7 +12,7 @@ public class VehicleService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    public VehicleView.BasicReport getBasicReport(String vin) throws VehicleServiceException {
+    public VehicleView.BasicReport basicReport(String vin) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
 
         if(vehicle != null) {
@@ -25,12 +25,12 @@ public class VehicleService {
                     .manufacturer(vehicle.getManufacturer())
                     .build();
         }
-        else throw new VehicleServiceException("Error 1000: getBasicReport(vin) returned null");
+        else throw new VehicleServiceException("Error 1000: basicReport(vin) returned null");
     }
 
-    public VehicleView.BasicReport getBasicReport(Integer year,
-                                  String make,
-                                  String model) throws VehicleServiceException {
+    public VehicleView.BasicReport basicReport(Integer year,
+                                               String make,
+                                               String model) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByYearMakeModel(year, make, model);
 
         if(vehicle != null) {
@@ -43,6 +43,13 @@ public class VehicleService {
                     .manufacturer(vehicle.getManufacturer())
                     .build();
         }
-        else throw new VehicleServiceException("Error 1100: getBasicReport(year, make, model) returned null");
+        else throw new VehicleServiceException("Error 1100: basicReport(year, make, model) returned null");
+    }
+
+    public Vehicle fullReport(String vin) throws VehicleServiceException {
+        Vehicle vehicle = vehicleRepository.findByVin(vin);
+
+        if(vehicle != null) return vehicle;
+        else throw new VehicleServiceException("Error 1000: fullReport(vin) returned null");
     }
 }
