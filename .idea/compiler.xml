@@ -14,7 +14,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="backend" target="1.5" />
+      <module name="backend" target="11" />
       <module name="frontend" target="1.5" />
       <module name="vcvReports" target="1.5" />
       <module name="vcvReports-backend" target="1.5" />
