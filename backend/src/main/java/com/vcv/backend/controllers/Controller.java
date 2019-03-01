@@ -43,10 +43,9 @@ public class Controller {
             String validVin = Utils.isValidVin(vin);
 
             if(validVin != null) {
-                return new VehicleView.FullReport().build(
-                        vehicleService.getVehicle(validVin),
-                        claimService.getClaims(validVin),
-                        jobService.getJobs(validVin));
+                return new VehicleView
+                        .FullReport()
+                        .build(vehicleService.getVehicle(validVin), claimService.getClaims(validVin), jobService.getJobs(validVin));
             } else throw new VcvInvalidParameterException("Error 100: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

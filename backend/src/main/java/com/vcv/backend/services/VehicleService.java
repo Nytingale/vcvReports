@@ -20,8 +20,8 @@ public class VehicleService {
     }
 
     public Vehicle getVehicle(Integer year,
-                                              String make,
-                                              String model) throws VehicleServiceException {
+                              String make,
+                              String model) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByYearMakeModel(year, make, model);
 
         if(vehicle != null) return vehicle;
