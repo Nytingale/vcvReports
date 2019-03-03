@@ -1,12 +1,12 @@
 package com.vcv.backend.enums;
 
 public enum CompanyType {
-    VCV_REPORTS (5, "VCV"),
-    DEALERSHIP  (4, "DEA"),
-    INSURANCE   (3, "INS"),
-    GARAGE      (2, "GAR"),
-    MECHANIC    (1, "MEC"),
-    CASUAL      (0, "CAS");
+    VCV_STAFF  (3, "VCV"),
+    DEALERSHIP (2, "DEA"),
+    INSURANCE  (2, "INS"),
+    GARAGE     (2, "GAR"),
+    MECHANIC   (1, "MEC"),
+    CASUAL     (0, "CAS");
 
     int l;
     String a;
@@ -26,7 +26,7 @@ public enum CompanyType {
     @Override
     public String toString() {
         switch(this) {
-            case VCV_REPORTS:
+            case VCV_STAFF:
                 return "Staff";
             case DEALERSHIP:
                 return "Dealership";

@@ -4,6 +4,11 @@ import com.vcv.backend.entities.User;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<User, User.CompositeKey> {
+    User findByEmailAndCompanyName(String email, String companyName);
+
+    List<User> findByCompanyName(String companyName);
 }

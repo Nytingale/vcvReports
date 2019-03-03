@@ -1,6 +1,12 @@
 package com.vcv.backend.utilities;
 
+import com.vcv.backend.enums.CompanyType;
+import org.apache.poi.util.StringUtil;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Utils {
     public static String isValidVin(String vin) {
@@ -21,9 +27,29 @@ public class Utils {
         else return null;
     }
 
+    public static String isValidString(String string) {
+        if(string == null || string.trim().isEmpty()) return null;
+        else return string;
+    }
+
     public static Integer isValidYear(String year) {
         if(year == null || year.trim().isEmpty()) return null;
         else if(year.matches("-?[0-9]+") && Integer.parseInt(year) > LocalDate.now().getYear()) return Integer.parseInt(year);
+        else return null;
+    }
+
+    public static MultipartFile isValidExcelFile(MultipartFile file) {
+        if(file == null) return null;
+        else {
+            String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+            if(Objects.equals(extension, "xls") || Objects.equals(extension, "xlsx")) return file;
+            else return null;
+        }
+    }
+
+    public static String isValidSubscribingCompany(String name, String type) {
+        if(name == null || name.trim().isEmpty() || type == null || type.trim().isEmpty()) return null;
+        else if(CompanyType.valueOf(type).level() > 1) return name;
         else return null;
     }
 }

@@ -29,6 +29,7 @@ public class Vehicle {
     private Integer numRobberies;
     private Integer numSalvages;
     private Integer numServices;
+    private Integer numOwners;
     private String insuranceName;
     private String policyNumber;
 
@@ -88,6 +89,9 @@ public class Vehicle {
     }
     public Integer getNumServices() {
         return numServices;
+    }
+    public Integer getNumOwners() {
+        return numOwners;
     }
     public String getInsuranceName() {
         return insuranceName;
@@ -153,6 +157,9 @@ public class Vehicle {
     public void setNumServices(Integer numServices) {
         this.numServices = numServices;
     }
+    public void setNumOwners(Integer numOwners) {
+        this.numOwners = numOwners;
+    }
     public void setInsuranceName(String insuranceName) {
         this.insuranceName = insuranceName;
     }
@@ -162,7 +169,7 @@ public class Vehicle {
 
     @Override
     public int hashCode() {
-        return Objects.hash(vin, year, make, model, manufacturer, engine, colour, mileage, transmission, value, dealership, writtenOff, stolen, evaluationDate, registrationDate, numAccidents, numRobberies, numSalvages, numServices, insuranceName, policyNumber);
+        return Objects.hash(vin, year, make, model, manufacturer, engine, colour, mileage, transmission, value, dealership, writtenOff, stolen, evaluationDate, registrationDate, numAccidents, numRobberies, numSalvages, numServices, numOwners, insuranceName, policyNumber);
     }
 
     @Override
@@ -178,6 +185,7 @@ public class Vehicle {
                 numRobberies == vehicle.numRobberies &&
                 numSalvages == vehicle.numSalvages &&
                 numServices == vehicle.numServices &&
+                numOwners == vehicle.numOwners &&
                 vin.equals(vehicle.vin) &&
                 make.equals(vehicle.make) &&
                 model.equals(vehicle.model) &&
