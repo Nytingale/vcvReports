@@ -51,4 +51,12 @@ public class UserService {
         userRepository.saveAll(employees);
         return new UserView().build(user);
     }
+
+    public UserView checkSubscription(String name,
+                                      String email) throws UserServiceException {
+        User user = userRepository.findByEmailAndCompanyName(email, name);
+        if(user != null) {
+            return new UserView().build(user);
+        } else throw new UserServiceException("Error 400: checkSubscription(name, email) has returned null");
+    }
 }

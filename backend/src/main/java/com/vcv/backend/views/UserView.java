@@ -2,6 +2,8 @@ package com.vcv.backend.views;
 
 import com.vcv.backend.entities.User;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ public class UserView {
     private String subscriptionStartDate;
     private String subscriptionEndDate;
     private Boolean blacklisted;
+    private Boolean warning;
     private Boolean admin;
     private Boolean valid;
 
@@ -30,6 +33,7 @@ public class UserView {
         view.subscriptionStartDate = dateFormatter.format(user.getSubscriptionStartDate().toInstant());
         view.subscriptionEndDate = dateFormatter.format(user.getSubscriptionEndDate().toInstant());
         view.blacklisted = user.isBlackisted();
+        view.warning = LocalDate.ofInstant(user.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).getDayOfYear() - LocalDate.now().getDayOfYear() <= 7;
         view.admin = user.isAdmin();
         view.valid = user.isValid();
 
@@ -51,6 +55,7 @@ public class UserView {
         private String subscriptionEndDate;
         private String type;
         private String name;
+        private Boolean warning;
 
         public SubscriptionConsole() {}
         public SubscriptionConsole build(UserView user) {
@@ -60,6 +65,7 @@ public class UserView {
             view.subscriptionEndDate = user.subscriptionEndDate;
             view.type = user.companyType;
             view.name = user.companyName;
+            view.warning = user.warning;
 
             return view;
         }

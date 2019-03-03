@@ -9,7 +9,7 @@ CREATE TABLE Users(
     company_type ENUM('VCV Staff', 'Delearship', 'Insurance', 'Garage', 'Mechanic', 'Casual') DEFAULT 'Casual',
     subscription_start_date TIMESTAMP NOT NULL,
     subscription_end_date TIMESTAMP NOT NULL,
-    blacklisted TINYINT(1) DEFAULT 1,
+    blacklisted TINYINT(1) DEFAULT 0,
     admin TINYINT(1) DEFAULT 1,
     valid TINYINT(1) DEFAULT 1,
     INDEX(email, company_name),
@@ -95,3 +95,11 @@ ALTER TABLE Claims   ADD CONSTRAINT claims_policies_fk   FOREIGN KEY(company_nam
 ALTER TABLE Claims   ADD CONSTRAINT claims_vehicles_fk   FOREIGN KEY(vin)                           REFERENCES Vehicles(vin);
 ALTER TABLE Policies ADD CONSTRAINT policies_vehicles_fk FOREIGN KEY(vin)                           REFERENCES Vehicles(vin);
 ALTER TABLE Vehicles ADD CONSTRAINT vehicles_policies_fk FOREIGN KEY(policy_number, insurance_name) REFERENCES Policies(company_name, policy_number);
+
+# ==============================================================
+# = Dummy Data for Demo
+# ==============================================================
+INSERT INTO Users VALUES
+    ('RSJMorris@gmail.com', 'Vehicle Curriculum Vitae', 'VCVStaff', 'VCV Staff', '2019-01-01 00:00:00', '2020-01-01 00:00:00', 0, 1, 1),
+    ('danielboyce@me.com', 'CGI Insurance', 'admin', 'Insurance', '2018-12-01 00:00:00', '2019-12-01 00:00:00', 0, 1, 1),
+    ('mr.prphillips@gmail.com', 'CGI Insurance', 'user', 'Insurance', '2018-12-01 00:00:00', '2019-12-01 00:00:00', 0, 0, 1);

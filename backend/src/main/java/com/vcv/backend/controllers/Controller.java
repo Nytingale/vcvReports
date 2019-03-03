@@ -1,6 +1,7 @@
 package com.vcv.backend.controllers;
 
 import com.vcv.backend.entities.User;
+import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.ControllerException;
 import com.vcv.backend.views.ClaimView;
 import com.vcv.backend.views.JobView;
@@ -9,10 +10,7 @@ import com.vcv.backend.views.VehicleView;
 import com.vcv.backend.services.*;
 import com.vcv.backend.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -47,6 +45,7 @@ public class Controller {
             return null;
         }
     }
+
     @GetMapping("/generateReport")
     public VehicleView.FullReport generateReport(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
         try {
@@ -66,8 +65,31 @@ public class Controller {
         }
     }
 
+
+
     /* Company Users */
        /* General */
+    @GetMapping("/checkSubscription")
+    public UserView.SubscriptionConsole checkSubscription(@RequestParam(value = "name", required = false) String name,
+                                                          @RequestParam(value = "type", required = false) String type,
+                                                          @RequestParam(value = "email", required = false) String email) throws ControllerException {
+        try {
+            String validName = Utils.isValidString(name);
+            String validType = Utils.isValidSubscribingCompany(name, type);
+            String validEmail = Utils.isValidEmail(email);
+
+            if(validName != null && validType != null && validEmail != null) {
+                UserView user = userService.checkSubscription(validName, validEmail);
+                return new UserView
+                        .SubscriptionConsole()
+                        .build(user);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @GetMapping("/renewSubscription")
     public UserView.SubscriptionConsole rewnewSubscription(@RequestParam(value = "name", required = false) String name,
                                                            @RequestParam(value = "type", required = false) String type,
@@ -87,17 +109,73 @@ public class Controller {
         }
     }
 
+
+
     /* Dealership */
-    @PostMapping("/uploadVehicle")
-    public Boolean uploadVehicle(@RequestParam(value = "name", required = false) String name,
-                                 @RequestParam(value = "file", required = false) MultipartFile file) throws ControllerException {
+    @PostMapping("/registerVehicle")
+    public Boolean registerVehicle(@RequestBody Vehicle vehicle,
+                                   @RequestParam(value = "dealership", required = false) String dealership)throws ControllerException {
         try {
-            String validName = Utils.isValidString(name);
-            MultipartFile validFile = Utils.isValidExcelFile(file);
-            if(validName != null && validFile != null) {
-                return vehicleService.uploadVehicle(validName, validFile);
-            } else if(validFile == null) throw new ControllerException("Error 005: The Uploaded File is not a valid format (.xls, .xlsx)");
-            else throw new ControllerException("Error 001: No Valid Parameters Used");
+            String validDealership = Utils.isValidString(dealership);
+            Vehicle validVehicle = (Vehicle) Utils.isValidEntity(vehicle);
+            if(validDealership != null && validVehicle != null) {
+                return vehicleService.register(validVehicle, validDealership);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+    /* Insurance */
+    @GetMapping("/reportStolen")
+    public Boolean reportStolen(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
+        try {
+            String validVin = Utils.isValidVin(vin);
+            if(validVin != null) {
+                return vehicleService.reportStolen(validVin);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @GetMapping("/reportRecovered")
+    public Boolean reportRecovered(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
+        try {
+            String validVin = Utils.isValidVin(vin);
+            if(validVin != null) {
+                return vehicleService.reportRecovered(validVin);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @GetMapping("/reportWrittenOff")
+    public Boolean reportWrittenOff(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
+        try {
+            String validVin = Utils.isValidVin(vin);
+            if(validVin != null) {
+                return vehicleService.reportWrittenOff(validVin);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @GetMapping("/reportSalvaged")
+    public Boolean reportSalvaged(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
+        try {
+            String validVin = Utils.isValidVin(vin);
+            if(validVin != null) {
+                return vehicleService.reportSalvaged(validVin);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
             return null;

@@ -48,50 +48,61 @@ public class VehicleService {
         else throw new VehicleServiceException("Error 500: getVehicle(year, make, model) returned null");
     }
 
-    public Boolean uploadVehicle(String name,
-                                 MultipartFile file) throws VehicleServiceException {
-        // First, Ensure that the File Storage Location is Created
-        Path storageLocation = Paths.get(fileStorageConfig.getUploadDirectory())
-                .toAbsolutePath()
-                .normalize();
+    public Boolean register(Vehicle vehicle,
+                            String dealership) throws VehicleServiceException {
         try {
-            Files.createDirectory(storageLocation);
-        } catch (IOException e) {
-            throw new VehicleServiceException("Error 505: uploadVehicle(name, file) failed to create the directory for File Storage Location");
+            vehicle.setDealership(dealership);
+            vehicleRepository.save(vehicle);
+            return true;
+        } catch (Exception e) {
+            throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
+        }
+    }
+
+    public Boolean reportStolen(String vin) throws VehicleServiceException {
+        Vehicle vehicle = vehicleRepository.findByVin(vin);
+        if(vehicle != null) {
+            vehicle.setStolen(true);
+            vehicle.setNumRobberies(vehicle.getNumRobberies() + 1);
+            vehicleRepository.save(vehicle);
+            return true;
         }
 
-        // Second, Copy the File to the File Storage Location
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
-        Path targetLocation = storageLocation.resolve(filename);
-        try {
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new VehicleServiceException("Error 510: uploadVehicle(name, file) has failed to create the file on the server");
+        throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
+    }
+
+    public Boolean reportRecovered(String vin) throws VehicleServiceException {
+        Vehicle vehicle = vehicleRepository.findByVin(vin);
+        if(vehicle != null) {
+            vehicle.setStolen(false);
+            vehicleRepository.save(vehicle);
+            return true;
         }
 
-        // Third, Open the File to Read and Extract its Information into the Vehicle Database
-        Workbook workbook;
-        try {
-            if (filename.endsWith("xls")) workbook = new HSSFWorkbook(file.getInputStream());
-            else if (filename.endsWith("xlsx")) workbook = new XSSFWorkbook(filename);
-            else throw new VehicleServiceException("Error 515: uploadVehicle(name, file) has failed as the file is an invalid type (.xls, .xlsx)");
+        throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
+    }
 
-            for(int x = 0; x < workbook.getNumberOfSheets(); x++) {
-                Sheet sheet = workbook.getSheetAt(x);
-                Vehicle vehicle = new Vehicle();
-
-                Iterator<Row> rows = sheet.rowIterator();
-                while(rows.hasNext()) {
-                    Row row = rows.next();
-                    Iterator<Cell> cells = row.cellIterator();
-                    while(cells.hasNext()) {
-                        Cell cell = cells.next();
-
-                    }
-                }
-            }
-        } catch(IOException e) {
-            throw new VehicleServiceException("Error 520: uploadVehicle(name, file) has failed to read the file on the server");
+    public Boolean reportWrittenOff(String vin) throws VehicleServiceException {
+        Vehicle vehicle = vehicleRepository.findByVin(vin);
+        if(vehicle != null) {
+            vehicle.setWrittenOff(true);
+            vehicle.setNumAccidents(vehicle.getNumAccidents() + 1);
+            vehicleRepository.save(vehicle);
+            return true;
         }
+
+        throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
+    }
+
+    public Boolean reportSalvaged(String vin) throws VehicleServiceException {
+        Vehicle vehicle = vehicleRepository.findByVin(vin);
+        if(vehicle != null) {
+            vehicle.setWrittenOff(false);
+            vehicle.setNumSalvages(vehicle.getNumSalvages() + 1);
+            vehicleRepository.save(vehicle);
+            return true;
+        }
+
+        throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
     }
 }

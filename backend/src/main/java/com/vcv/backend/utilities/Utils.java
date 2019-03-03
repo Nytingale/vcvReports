@@ -1,12 +1,15 @@
 package com.vcv.backend.utilities;
 
+import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.enums.CompanyType;
-import org.apache.poi.util.StringUtil;
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Arrays;
 
 public class Utils {
     public static String isValidVin(String vin) {
@@ -36,6 +39,18 @@ public class Utils {
         if(year == null || year.trim().isEmpty()) return null;
         else if(year.matches("-?[0-9]+") && Integer.parseInt(year) > LocalDate.now().getYear()) return Integer.parseInt(year);
         else return null;
+    }
+
+    public static Object isValidEntity(Object entity) {
+        if(entity != null) {
+            Field[] entityFields = entity.getClass().getDeclaredFields();
+            if(entity instanceof Vehicle) {
+                Field[] vehicleFields = Vehicle.class.getDeclaredFields();
+                if(Arrays.equals(entityFields, vehicleFields)) return entity;
+                else return null;
+            }
+        }
+        return null;
     }
 
     public static MultipartFile isValidExcelFile(MultipartFile file) {
