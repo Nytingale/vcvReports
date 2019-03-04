@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
@@ -24,16 +26,18 @@ public class UserService {
                                       String name) throws UserServiceException {
         // First, Confirm that the Email is the Admin
         User user = userRepository.findByEmailAndCompanyName(email, name);
-        if(!user.isAdmin()) {
-            throw new UserServiceException("Error 405: renewSubscription(name, email) has failed User " + email + " of " + name + " during the" +
-                    "Admin Validation Procedure");
-        }
+        if(user != null) {
+            if (!user.isAdmin()) {
+                throw new UserServiceException("Error 405: renewSubscription(name, email) has failed User " + email + " of " + name + " during the" +
+                        "Admin Validation Procedure");
+            }
 
-        // Second, Confirm that the Company is not Blacklisted
-        if(user.isBlackisted()) {
-            throw new UserServiceException("Error 410: renewSubscription(name, email) has failed User " + email + " of " + name + " during the" +
-                    "Blacklist Validation Procedure");
-        }
+            // Second, Confirm that the Company is not Blacklisted
+            if (user.isBlackisted()) {
+                throw new UserServiceException("Error 410: renewSubscription(name, email) has failed User " + email + " of " + name + " during the" +
+                        "Blacklist Validation Procedure");
+            }
+        } else throw new UserServiceException("Error 400: renewSubscription(name, email) has returned null");
 
         // Third, Renew the Company's Subscription Start and End Date based on the Current Date
         Timestamp start = new Timestamp(LocalDate.now().toEpochDay());
@@ -52,11 +56,31 @@ public class UserService {
         return new UserView().build(user);
     }
 
-    public UserView checkSubscription(String name,
-                                      String email) throws UserServiceException {
+    public List<UserView> cancelSubscription(String name,
+                                       String email) throws UserServiceException {
+        // First, Confirm that the Email is the Admin
         User user = userRepository.findByEmailAndCompanyName(email, name);
         if(user != null) {
-            return new UserView().build(user);
-        } else throw new UserServiceException("Error 400: checkSubscription(name, email) has returned null");
+            if (!user.isAdmin()) {
+                throw new UserServiceException("Error 405: renewSubscription(name, email) has failed User " + email + " of " + name + " during the" +
+                        "Admin Validation Procedure");
+            }
+
+            // Second, Confirm that the Company is not Blacklisted
+            if (user.isBlackisted()) {
+                throw new UserServiceException("Error 410: renewSubscription(name, email) has failed User " + email + " of " + name + " during the" +
+                        "Blacklist Validation Procedure");
+            }
+        } else throw new UserServiceException("Error 400: renewSubscription(name, email) has returned null");
+
+        // Third, Update all Employee Users of the Company to have their Subscription Cancelled
+        List<User> employees = userRepository.findByCompanyName(name);
+        for(User employee: employees) {
+            employee.setSubscriptionEndDate(new Timestamp(LocalDate.now().toEpochDay()));
+            employee.setValid(false);
+        }
+
+        userRepository.saveAll(employees);
+        return new UserView().build(employees);
     }
 }

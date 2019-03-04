@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PolicyRepository extends PagingAndSortingRepository<Policy, Policy.CompositeKey> {
+    Policy findByVin(String vin);
+    Policy findByCompanyNameAndPolicyNumber(String companyName, String policyNumber);
 }

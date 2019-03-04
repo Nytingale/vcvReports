@@ -1,5 +1,6 @@
 package com.vcv.backend.utilities;
 
+import com.vcv.backend.entities.Policy;
 import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.enums.CompanyType;
 
@@ -47,6 +48,10 @@ public class Utils {
             if(entity instanceof Vehicle) {
                 Field[] vehicleFields = Vehicle.class.getDeclaredFields();
                 if(Arrays.equals(entityFields, vehicleFields)) return entity;
+                else return null;
+            } else if(entity instanceof Policy) {
+                Field[] policyFields = Policy.class.getDeclaredFields();
+                if(Arrays.equals(entityFields, policyFields)) return entity;
                 else return null;
             }
         }

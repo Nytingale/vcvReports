@@ -19,4 +19,15 @@ public class JobService {
         if(jobs.size() > 0) return new JobView().build(jobs);
         else throw new JobServiceException("Error 200: getJobs(vin) returned null");
     }
+
+    public Boolean addJob(Job job,
+                          String company) throws JobServiceException {
+        try {
+            job.setCompanyName(company);
+            jobRepository.save(job);
+            return true;
+        } catch (Exception e) {
+            throw new JobServiceException("Error 200: addJob(job, company) failed to add the Job");
+        }
+    }
 }

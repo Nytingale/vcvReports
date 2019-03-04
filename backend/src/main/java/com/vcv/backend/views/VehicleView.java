@@ -115,13 +115,4 @@ public class VehicleView {
             return view;
         }
     }
-
-    public static class RegistrationForm {
-        private String vin;
-        private Integer year;
-        private String make;
-        private String model;
-        private String manufacturer;
-        private String colour;
-    }
 }

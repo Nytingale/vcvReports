@@ -1,5 +1,7 @@
 package com.vcv.backend.controllers;
 
+import com.vcv.backend.entities.Claim;
+import com.vcv.backend.entities.Policy;
 import com.vcv.backend.entities.User;
 import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.ControllerException;
@@ -28,7 +30,7 @@ public class Controller {
     public VehicleView.BasicReport searchForVehicle(@RequestParam(value = "vin", required = false) String vin,
                                                     @RequestParam(value = "year", required = false) String year,
                                                     @RequestParam(value = "make", required = false) String make,
-                                                    @RequestParam(value = "model", required = false) String model) throws ControllerException {
+                                                    @RequestParam(value = "model", required = false) String model) {
         try {
             Integer validYear = Utils.isValidYear(year);
             String validVin = Utils.isValidVin(vin);
@@ -47,7 +49,7 @@ public class Controller {
     }
 
     @GetMapping("/generateReport")
-    public VehicleView.FullReport generateReport(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
+    public VehicleView.FullReport generateReport(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
 
@@ -69,31 +71,10 @@ public class Controller {
 
     /* Company Users */
        /* General */
-    @GetMapping("/checkSubscription")
-    public UserView.SubscriptionConsole checkSubscription(@RequestParam(value = "name", required = false) String name,
-                                                          @RequestParam(value = "type", required = false) String type,
-                                                          @RequestParam(value = "email", required = false) String email) throws ControllerException {
-        try {
-            String validName = Utils.isValidString(name);
-            String validType = Utils.isValidSubscribingCompany(name, type);
-            String validEmail = Utils.isValidEmail(email);
-
-            if(validName != null && validType != null && validEmail != null) {
-                UserView user = userService.checkSubscription(validName, validEmail);
-                return new UserView
-                        .SubscriptionConsole()
-                        .build(user);
-            } else throw new ControllerException("Error 001: No Valid Parameters Used");
-        } catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     @GetMapping("/renewSubscription")
     public UserView.SubscriptionConsole rewnewSubscription(@RequestParam(value = "name", required = false) String name,
                                                            @RequestParam(value = "type", required = false) String type,
-                                                           @RequestParam(value = "email", required = false) String email) throws ControllerException {
+                                                           @RequestParam(value = "email", required = false) String email) {
         try {
             String validName = Utils.isValidSubscribingCompany(name, type);
             String validEmail = Utils.isValidEmail(email);
@@ -109,12 +90,27 @@ public class Controller {
         }
     }
 
+    @GetMapping("/cancelSubscription")
+    public List<UserView> cancelSubscription(@RequestParam(value = "name", required = false) String name,
+                                      @RequestParam(value = "type", required = false) String type,
+                                      @RequestParam(value = "email", required = false) String email) {
+        try {
+            String validName = Utils.isValidSubscribingCompany(name, type);
+            String validEmail = Utils.isValidEmail(email);
+            if(validName != null || validEmail != null) {
+                return userService.cancelSubscription(validName, validEmail);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
     /* Dealership */
     @PostMapping("/registerVehicle")
     public Boolean registerVehicle(@RequestBody Vehicle vehicle,
-                                   @RequestParam(value = "dealership", required = false) String dealership)throws ControllerException {
+                                   @RequestParam(value = "dealership", required = false) String dealership) {
         try {
             String validDealership = Utils.isValidString(dealership);
             Vehicle validVehicle = (Vehicle) Utils.isValidEntity(vehicle);
@@ -130,8 +126,51 @@ public class Controller {
 
 
     /* Insurance */
+    @PostMapping("/addPolicy")
+    public Boolean addPolicy(@RequestBody Policy policy,
+                             @RequestParam(value = "insurance", required = false) String insurance) {
+        try {
+            String validInsurance = Utils.isValidString(insurance);
+            Policy validPolicy = (Policy) Utils.isValidEntity(policy);
+            if(validInsurance != null && validPolicy != null) {
+                return policyService.addPolicy(validPolicy, validInsurance);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @GetMapping("/addClaim")
+    public Boolean addClaim(@RequestBody Claim claim,
+                            @RequestParam(value = "insurance", required = false) String insurance) {
+        try {
+            String validInsurance = Utils.isValidString(insurance);
+            Claim validClaim = (Claim) Utils.isValidEntity(claim);
+            if (validInsurance != null && validClaim != null) {
+                return claimService.addClaim(validClaim, validInsurance);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @GetMapping("/updateClaim")
+    public Boolean updateClaim(@RequestBody Claim claim) {
+        try {
+            Claim validClaim = (Claim) Utils.isValidEntity(claim);
+            if (validClaim != null) {
+                return claimService.updateClaim(validClaim);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @GetMapping("/reportStolen")
-    public Boolean reportStolen(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
+    public Boolean reportStolen(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
             if(validVin != null) {
@@ -144,7 +183,7 @@ public class Controller {
     }
 
     @GetMapping("/reportRecovered")
-    public Boolean reportRecovered(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
+    public Boolean reportRecovered(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
             if(validVin != null) {
@@ -157,7 +196,7 @@ public class Controller {
     }
 
     @GetMapping("/reportWrittenOff")
-    public Boolean reportWrittenOff(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
+    public Boolean reportWrittenOff(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
             if(validVin != null) {
@@ -170,7 +209,7 @@ public class Controller {
     }
 
     @GetMapping("/reportSalvaged")
-    public Boolean reportSalvaged(@RequestParam(value = "vin", required = false) String vin) throws ControllerException {
+    public Boolean reportSalvaged(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
             if(validVin != null) {

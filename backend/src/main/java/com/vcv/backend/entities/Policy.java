@@ -6,6 +6,7 @@ import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -16,8 +17,7 @@ public class Policy {
     @Id private String policyNumber;
 
     private String policyOwner;
-    private String policyName;
-    private String policyDate;
+    private Timestamp policyDate;
     private String financer;
     private Boolean valid;
     private String vin;
@@ -31,10 +31,7 @@ public class Policy {
     public String getPolicyOwner() {
         return policyOwner;
     }
-    public String getPolicyName() {
-        return policyName;
-    }
-    public String getPolicyDate() {
+    public Timestamp getPolicyDate() {
         return policyDate;
     }
     public String getFinancer() {
@@ -56,10 +53,7 @@ public class Policy {
     public void setPolicyOwner(String policyOwner) {
         this.policyOwner = policyOwner;
     }
-    public void setPolicyName(String policyName) {
-        this.policyName = policyName;
-    }
-    public void setPolicyDate(String policyDate) {
+    public void setPolicyDate(Timestamp policyDate) {
         this.policyDate = policyDate;
     }
     public void setFinancer(String financer) {
@@ -74,7 +68,7 @@ public class Policy {
 
     @Override
     public int hashCode() {
-        return Objects.hash(companyName, policyNumber, policyOwner, policyName, policyDate, financer, valid, vin);
+        return Objects.hash(companyName, policyNumber, policyOwner, policyDate, financer, valid, vin);
     }
 
     @Override
@@ -86,7 +80,6 @@ public class Policy {
                 companyName.equals(policy.companyName) &&
                 policyNumber.equals(policy.policyNumber) &&
                 policyOwner.equals(policy.policyOwner) &&
-                policyName.equals(policy.policyName) &&
                 policyDate.equals(policy.policyDate) &&
                 Objects.equals(financer, policy.financer) &&
                 vin.equals(policy.vin);
