@@ -50,6 +50,35 @@ public class UserView {
         return views;
     }
 
+    public static class CompanyView {
+        private String companyName;
+        private String companyType;
+        private Boolean blacklisted;
+        private Boolean valid;
+
+        public CompanyView() {}
+        public CompanyView build(UserView user) {
+            CompanyView view = new CompanyView();
+
+            view.companyName = user.companyName;
+            view.companyType = user.companyType;
+            view.blacklisted = user.blacklisted;
+            view.valid = user.valid;
+
+            return view;
+        }
+        public List<CompanyView> build(List<UserView> users) {
+            List<CompanyView> views = new ArrayList<>();
+
+            for(UserView user: users) {
+                CompanyView view = new CompanyView().build(user);
+                views.add(view);
+            }
+
+            return views;
+        }
+    }
+
     public static class SubscriptionConsole {
         private String subscriptionStartDate;
         private String subscriptionEndDate;

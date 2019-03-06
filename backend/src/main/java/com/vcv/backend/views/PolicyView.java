@@ -10,7 +10,6 @@ import java.util.List;
 public class PolicyView {
     private String companyName;
     private String policyNumber;
-    private String policyOwner;
     private String policyDate;
     private String financer;
     private Boolean valid;
@@ -23,7 +22,6 @@ public class PolicyView {
 
         view.companyName = policy.getCompanyName();
         view.policyNumber = policy.getPolicyNumber();
-        view.policyOwner = policy.getPolicyOwner();
         view.policyDate = dateFormatter.format(policy.getPolicyDate().toInstant());
         view.financer = policy.getFinancer();
         view.valid = policy.isValid();

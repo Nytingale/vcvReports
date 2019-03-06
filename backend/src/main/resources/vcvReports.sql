@@ -38,7 +38,9 @@ CREATE TABLE Claims(
     claim_details TEXT,
     policy_number VARCHAR(64) NOT NULL,
     vin VARCHAR(17) NOT NULL,
+    job_id BIGINT,
     INDEX(vin),
+    INDEX(job_id),
     INDEX(claim_date),
     PRIMARY KEY(company_name, claim_number)
 ) ENGINE = InnoDB;
@@ -75,11 +77,11 @@ CREATE TABLE Vehicles(
     stolen TINYINT(1) DEFAULT 0,
     evaluation_date TIMESTAMP NOT NULL,
     registration_date TIMESTAMP NOT NULL,
-    num_accidents INT NOT NULL,
-    num_robberies INT NOT NULL,
-    num_services INT NOT NULL,
-    num_salvages INT NOT NULL,
-    num_owners INT NOT NULL,
+    num_accidents INT DEFAULT 0,
+    num_robberies INT DEFAULT 0,
+    num_services INT DEFAULT 0,
+    num_salvages INT DEFAULT 0,
+    num_owners INT DEFAULT 0,
     insurance_name VARCHAR(64) NOT NULL,
     policy_number VARCHAR(64) NOT NULL,
     INDEX(evaluation_date),
@@ -91,6 +93,7 @@ CREATE TABLE Vehicles(
 
 ALTER TABLE Jobs     ADD CONSTRAINT jobs_claims_fk       FOREIGN KEY(claim_number, insurance_name)  REFERENCES Claims(company_name, claim_number);
 ALTER TABLE Jobs     ADD CONSTRAINT jobs_vehicles_fk     FOREIGN KEY(vin)                           REFERENCES Vehicles(vin);
+ALTER TABLE Claims   ADD CONSTRAINT claims_jobs_fk       FOREIGN KEY(job_id)                        REFERENCES Jobs(job_id);
 ALTER TABLE Claims   ADD CONSTRAINT claims_policies_fk   FOREIGN KEY(company_name, policy_number)   REFERENCES Policies(company_name, policy_number);
 ALTER TABLE Claims   ADD CONSTRAINT claims_vehicles_fk   FOREIGN KEY(vin)                           REFERENCES Vehicles(vin);
 ALTER TABLE Policies ADD CONSTRAINT policies_vehicles_fk FOREIGN KEY(vin)                           REFERENCES Vehicles(vin);

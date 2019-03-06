@@ -10,5 +10,5 @@ import java.util.List;
 public interface UserRepository extends PagingAndSortingRepository<User, User.CompositeKey> {
     User findByEmailAndCompanyName(String email, String companyName);
 
-    List<User> findByCompanyName(String companyName);
+    List<User> findByCompanyNameOrderBySubscriptionStartDateDesc(String companyName);
 }

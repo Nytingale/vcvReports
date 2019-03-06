@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface JobRepository extends PagingAndSortingRepository<Job, Long> {
-    List<Job> findByVin(String vin);
+    List<Job> findByVinOrderByJobIdDesc(String vin);
+    List<Job> findByCompanyNameOrderByJobIdDesc(String companyName);
 }

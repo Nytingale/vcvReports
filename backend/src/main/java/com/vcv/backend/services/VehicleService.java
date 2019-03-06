@@ -6,25 +6,11 @@ import com.vcv.backend.exceptions.VehicleServiceException;
 import com.vcv.backend.repositories.VehicleRepository;
 
 import com.vcv.backend.views.VehicleView;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import org.springframework.util.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class VehicleService {
@@ -48,14 +34,29 @@ public class VehicleService {
         else throw new VehicleServiceException("Error 500: getVehicle(year, make, model) returned null");
     }
 
-    public Boolean register(Vehicle vehicle,
-                            String dealership) throws VehicleServiceException {
+    public List<VehicleView> getCompanyVehicles(String dealership) throws VehicleServiceException {
+        List<Vehicle> vehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc(dealership);
+        if(vehicles.size() > 0) return new VehicleView().build(vehicles);
+        else throw new VehicleServiceException("Error 500: getCompanyVehicles(dealership) returned null");
+    }
+
+    public List<VehicleView> getInsuredVehicles(String insurance) throws VehicleServiceException {
+        List<Vehicle> policies = vehicleRepository.findByInsuranceNameOrderByRegistrationDateDesc(insurance);
+        if(policies.size() > 0) return new VehicleView().build(policies);
+        else throw new VehicleServiceException("Error 500: getInsuredVehicles(insurance) returned null");
+    }
+
+    public Boolean register(Vehicle vehicle) throws VehicleServiceException {
         try {
-            vehicle.setDealership(dealership);
+            // First, Ensure that a Vehicle with this VIN Doesn't Exist
+            Vehicle vehicleDB = vehicleRepository.findByVin(vehicle.getVin());
+            if(vehicleDB != null) throw new VehicleServiceException("Error 505: register(vehicle) found an already existing copy of this Vehicle");
+
+            // Second, Save the New Vehicle
             vehicleRepository.save(vehicle);
             return true;
         } catch (Exception e) {
-            throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
+            throw new VehicleServiceException("Error 500: register(vehicle) failed to register the Vehicle");
         }
     }
 

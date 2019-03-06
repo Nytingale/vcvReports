@@ -79,10 +79,7 @@ public class Controller {
             String validName = Utils.isValidSubscribingCompany(name, type);
             String validEmail = Utils.isValidEmail(email);
             if(validName != null || validEmail != null) {
-                UserView user = userService.renewSubscription(validEmail, validName);
-                return new UserView
-                        .SubscriptionConsole()
-                        .build(user);
+                return userService.renewSubscription(validEmail, validName);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -91,9 +88,9 @@ public class Controller {
     }
 
     @GetMapping("/cancelSubscription")
-    public List<UserView> cancelSubscription(@RequestParam(value = "name", required = false) String name,
-                                      @RequestParam(value = "type", required = false) String type,
-                                      @RequestParam(value = "email", required = false) String email) {
+    public UserView.SubscriptionConsole cancelSubscription(@RequestParam(value = "name", required = false) String name,
+                                                           @RequestParam(value = "type", required = false) String type,
+                                                           @RequestParam(value = "email", required = false) String email) {
         try {
             String validName = Utils.isValidSubscribingCompany(name, type);
             String validEmail = Utils.isValidEmail(email);
@@ -109,13 +106,11 @@ public class Controller {
 
     /* Dealership */
     @PostMapping("/registerVehicle")
-    public Boolean registerVehicle(@RequestBody Vehicle vehicle,
-                                   @RequestParam(value = "dealership", required = false) String dealership) {
+    public Boolean registerVehicle(@RequestBody Vehicle vehicle) {
         try {
-            String validDealership = Utils.isValidString(dealership);
             Vehicle validVehicle = (Vehicle) Utils.isValidEntity(vehicle);
-            if(validDealership != null && validVehicle != null) {
-                return vehicleService.register(validVehicle, validDealership);
+            if(validVehicle != null) {
+                return vehicleService.register(validVehicle);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -127,13 +122,11 @@ public class Controller {
 
     /* Insurance */
     @PostMapping("/addPolicy")
-    public Boolean addPolicy(@RequestBody Policy policy,
-                             @RequestParam(value = "insurance", required = false) String insurance) {
+    public Boolean addPolicy(@RequestBody Policy policy) {
         try {
-            String validInsurance = Utils.isValidString(insurance);
             Policy validPolicy = (Policy) Utils.isValidEntity(policy);
-            if(validInsurance != null && validPolicy != null) {
-                return policyService.addPolicy(validPolicy, validInsurance);
+            if(validPolicy != null) {
+                return policyService.addPolicy(validPolicy);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -142,13 +135,11 @@ public class Controller {
     }
 
     @GetMapping("/addClaim")
-    public Boolean addClaim(@RequestBody Claim claim,
-                            @RequestParam(value = "insurance", required = false) String insurance) {
+    public Boolean addClaim(@RequestBody Claim claim) {
         try {
-            String validInsurance = Utils.isValidString(insurance);
             Claim validClaim = (Claim) Utils.isValidEntity(claim);
-            if (validInsurance != null && validClaim != null) {
-                return claimService.addClaim(validClaim, validInsurance);
+            if(validClaim != null) {
+                return claimService.addClaim(validClaim);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

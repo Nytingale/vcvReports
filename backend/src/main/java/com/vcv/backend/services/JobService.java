@@ -15,19 +15,23 @@ public class JobService {
     private JobRepository jobRepository;
 
     public List<JobView> getJobs(String vin) throws JobServiceException {
-        List<Job> jobs = jobRepository.findByVin(vin);
+        List<Job> jobs = jobRepository.findByVinOrderByJobIdDesc(vin);
         if(jobs.size() > 0) return new JobView().build(jobs);
         else throw new JobServiceException("Error 200: getJobs(vin) returned null");
     }
 
-    public Boolean addJob(Job job,
-                          String company) throws JobServiceException {
+    public List<JobView> getCompanyJobs(String company) throws JobServiceException {
+        List<Job> jobs = jobRepository.findByCompanyNameOrderByJobIdDesc(company);
+        if(jobs.size() > 0) return new JobView().build(jobs);
+        else throw new JobServiceException("Error 200: getCompanyJobs(company) returned null");
+    }
+
+    public Boolean addJob(Job job) throws JobServiceException {
         try {
-            job.setCompanyName(company);
             jobRepository.save(job);
             return true;
         } catch (Exception e) {
-            throw new JobServiceException("Error 200: addJob(job, company) failed to add the Job");
+            throw new JobServiceException("Error 215: addJob(job, company) failed to add the Job");
         }
     }
 }
