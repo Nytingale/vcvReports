@@ -1,5 +1,7 @@
 package com.vcv.backend.entities;
 
+import com.vcv.backend.enums.PolicyType;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -18,6 +20,7 @@ public class Policy {
 
     private String policyOwner;
     private Timestamp policyDate;
+    private PolicyType policyType;
     private String financer;
     private Boolean valid;
     private String vin;
@@ -33,6 +36,9 @@ public class Policy {
     }
     public Timestamp getPolicyDate() {
         return policyDate;
+    }
+    public PolicyType getPolicyType() {
+        return policyType;
     }
     public String getFinancer() {
         return financer;
@@ -56,6 +62,9 @@ public class Policy {
     public void setPolicyDate(Timestamp policyDate) {
         this.policyDate = policyDate;
     }
+    public void setPolicyType(PolicyType policyType) {
+        this.policyType = policyType;
+    }
     public void setFinancer(String financer) {
         this.financer = financer;
     }
@@ -68,7 +77,7 @@ public class Policy {
 
     @Override
     public int hashCode() {
-        return Objects.hash(companyName, policyNumber, policyOwner, policyDate, financer, valid, vin);
+        return Objects.hash(companyName, policyNumber, policyOwner, policyDate, policyType, financer, valid, vin);
     }
 
     @Override
@@ -81,6 +90,7 @@ public class Policy {
                 policyNumber.equals(policy.policyNumber) &&
                 policyOwner.equals(policy.policyOwner) &&
                 policyDate.equals(policy.policyDate) &&
+                policyType == policy.policyType &&
                 Objects.equals(financer, policy.financer) &&
                 vin.equals(policy.vin);
     }

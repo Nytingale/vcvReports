@@ -22,6 +22,7 @@ public class User {
     private Timestamp subscriptionStartDate;
     private Timestamp subscriptionEndDate;
     private Boolean blacklisted;
+    private Integer rating;
     private Boolean admin;
     private Boolean valid;
 
@@ -42,6 +43,9 @@ public class User {
     }
     public Timestamp getSubscriptionEndDate() {
         return subscriptionEndDate;
+    }
+    public Integer getRating() {
+        return rating;
     }
     public Boolean isBlackisted() {
         return blacklisted;
@@ -74,6 +78,9 @@ public class User {
     public void setBlacklisted(Boolean blacklisted) {
         this.blacklisted = blacklisted;
     }
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
     public void setAdmin(Boolean admin) {
         this.admin = admin;
     }
@@ -83,7 +90,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, companyName, password, companyType, subscriptionStartDate, subscriptionEndDate, blacklisted, admin, valid);
+        return Objects.hash(email, companyName, password, companyType, subscriptionStartDate, subscriptionEndDate, blacklisted, rating, admin, valid);
     }
 
     @Override
@@ -94,6 +101,7 @@ public class User {
         return blacklisted == user.blacklisted &&
                 admin == user.admin &&
                 valid == user.valid &&
+                rating == user.rating &&
                 email.equals(user.email) &&
                 companyName.equals(user.companyName) &&
                 password.equals(user.password) &&

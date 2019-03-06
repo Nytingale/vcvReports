@@ -24,6 +24,7 @@ public class Claim {
     private Timestamp claimDate;
     private String claimDetails;
     private String policyNumber;
+    private Integer value;
     private String vin;
     private Long jobId;
 
@@ -45,11 +46,14 @@ public class Claim {
     public String getPolicyNumber() {
         return policyNumber;
     }
-    public String getVin() {
-        return vin;
+    public Integer getValue() {
+        return value;
     }
     public Long getJobId() {
         return jobId;
+    }
+    public String getVin() {
+        return vin;
     }
 
     public void setClaimNumber(String claimNumber) {
@@ -70,16 +74,19 @@ public class Claim {
     public void setPolicyNumber(String policyNumber) {
         this.policyNumber = policyNumber;
     }
-    public void setVin(String vin) {
-        this.vin = vin;
+    public void setValue(Integer value) {
+        this.value = value;
     }
     public void setJobId(Long jobId) {
         this.jobId = jobId;
     }
+    public void setVin(String vin) {
+        this.vin = vin;
+    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(claimNumber, companyName, claimType, claimDate, claimDetails, policyNumber, jobId, vin);
+        return Objects.hash(claimNumber, companyName, claimType, claimDate, claimDetails, policyNumber, value, jobId, vin);
     }
 
     @Override
@@ -93,6 +100,7 @@ public class Claim {
                 claimDate.equals(claim.claimDate) &&
                 claimDetails.equals(claim.claimDetails) &&
                 policyNumber.equals(claim.policyNumber) &&
+                value == claim.value &&
                 jobId == claim.jobId &&
                 vin.equals(claim.vin);
     }

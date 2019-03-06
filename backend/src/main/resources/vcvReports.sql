@@ -21,6 +21,7 @@ CREATE TABLE Policies(
     policy_number VARCHAR(64) NOT NULL,
     company_name VARCHAR(64) NOT NULL,
     policy_owner VARCHAR(64) NOT NULL,
+    policy_type ENUM('Third Party', 'Comprehensive') DEFAULT 'Comprehensive',
     policy_date TIMESTAMP NOT NULL,
     financer VARCHAR(64),
     valid TINYINT(1) DEFAULT 1,
@@ -36,6 +37,7 @@ CREATE TABLE Claims(
     claim_type ENUM('Personal Injury', 'Total Loss', 'Liability', 'Accident') DEFAULT 'Accident',
     claim_date TIMESTAMP NOT NULL,
     claim_details TEXT,
+    value BIGINT NOT NULL,
     policy_number VARCHAR(64) NOT NULL,
     vin VARCHAR(17) NOT NULL,
     job_id BIGINT,
@@ -47,7 +49,7 @@ CREATE TABLE Claims(
 
 CREATE TABLE Jobs(
     job_id BIGINT AUTO_INCREMENT NOT NULL,
-    job_type ENUM('Accident', 'Service', 'Repair') DEFAULT 'Repair',
+    job_type ENUM('Accident', 'Service', 'Upgrade', 'Repair') DEFAULT 'Repair',
     job_date TIMESTAMP NOT NULL,
     job_cost INT NOT NULL,
     job_details TEXT,
