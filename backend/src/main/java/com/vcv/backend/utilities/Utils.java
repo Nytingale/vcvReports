@@ -25,6 +25,12 @@ public class Utils {
         else return null;
     }
 
+    public static Long isValidLong(String number) {
+        if(number == null || number.trim().isEmpty()) return null;
+        else if(number.matches("^[0-9]*$")) return Long.parseLong(number);
+        else return null;
+    }
+
     public static String isValidPassword(String password) {
         if(password == null || password.trim().isEmpty()) return null;
         else if(password.length() > 8 && password.length() <= 32) return password;
@@ -38,7 +44,7 @@ public class Utils {
 
     public static Integer isValidYear(String year) {
         if(year == null || year.trim().isEmpty()) return null;
-        else if(year.matches("-?[0-9]+") && Integer.parseInt(year) > LocalDate.now().getYear()) return Integer.parseInt(year);
+        else if(year.matches("-?[0-9]+") && Integer.parseInt(year) <= LocalDate.now().getYear()) return Integer.parseInt(year);
         else return null;
     }
 

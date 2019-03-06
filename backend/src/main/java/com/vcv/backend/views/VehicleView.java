@@ -98,7 +98,6 @@ public class VehicleView {
             return view;
         }
     }
-
     public static class FullReport {
         private VehicleView vehicle;
         private List<ClaimView> claims;

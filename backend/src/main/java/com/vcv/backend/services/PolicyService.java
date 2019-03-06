@@ -5,6 +5,7 @@ import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.PolicyServiceException;
 import com.vcv.backend.repositories.PolicyRepository;
 import com.vcv.backend.repositories.VehicleRepository;
+import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.PolicyView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,11 @@ public class PolicyService {
 
     public List<PolicyView> getCompanyPolicies(String company) throws PolicyServiceException {
         List<Policy> policies = policyRepository.findByCompanyNameOrderByPolicyDateDesc(company);
-        if(policies.size() > 0) return new PolicyView().build(policies);
+        if(!policies.isEmpty()) return new PolicyView().build(policies);
         else throw new PolicyServiceException("Error 300: getCompanyPolicies(company) returned null");
     }
 
-    public Boolean addPolicy(Policy policy) throws PolicyServiceException {
+    public MessageView.InsuranceReport addPolicy(Policy policy) throws PolicyServiceException {
         // First, Ensure that the Policy Number does not Already Exist with this Insurance Company
         Policy policyDB = policyRepository.findByCompanyNameAndPolicyNumber(policy.getCompanyName(), policy.getPolicyNumber());
         if(policyDB != null) throw new PolicyServiceException("Error 305: addPolicy(policy) found an already existing copy of this Policy");
@@ -62,7 +63,7 @@ public class PolicyService {
             vehicle.setNumOwners(vehicle.getNumOwners() + 1);
             vehicleRepository.save(vehicle);
             policyRepository.save(policy);
-            return true;
+            return new MessageView.InsuranceReport().build(policy, "Successfully Added Policy");
         } catch (Exception e) {
             throw new PolicyServiceException("Error 315: addPolicy(policy) failed to add the Policy");
         }

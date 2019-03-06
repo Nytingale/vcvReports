@@ -78,7 +78,6 @@ public class UserView {
             return views;
         }
     }
-
     public static class SubscriptionConsole {
         private String subscriptionStartDate;
         private String subscriptionEndDate;

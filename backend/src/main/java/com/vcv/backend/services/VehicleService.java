@@ -5,6 +5,7 @@ import com.vcv.backend.configs.FileStorageConfig;
 import com.vcv.backend.exceptions.VehicleServiceException;
 import com.vcv.backend.repositories.VehicleRepository;
 
+import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.VehicleView;
 
 import org.springframework.stereotype.Service;
@@ -36,17 +37,17 @@ public class VehicleService {
 
     public List<VehicleView> getCompanyVehicles(String dealership) throws VehicleServiceException {
         List<Vehicle> vehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc(dealership);
-        if(vehicles.size() > 0) return new VehicleView().build(vehicles);
+        if(!vehicles.isEmpty()) return new VehicleView().build(vehicles);
         else throw new VehicleServiceException("Error 500: getCompanyVehicles(dealership) returned null");
     }
 
     public List<VehicleView> getInsuredVehicles(String insurance) throws VehicleServiceException {
         List<Vehicle> policies = vehicleRepository.findByInsuranceNameOrderByRegistrationDateDesc(insurance);
-        if(policies.size() > 0) return new VehicleView().build(policies);
+        if(!policies.isEmpty()) return new VehicleView().build(policies);
         else throw new VehicleServiceException("Error 500: getInsuredVehicles(insurance) returned null");
     }
 
-    public Boolean register(Vehicle vehicle) throws VehicleServiceException {
+    public MessageView.Registration register(Vehicle vehicle) throws VehicleServiceException {
         try {
             // First, Ensure that a Vehicle with this VIN Doesn't Exist
             Vehicle vehicleDB = vehicleRepository.findByVin(vehicle.getVin());
@@ -54,56 +55,66 @@ public class VehicleService {
 
             // Second, Save the New Vehicle
             vehicleRepository.save(vehicle);
-            return true;
+            return new MessageView.Registration().build(vehicle, "Successfully Registered Vehicle");
         } catch (Exception e) {
             throw new VehicleServiceException("Error 500: register(vehicle) failed to register the Vehicle");
         }
     }
 
-    public Boolean reportStolen(String vin) throws VehicleServiceException {
+    public MessageView.StolenReport reportStolen(String vin) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
         if(vehicle != null) {
             vehicle.setStolen(true);
             vehicle.setNumRobberies(vehicle.getNumRobberies() + 1);
             vehicleRepository.save(vehicle);
-            return true;
+            return new MessageView.StolenReport().build(vehicle, "Successfully Reported Vehicle Stolen");
         }
 
-        throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
+        throw new VehicleServiceException("Error 500: reportStolen(vehicle, dealership) returned null");
     }
 
-    public Boolean reportRecovered(String vin) throws VehicleServiceException {
+    public MessageView.StolenReport reportRecovered(String vin) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
         if(vehicle != null) {
             vehicle.setStolen(false);
             vehicleRepository.save(vehicle);
-            return true;
+            return new MessageView.StolenReport().build(vehicle, "Successfully Recovered Vehicle");
         }
 
-        throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
+        throw new VehicleServiceException("Error 500: reportRecovered(vehicle, dealership) returned null");
     }
 
-    public Boolean reportWrittenOff(String vin) throws VehicleServiceException {
+    public MessageView.AccidentReport reportAccident(String vin) throws VehicleServiceException {
+        Vehicle vehicle = vehicleRepository.findByVin(vin);
+        if(vehicle != null) {
+            vehicle.setNumAccidents(vehicle.getNumAccidents() + 1);
+            vehicleRepository.save(vehicle);
+            return new MessageView.AccidentReport().build(vehicle, "Successfully Reported Accident on Vehicle");
+        }
+
+        throw new VehicleServiceException("Error 500: reportAccident(vin) returned null");
+    }
+
+    public MessageView.WriteOff reportWrittenOff(String vin) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
         if(vehicle != null) {
             vehicle.setWrittenOff(true);
-            vehicle.setNumAccidents(vehicle.getNumAccidents() + 1);
             vehicleRepository.save(vehicle);
-            return true;
+            return new MessageView.WriteOff().build(vehicle, "Successfully Written Off Vehicle");
         }
 
-        throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
+        throw new VehicleServiceException("Error 500: reportWrittenOff(vehicle, dealership) returned null");
     }
 
-    public Boolean reportSalvaged(String vin) throws VehicleServiceException {
+    public MessageView.SalvageReport reportSalvaged(String vin) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
         if(vehicle != null) {
             vehicle.setWrittenOff(false);
             vehicle.setNumSalvages(vehicle.getNumSalvages() + 1);
             vehicleRepository.save(vehicle);
-            return true;
+            return new MessageView.SalvageReport().build(vehicle, "Successfully Salvaged Vehicle");
         }
 
-        throw new VehicleServiceException("Error 500: register(vehicle, dealership) failed to register the Vehicle");
+        throw new VehicleServiceException("Error 500: reportSalvaged(vehicle, dealership) returned null");
     }
 }
