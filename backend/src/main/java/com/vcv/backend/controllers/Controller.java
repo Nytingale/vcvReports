@@ -2,6 +2,7 @@ package com.vcv.backend.controllers;
 
 import com.vcv.backend.entities.Claim;
 import com.vcv.backend.entities.Policy;
+import com.vcv.backend.entities.User;
 import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.enums.CompanyType;
 import com.vcv.backend.exceptions.ControllerException;
@@ -66,7 +67,7 @@ public class Controller {
 
 
     /* Company Users */
-    /* General */
+    /* Admin */
     @GetMapping("/renewSubscription")
     public UserView.SubscriptionConsole rewnewSubscription(@RequestParam(value = "type", required = false) String type,
                                                            @RequestParam(value = "email", required = false) String email,
@@ -74,7 +75,7 @@ public class Controller {
         try {
             String validEmail = Utils.isValidEmail(email);
             String validCompany = Utils.isValidSubscribingCompany(company, type);
-            if(validEmail != null || validCompany != null) {
+            if(validEmail != null && validCompany != null) {
                 return userService.renewSubscription(validEmail, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
@@ -90,10 +91,24 @@ public class Controller {
         try {
             String validEmail = Utils.isValidEmail(email);
             String validCompany = Utils.isValidSubscribingCompany(company, type);
-            if(validEmail != null || validCompany != null) {
+            if(validEmail != null && validCompany != null) {
                 return userService.cancelSubscription(validEmail, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/resetPassword")
+    public MessageView resetPassword(@RequestBody User user,
+                                     @RequestParam(value = "email", required = false) String email) {
+        try {
+            String validEmail = Utils.isValidEmail(email);
+            if(validEmail != null) {
+                return userService.resetPassword(user, validEmail);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

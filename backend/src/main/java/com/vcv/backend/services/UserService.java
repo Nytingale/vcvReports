@@ -1,8 +1,10 @@
 package com.vcv.backend.services;
 
 import com.vcv.backend.entities.User;
+import com.vcv.backend.enums.CompanyType;
 import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.UserRepository;
+import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +50,27 @@ public class UserService {
 
         List<User> employees = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(company);
         if(employees.size() > 0) return new UserView().build(employees);
-        else throw new UserServiceException("Error 500: getCompanyVehicles(dealership) returned null");
+        else throw new UserServiceException("Error 400: findByEmailAndCompanyName(email, company) returned null");
+    }
+
+    public MessageView resetPassword(User admin,
+                                                   String email) throws UserServiceException {
+        // First, Confirm that the User is an Admin or VCV Staff
+        if(!admin.isAdmin() && admin.getCompanyType().level() != 3) {
+            throw new UserServiceException("Error 405: resetPassword(user, email, company) has failed to identify the User as a Company Admin or VCV Staff");
+        }
+
+        // Second, Find the Employee to Reset Password
+        User employee = userRepository.findByEmailAndCompanyName(email, admin.getCompanyName());
+        if(employee == null) {
+            throw new UserServiceException("Error 410: resetPassword(user, email, company) has failed to find an Employee with the Email");
+        }
+
+        // Third, Set the Flag that the Password has been Reset and Saving it
+        employee.setPasswordReset(true);
+        userRepository.save(employee);
+        return new MessageView().build(email + "'s Password has been Successfully Reset. The next time they attempt to login, " +
+                "they will be prompted to Enter a new Password");
     }
 
     public UserView.SubscriptionConsole renewSubscription(String email,

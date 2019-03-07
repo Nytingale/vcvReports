@@ -21,6 +21,7 @@ public class User {
     private CompanyType companyType;
     private Timestamp subscriptionStartDate;
     private Timestamp subscriptionEndDate;
+    private Boolean passwordReset;
     private Boolean blacklisted;
     private Integer rating;
     private Boolean admin;
@@ -44,11 +45,14 @@ public class User {
     public Timestamp getSubscriptionEndDate() {
         return subscriptionEndDate;
     }
-    public Integer getRating() {
-        return rating;
+    public Boolean getPasswordReset() {
+        return passwordReset;
     }
     public Boolean isBlackisted() {
         return blacklisted;
+    }
+    public Integer getRating() {
+        return rating;
     }
     public Boolean isAdmin() {
         return admin;
@@ -74,6 +78,9 @@ public class User {
     }
     public void setSubscriptionEndDate(Timestamp subscriptionEndDate) {
         this.subscriptionEndDate = subscriptionEndDate;
+    }
+    public void setPasswordReset(Boolean passwordReset) {
+        this.passwordReset = passwordReset;
     }
     public void setBlacklisted(Boolean blacklisted) {
         this.blacklisted = blacklisted;

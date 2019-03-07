@@ -9,6 +9,7 @@ CREATE TABLE Users(
     company_type ENUM('VCV Staff', 'Delearship', 'Insurance', 'Garage', 'Mechanic', 'Casual') DEFAULT 'Casual',
     subscription_start_date TIMESTAMP NOT NULL,
     subscription_end_date TIMESTAMP NOT NULL,
+    password_reset TINYINT(1) DEFAULT 0,
     blacklisted TINYINT(1) DEFAULT 0,
     admin TINYINT(1) DEFAULT 1,
     valid TINYINT(1) DEFAULT 1,
