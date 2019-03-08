@@ -182,6 +182,19 @@ public class Controller {
         }
     }
 
+    @PostMapping("/reportAccident")
+    public MessageView.AccidentReport reportAccident(@RequestParam(value = "vin", required = false) String vin) {
+        try {
+            String validVin = Utils.isValidVin(vin);
+            if(validVin != null) {
+                return vehicleService.reportAccident(validVin);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping("/reportRecovered")
     public MessageView.StolenReport reportRecovered(@RequestParam(value = "vin", required = false) String vin) {
         try {
