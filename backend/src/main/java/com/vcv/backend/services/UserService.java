@@ -4,6 +4,7 @@ import com.vcv.backend.entities.User;
 import com.vcv.backend.enums.CompanyType;
 import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.UserRepository;
+import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,55 +16,169 @@ import java.util.List;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private UserRepository userRepository;
 
-    public List<UserView.CompanyView> getPartners(String company) throws UserServiceException {
+    /* Website */
+    public List<UserView.CompanyView> getPartners() throws UserServiceException {
         // First, Gather the List of Companies
-        List<User> companies = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(company);
-        if(companies.size() > 0) {
+        List<User> companies = userRepository.findByAdminOrderBySubscriptionStartDateDesc(1);
+        if(!companies.isEmpty()) {
 
             // Second, Remove the Invalid and Blacklisted Companies
-            for(User partner: companies) if(!partner.isValid() || partner.isBlackisted()) companies.remove(partner);
+            for(User partner: companies) {
+                if(!partner.isValid() || partner.isBlackisted()) companies.remove(partner);
+            }
 
             return new UserView.CompanyView().build(new UserView().build(companies));
-        } else throw new UserServiceException("Error 500: getCompanies(company) returned null");
+        } else throw new UserServiceException("Error 400: getCompanies() returned null");
 
     }
 
-    public List<UserView> getCompanyEmployees(String email,
-                                              String company) throws UserServiceException {
-        // First, Confirm that the Email is the Admin
+
+
+    /* VCV Staff */
+    public UserView searchForUser(User vcv,
+                                  String email,
+                                  String company) throws UserServiceException {
+        if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: searchForUser(vcv, email, company) has failed you for VCV Staff Authentication");
+
         User user = userRepository.findByEmailAndCompanyName(email, company);
         if(user != null) {
-            if (!user.isAdmin()) {
-                throw new UserServiceException("Error 405: getCompanyEmployees(email, company) has failed User " + email + " of " + company + " during the" +
-                        "Admin Validation Procedure");
+            return new UserView().build(user);
+        } else throw new UserServiceException("Error 400: searchForUser(vcv, email, company) returned null");
+    }
+
+    public UserView.CompanyView searchForCompany(User vcv,
+                                                 String company) throws UserServiceException {
+        if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: searchForCompany(vcv, company) has failed you for VCV Staff Authentication");
+
+        User companyDB = userRepository.findByCompanyNameAndAdmin(company, 1);
+        if(companyDB != null) {
+            return new UserView.CompanyView().build(new UserView().build(companyDB));
+        } else throw new UserServiceException("Error 400: searchForCompany(vcv, company) returned null");
+    }
+
+    public List<UserView> getUsers(User vcv) throws UserServiceException {
+        if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: getUsers(vcv) has failed you for VCV Staff Authentication");
+
+        List<User> users = (List<User>) userRepository.findAll();
+        if(users.isEmpty()) throw new UserServiceException("Error 400: getUsers(vcv) returned null");
+        return new UserView().build(users);
+    }
+
+    public MessageView.UserReport changeAdmin(User vcv,
+                                              User employee) throws UserServiceException {
+        if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: changeAdmin(vcv, employee) has failed you for VCV Staff Authentication");
+
+        User admin = userRepository.findByCompanyNameAndAdmin(employee.getCompanyName(), 1);
+        if(admin != null) {
+            admin.setAdmin(false);
+            employee.setAdmin(true);
+
+            try {
+                userRepository.save(admin);
+                userRepository.save(employee);
+                return new MessageView.UserReport().build(employee, "Successfully Changed Company Admins");
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new UserServiceException("Error 415: changeAdmin(vcv, employee) failed to change the Company Admin");
+            }
+        } else throw new UserServiceException("Error 400: changeAdmin(vcv, employee) returned null");
+    }
+
+    public MessageView.CompanyReport registerCompany(User vcv,
+                                                     User company) throws UserServiceException {
+        if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: registerCompany(vcv, company) has failed you for VCV Staff Authentication");
+
+        // First, Confirm that no Company with this Name
+        User companyDB = userRepository.findByCompanyNameAndAdmin(company.getCompanyName(), 1);
+        if(companyDB != null) throw new UserServiceException("Error 405: registerCompany(vcv, company) has found an already-existing Company with this Name");
+
+        try {
+            // Second, Add the User and Company to the Database, with the User setup as an Admin
+            company.setAdmin(true);
+            userRepository.save(company);
+
+            return new MessageView.CompanyReport().build(company, "Successfully Created Company");
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new UserServiceException("Error 415: registerCompany(vcv, company) has failed to register the Company");
+        }
+    }
+
+    public MessageView.CompanyReport approveCompany(User vcv,
+                                                    String company) throws UserServiceException {
+        if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: approveCompany(vcv, company) has failed you for VCV Staff Authentication");
+
+        // First, Confirm that the Company Exists
+        User companyDB = userRepository.findByCompanyNameAndAdmin(company, 1);
+        if(companyDB == null) throw new UserServiceException("Error 405: approveCompany(vcv, company) has failed to find such an existing Company");
+
+        // Second, Change the Company to be Approved
+        companyDB.setBlacklisted(false);
+
+        try {
+            // Third, Save the Updated Company to the Database
+            userRepository.save(companyDB);
+            return new MessageView.CompanyReport().build(companyDB, "Successfully Approved Company");
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new UserServiceException("Error 415: blacklistCompany(vcv, company) has failed to update the Company");
+        }
+    }
+
+    public MessageView.CompanyReport blacklistCompany(User vcv,
+                                                      String company) throws UserServiceException {
+        if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: blacklistCompany(vcv, company) has failed you for VCV Staff Authentication");
+
+        // First, Confirm that the Company Exists
+        User companyDB = userRepository.findByCompanyNameAndAdmin(company, 1);
+        if(companyDB == null) throw new UserServiceException("Error 405: blacklistCompany(vcv, company) has failed to find such an existing Company");
+
+        // Second, Change the Company to be Blacklisted
+        companyDB.setBlacklisted(true);
+
+        try {
+            // Third, Save the Updated Company to the Database
+            userRepository.save(companyDB);
+            return new MessageView.CompanyReport().build(companyDB, "Successfully Blacklisted Company");
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new UserServiceException("Error 415: blacklistCompany(vcv, company) has failed to update the Company");
+        }
+    }
+
+
+    /* Company Admin */
+    public List<UserView> getCompanyEmployees(User admin) throws UserServiceException {
+        // First, Confirm that the User is the Admin and they are Not Blacklisted
+        if(admin != null) {
+            if (!admin.isAdmin()) {
+                throw new UserServiceException("Error 405: getCompanyEmployees(admin) has failed you for Admin Authentication");
             }
 
             // Second, Confirm that the Company is not Blacklisted
-            if (user.isBlackisted()) {
-                throw new UserServiceException("Error 410: getCompanyEmployees(email, company) has failed User " + email + " of " + company + " during the" +
-                        "Blacklist Validation Procedure");
+            if (admin.isBlackisted()) {
+                throw new UserServiceException("Error 410: getCompanyEmployees(admin) has failed you for Company Approved Authentication");
             }
-        } else throw new UserServiceException("Error 400: getCompanyEmployees(email, company) has returned null");
+        } else throw new UserServiceException("Error 400: getCompanyEmployees(admin) has returned null");
 
-        List<User> employees = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(company);
-        if(employees.size() > 0) return new UserView().build(employees);
+        List<User> employees = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(admin.getCompanyName());
+        if(employees.isEmpty()) return new UserView().build(employees);
         else throw new UserServiceException("Error 400: findByEmailAndCompanyName(email, company) returned null");
     }
 
     public MessageView resetPassword(User admin,
-                                                   String email) throws UserServiceException {
+                                     String email) throws UserServiceException {
         // First, Confirm that the User is an Admin or VCV Staff
         if(!admin.isAdmin() && admin.getCompanyType().level() != 3) {
-            throw new UserServiceException("Error 405: resetPassword(user, email, company) has failed to identify the User as a Company Admin or VCV Staff");
+            throw new UserServiceException("Error 405: resetPassword(admin, email) has failed to identify the User as a Company Admin or VCV Staff");
         }
 
         // Second, Find the Employee to Reset Password
         User employee = userRepository.findByEmailAndCompanyName(email, admin.getCompanyName());
         if(employee == null) {
-            throw new UserServiceException("Error 410: resetPassword(user, email, company) has failed to find an Employee with the Email");
+            throw new UserServiceException("Error 410: resetPassword(admin, email) has failed to find an Employee with the Email");
         }
 
         // Third, Set the Flag that the Password has been Reset and Saving it
@@ -73,29 +188,80 @@ public class UserService {
                 "they will be prompted to Enter a new Password");
     }
 
-    public UserView.SubscriptionConsole renewSubscription(String email,
-                                                          String company) throws UserServiceException {
-        // First, Confirm that the Email is the Admin
-        User user = userRepository.findByEmailAndCompanyName(email, company);
-        if(user != null) {
-            if (!user.isAdmin()) {
-                throw new UserServiceException("Error 405: renewSubscription(email, company) has failed User " + email + " of " + company + " during the" +
-                        "Admin Validation Procedure");
+    public MessageView.UserReport addEmployee(User admin,
+                                              User employee) throws UserServiceException {
+        // First, Confirm that the User is the Admin and they are Not Blacklisted
+        if(admin != null) {
+            if (!admin.isAdmin()) {
+                throw new UserServiceException("Error 405: addEmployee(admin, employee) has failed you for Admin Authentication");
             }
 
             // Second, Confirm that the Company is not Blacklisted
-            if (user.isBlackisted()) {
-                throw new UserServiceException("Error 410: renewSubscription(email, company) has failed User " + email + " of " + company + " during the" +
-                        "Blacklist Validation Procedure");
+            if (admin.isBlackisted()) {
+                throw new UserServiceException("Error 410: addEmployee(admin, employee) has failed you for Company Approved Authentication");
             }
-        } else throw new UserServiceException("Error 400: renewSubscription(email, company) has returned null");
+        } else throw new UserServiceException("Error 400: addEmployee(admin, employee) has returned null");
+
+        // Second, Ensure that the Employee's Company Name and Type are the same as the Admin's
+        employee.setCompanyName(admin.getCompanyName());
+        employee.setCompanyType(admin.getCompanyType());
+
+        try {
+            // Third, Save the new Employee to the Database
+            userRepository.save(employee);
+            return new MessageView.UserReport().build(admin, "Successfully Added new Employee to the Company");
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new UserServiceException("Error 415: addEmployee(admin, employee) has failed to add the new Employee to the Database");
+        }
+    }
+
+    public MessageView.CompanyReport updateWebsite(User admin) throws UserServiceException {
+        // First, Confirm that the User is the Admin and they are Not Blacklisted
+        if(admin != null) {
+            if (!admin.isAdmin()) {
+                throw new UserServiceException("Error 405: updateWebsite(admin) has failed you for Admin Authentication");
+            }
+
+            // Second, Confirm that the Company is not Blacklisted
+            if (admin.isBlackisted()) {
+                throw new UserServiceException("Error 410: updateWebsite(admin) has failed you for Company Approved Authentication");
+            }
+        } else throw new UserServiceException("Error 400: updateWebsite(admin) has returned null");
+
+        // Third, Overwrite the Admin's Website with the one in the Database
+        User adminDB = userRepository.findByCompanyNameAndAdmin(admin.getCompanyName(), 1);
+        if(adminDB != null) {
+            adminDB.setWebsite(admin.getWebsite());
+            try {
+                userRepository.save(adminDB);
+                return new MessageView.CompanyReport().build(admin, "Successfully Updated Company Website");
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new UserServiceException("Error 415: updateWebsite(admin) failed to update the Company Website");
+            }
+        } else throw new UserServiceException("Error 400: updateWebsite(admin) returned null");
+    }
+
+    public UserView.SubscriptionConsole renewSubscription(User admin) throws UserServiceException {
+        // First, Confirm that the User is the Admin and they are Not Blacklisted
+        if(admin != null) {
+            if (!admin.isAdmin()) {
+                throw new UserServiceException("Error 405: renewSubscription(admin) has failed you for Admin Authentication");
+            }
+
+            // Second, Confirm that the Company is not Blacklisted
+            if (admin.isBlackisted()) {
+                throw new UserServiceException("Error 410: renewSubscription(admin) has failed you for Company Approved Authentication");
+            }
+        } else throw new UserServiceException("Error 400: renewSubscription(admin) has returned null");
 
         // Third, Renew the Company's Subscription Start and End Date based on the Current Date
         Timestamp start = new Timestamp(LocalDate.now().toEpochDay());
         Timestamp end = new Timestamp(LocalDate.now().withYear(1).toEpochDay());
 
         // Fourth, Update All Employee Users of the Company
-        List<User> employees = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(company);
+        List<User> employees = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(admin.getCompanyName());
         for(User employee: employees) {
             employee.setSubscriptionStartDate(start);
             employee.setSubscriptionEndDate(end);
@@ -105,31 +271,28 @@ public class UserService {
 
         try {
             userRepository.saveAll(employees);
-            return new UserView.SubscriptionConsole().build(new UserView().build(user));
+            return new UserView.SubscriptionConsole().build(new UserView().build(admin));
         } catch (Exception e) {
-            throw new UserServiceException("Error 415: cancelSubscription(email, company) failed to renew the Subscription");
+            e.printStackTrace();
+            throw new UserServiceException("Error 415: renewSubscription(admin) failed to renew the Subscription");
         }
     }
 
-    public UserView.SubscriptionConsole cancelSubscription(String email,
-                                                           String company) throws UserServiceException {
-        // First, Confirm that the Email is the Admin
-        User user = userRepository.findByEmailAndCompanyName(email, company);
-        if(user != null) {
-            if (!user.isAdmin()) {
-                throw new UserServiceException("Error 405: renewSubscription(email, company) has failed User " + email + " of " + company + " during the" +
-                        "Admin Validation Procedure");
+    public UserView.SubscriptionConsole cancelSubscription(User admin) throws UserServiceException {
+        // First, Confirm that the User is the Admin and they are Not Blacklisted
+        if(admin != null) {
+            if (!admin.isAdmin()) {
+                throw new UserServiceException("Error 405: cancelSubscription(admin) has failed you for Admin Authentication");
             }
 
             // Second, Confirm that the Company is not Blacklisted
-            if (user.isBlackisted()) {
-                throw new UserServiceException("Error 410: renewSubscription(email, company) has failed User " + email + " of " + company + " during the" +
-                        "Blacklist Validation Procedure");
+            if (admin.isBlackisted()) {
+                throw new UserServiceException("Error 410: cancelSubscription(admin) has failed you for Company Approved Authentication");
             }
-        } else throw new UserServiceException("Error 400: renewSubscription(email, company) has returned null");
+        } else throw new UserServiceException("Error 400: cancelSubscription(admin) has returned null");
 
         // Third, Update all Employee Users of the Company to have their Subscription Cancelled
-        List<User> employees = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(company);
+        List<User> employees = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(admin.getCompanyName());
         for(User employee: employees) {
             employee.setSubscriptionEndDate(new Timestamp(LocalDate.now().toEpochDay()));
             employee.setValid(false);
@@ -137,9 +300,10 @@ public class UserService {
 
         try {
             userRepository.saveAll(employees);
-            return new UserView.SubscriptionConsole().build(new UserView().build(user));
+            return new UserView.SubscriptionConsole().build(new UserView().build(admin));
         } catch (Exception e) {
-            throw new UserServiceException("Error 415: cancelSubscription(email, company) failed to cancel the Subscription");
+            e.printStackTrace();
+            throw new UserServiceException("Error 415: cancelSubscription(admin) failed to cancel the Subscription");
         }
     }
 }

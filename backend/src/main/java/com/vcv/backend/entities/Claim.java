@@ -105,12 +105,23 @@ public class Claim {
                 vin.equals(claim.vin);
     }
 
-    public class CompositeKey implements Serializable {
+    public static class CompositeKey implements Serializable {
         private String claimNumber;
         private String companyName;
 
-        CompositeKey() {
+        CompositeKey() {}
 
+        public String getClaimNumber() {
+            return claimNumber;
+        }
+        public String getCompanyName() {
+            return companyName;
+        }
+        public void setClaimNumber(String claimNumber) {
+            this.claimNumber = claimNumber;
+        }
+        public void setCompanyName(String companyName) {
+            this.companyName = companyName;
         }
     }
 }

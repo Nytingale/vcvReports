@@ -15,36 +15,14 @@ import java.util.List;
 
 @Service
 public class VehicleService {
-    @Autowired
-    private FileStorageConfig fileStorageConfig;
+    @Autowired private FileStorageConfig fileStorageConfig;
+    @Autowired private VehicleRepository vehicleRepository;
 
-    @Autowired
-    private VehicleRepository vehicleRepository;
-
-    public VehicleView getVehicle(String vin) throws VehicleServiceException {
-        Vehicle vehicle = vehicleRepository.findByVin(vin);
-        if(vehicle != null) return new VehicleView().build(vehicle);
-        else throw new VehicleServiceException("Error 500: getVehicle(vin) returned null");
-    }
-
-    public VehicleView getVehicle(Integer year,
-                                  String make,
-                                  String model) throws VehicleServiceException {
-        Vehicle vehicle = vehicleRepository.findByYearMakeModel(year, make, model);
-        if(vehicle != null) return new VehicleView().build(vehicle);
-        else throw new VehicleServiceException("Error 500: getVehicle(year, make, model) returned null");
-    }
-
-    public List<VehicleView> getCompanyVehicles(String dealership) throws VehicleServiceException {
+    /* Portal (Dealerships) */
+    public List<VehicleView> getDealershipVehicles(String dealership) throws VehicleServiceException {
         List<Vehicle> vehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc(dealership);
         if(!vehicles.isEmpty()) return new VehicleView().build(vehicles);
-        else throw new VehicleServiceException("Error 500: getCompanyVehicles(dealership) returned null");
-    }
-
-    public List<VehicleView> getInsuredVehicles(String insurance) throws VehicleServiceException {
-        List<Vehicle> policies = vehicleRepository.findByInsuranceNameOrderByRegistrationDateDesc(insurance);
-        if(!policies.isEmpty()) return new VehicleView().build(policies);
-        else throw new VehicleServiceException("Error 500: getInsuredVehicles(insurance) returned null");
+        else throw new VehicleServiceException("Error 500: getDealershipVehicles(dealership) returned null");
     }
 
     public MessageView.Registration register(Vehicle vehicle) throws VehicleServiceException {
@@ -57,8 +35,27 @@ public class VehicleService {
             vehicleRepository.save(vehicle);
             return new MessageView.Registration().build(vehicle, "Successfully Registered Vehicle");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new VehicleServiceException("Error 500: register(vehicle) failed to register the Vehicle");
         }
+    }
+
+    /* Portal (Insurance) */
+    public List<VehicleView> getInsuredVehicles(String insurance) throws VehicleServiceException {
+        List<Vehicle> policies = vehicleRepository.findByInsuranceNameOrderByRegistrationDateDesc(insurance);
+        if(!policies.isEmpty()) return new VehicleView().build(policies);
+        else throw new VehicleServiceException("Error 500: getInsuredVehicles(insurance) returned null");
+    }
+
+    public MessageView.WriteOff reportWrittenOff(String vin) throws VehicleServiceException {
+        Vehicle vehicle = vehicleRepository.findByVin(vin);
+        if(vehicle != null) {
+            vehicle.setWrittenOff(true);
+            vehicleRepository.save(vehicle);
+            return new MessageView.WriteOff().build(vehicle, "Successfully Written Off Vehicle");
+        }
+
+        throw new VehicleServiceException("Error 500: reportWrittenOff(vehicle, dealership) returned null");
     }
 
     public MessageView.StolenReport reportStolen(String vin) throws VehicleServiceException {
@@ -84,6 +81,18 @@ public class VehicleService {
         throw new VehicleServiceException("Error 500: reportRecovered(vehicle, dealership) returned null");
     }
 
+    public MessageView.SalvageReport reportSalvaged(String vin) throws VehicleServiceException {
+        Vehicle vehicle = vehicleRepository.findByVin(vin);
+        if(vehicle != null) {
+            vehicle.setWrittenOff(false);
+            vehicle.setNumSalvages(vehicle.getNumSalvages() + 1);
+            vehicleRepository.save(vehicle);
+            return new MessageView.SalvageReport().build(vehicle, "Successfully Salvaged Vehicle");
+        }
+
+        throw new VehicleServiceException("Error 500: reportSalvaged(vehicle, dealership) returned null");
+    }
+
     public MessageView.AccidentReport reportAccident(String vin) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
         if(vehicle != null) {
@@ -95,26 +104,18 @@ public class VehicleService {
         throw new VehicleServiceException("Error 500: reportAccident(vin) returned null");
     }
 
-    public MessageView.WriteOff reportWrittenOff(String vin) throws VehicleServiceException {
+    /* General */
+    public VehicleView getVehicle(String vin) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
-        if(vehicle != null) {
-            vehicle.setWrittenOff(true);
-            vehicleRepository.save(vehicle);
-            return new MessageView.WriteOff().build(vehicle, "Successfully Written Off Vehicle");
-        }
-
-        throw new VehicleServiceException("Error 500: reportWrittenOff(vehicle, dealership) returned null");
+        if(vehicle != null) return new VehicleView().build(vehicle);
+        else throw new VehicleServiceException("Error 500: getVehicle(vin) returned null");
     }
 
-    public MessageView.SalvageReport reportSalvaged(String vin) throws VehicleServiceException {
-        Vehicle vehicle = vehicleRepository.findByVin(vin);
-        if(vehicle != null) {
-            vehicle.setWrittenOff(false);
-            vehicle.setNumSalvages(vehicle.getNumSalvages() + 1);
-            vehicleRepository.save(vehicle);
-            return new MessageView.SalvageReport().build(vehicle, "Successfully Salvaged Vehicle");
-        }
-
-        throw new VehicleServiceException("Error 500: reportSalvaged(vehicle, dealership) returned null");
+    public VehicleView getVehicle(Integer year,
+                                  String make,
+                                  String model) throws VehicleServiceException {
+        Vehicle vehicle = vehicleRepository.findByYearMakeModel(year, make, model);
+        if(vehicle != null) return new VehicleView().build(vehicle);
+        else throw new VehicleServiceException("Error 500: getVehicle(year, make, model) returned null");
     }
 }

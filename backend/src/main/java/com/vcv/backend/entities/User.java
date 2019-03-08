@@ -23,6 +23,7 @@ public class User {
     private Timestamp subscriptionEndDate;
     private Boolean passwordReset;
     private Boolean blacklisted;
+    private String website;
     private Integer rating;
     private Boolean admin;
     private Boolean valid;
@@ -50,6 +51,9 @@ public class User {
     }
     public Boolean isBlackisted() {
         return blacklisted;
+    }
+    public String getWebsite() {
+        return website;
     }
     public Integer getRating() {
         return rating;
@@ -85,6 +89,9 @@ public class User {
     public void setBlacklisted(Boolean blacklisted) {
         this.blacklisted = blacklisted;
     }
+    public void setWebsite(String website) {
+        this.website = website;
+    }
     public void setRating(Integer rating) {
         this.rating = rating;
     }
@@ -97,7 +104,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, companyName, password, companyType, subscriptionStartDate, subscriptionEndDate, blacklisted, rating, admin, valid);
+        return Objects.hash(email, companyName, password, companyType, subscriptionStartDate, subscriptionEndDate, blacklisted, website, rating, admin, valid);
     }
 
     @Override
@@ -110,19 +117,31 @@ public class User {
                 valid == user.valid &&
                 rating == user.rating &&
                 email.equals(user.email) &&
-                companyName.equals(user.companyName) &&
+                website.equals(user.website) &&
                 password.equals(user.password) &&
                 companyType == user.companyType &&
+                companyName.equals(user.companyName) &&
                 subscriptionStartDate.equals(user.subscriptionStartDate) &&
                 subscriptionEndDate.equals(user.subscriptionEndDate);
     }
 
-    public class CompositeKey implements Serializable {
+    public static class CompositeKey implements Serializable {
         private String email;
         private String companyName;
 
-        CompositeKey() {
+        CompositeKey() {}
 
+        public String getEmail() {
+            return email;
+        }
+        public String getCompanyName() {
+            return companyName;
+        }
+        public void setEmail(String email) {
+            this.email = email;
+        }
+        public void setCompanyName(String companyName) {
+            this.companyName = companyName;
         }
     }
 }

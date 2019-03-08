@@ -12,6 +12,15 @@ import java.util.Objects;
 import java.util.Arrays;
 
 public class Utils {
+    public static Boolean isValidAdmin(User admin) {
+        return admin.isAdmin() && admin.isBlackisted() && admin.isValid();
+    }
+
+    public static Boolean isValidStaff(User vcv) {
+        if(vcv == null) return false;
+        else return vcv.getCompanyType().toString().equals(CompanyType.VCV_STAFF.toString());
+    }
+
     public static String isValidVin(String vin) {
         if(vin == null || vin.trim().isEmpty()) return null;
         else if(vin.length() == 17) return vin;

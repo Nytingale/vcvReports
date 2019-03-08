@@ -17,21 +17,11 @@ import java.util.Optional;
 
 @Service
 public class ClaimService {
-    @Autowired
-    private JobRepository jobRepository;
+    @Autowired private JobRepository jobRepository;
+    @Autowired private ClaimRepository claimRepository;
+    @Autowired private VehicleRepository vehicleRepository;
 
-    @Autowired
-    private ClaimRepository claimRepository;
-
-    @Autowired
-    private VehicleRepository vehicleRepository;
-
-    public List<ClaimView> getClaims(String vin) throws ClaimServiceException {
-        List<Claim> claims = claimRepository.findByVinOrderByClaimDateDesc(vin);
-        if(!claims.isEmpty()) return new ClaimView().build(claims);
-        else throw new ClaimServiceException("Error 100: getClaims(vin) returned null");
-    }
-
+    /* Portal (Insurance) */
     public List<ClaimView> getCompanyClaims(String company) throws ClaimServiceException {
         List<Claim> claims = claimRepository.findByCompanyNameOrderByClaimDateDesc(company);
         if(!claims.isEmpty()) return new ClaimView().build(claims);
@@ -47,10 +37,19 @@ public class ClaimService {
             claimRepository.save(claim);
             return new MessageView.InsuranceReport().build(claim, "Successfully Added Claim");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ClaimServiceException("Error 115: addClaim(claim) failed to add the Claim");
         }
     }
 
+    /* Per Vehicle */
+    public List<ClaimView> getClaims(String vin) throws ClaimServiceException {
+        List<Claim> claims = claimRepository.findByVinOrderByClaimDateDesc(vin);
+        if(!claims.isEmpty()) return new ClaimView().build(claims);
+        else throw new ClaimServiceException("Error 100: getClaims(vin) returned null");
+    }
+
+    /* Per Claim */
     public MessageView.InsuranceReport updateClaim(Claim claim) throws ClaimServiceException {
         // First, find the Claim to be Updated in the Database
         Claim claimDB = claimRepository.findByCompanyNameAndClaimNumber(claim.getCompanyName(), claim.getClaimNumber());
@@ -66,6 +65,7 @@ public class ClaimService {
             claimRepository.save(claimDB);
             return new MessageView.InsuranceReport().build(claim, "Successfully Updated Claim");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ClaimServiceException("Error 115: updateClaim(claim) failed to update the Claim");
         }
     }
@@ -91,6 +91,7 @@ public class ClaimService {
             claimRepository.save(claim);
             return new MessageView.InsuranceReport().build(claim, "Successfully Linked Job to Claim");
         } catch(Exception e) {
+            e.printStackTrace();
             throw new ClaimServiceException("Error 115: linkJobToClaim(id, number, company) failed to save the Updates to the Job and Claim");
         }
     }

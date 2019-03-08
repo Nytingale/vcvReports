@@ -45,3 +45,15 @@ l
 <backend/src/main/java/com/vcv/backend/views/VehicleView.java,c/f/cfe5fde396593cd70decc546c9d8b7c7c0b60838
 E
 frontend/frontend.iml,a/c/ac5516d5eda57a53074f7c3650e9cc4bad76742e
+j
+:backend/src/main/java/com/vcv/backend/entities/Policy.java,1/9/194188727255ab79ab816a0322ad217f7cea5556
+g
+7backend/src/main/java/com/vcv/backend/entities/Job.java,2/a/2a9fcf62c9da4f1b489f9eeceb26295a2798f29b
+h
+8backend/src/main/java/com/vcv/backend/enums/JobType.java,b/4/b46790ef889e088d9ae25ae9364be1431039347e
+k
+;backend/src/main/java/com/vcv/backend/enums/PolicyType.java,9/5/956c5ecfc7a371a7c87ad01301c4f554658ce355
+l
+<backend/src/main/java/com/vcv/backend/enums/CompanyType.java,c/6/c657ea7a3532cdd946791f78f92d38aa088cb765
+Y
+)backend/src/main/resources/vcvReports.sql,e/3/e35887968717f9cdfb969ff5f07ecc29221c7413

@@ -15,21 +15,13 @@ import java.util.Optional;
 
 @Service
 public class JobService {
-    @Autowired
-    private JobRepository jobRepository;
+    @Autowired private JobRepository jobRepository;
+    @Autowired private ClaimRepository claimRepository;
 
-    @Autowired
-    private ClaimRepository claimRepository;
-
-    public List<JobView> getJobs(String vin) throws JobServiceException {
-        List<Job> jobs = jobRepository.findByVinOrderByJobIdDesc(vin);
-        if(jobs.size() > 0) return new JobView().build(jobs);
-        else throw new JobServiceException("Error 200: getJobs(vin) returned null");
-    }
-
+    /* Portal (Mechanics/Garages) */
     public List<JobView> getCompanyJobs(String company) throws JobServiceException {
         List<Job> jobs = jobRepository.findByCompanyNameOrderByJobIdDesc(company);
-        if(jobs.size() > 0) return new JobView().build(jobs);
+        if(jobs.isEmpty()) return new JobView().build(jobs);
         else throw new JobServiceException("Error 200: getCompanyJobs(company) returned null");
     }
 
@@ -38,6 +30,7 @@ public class JobService {
             jobRepository.save(job);
             return new MessageView.JobReport().build(job, "Successfully Saved the Mechanic Job");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new JobServiceException("Error 215: addJob(job) failed to add the Job");
         }
     }
@@ -64,7 +57,16 @@ public class JobService {
             jobRepository.save(jobDB.get());
             return new MessageView.JobReport().build(job, "Successfully Saved the Mechanic Job");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new JobServiceException("Error 215: addJob(job) failed to add the Job");
         }
     }
+
+    /* Per Vehicle */
+    public List<JobView> getJobs(String vin) throws JobServiceException {
+        List<Job> jobs = jobRepository.findByVinOrderByJobIdDesc(vin);
+        if(jobs.isEmpty()) return new JobView().build(jobs);
+        else throw new JobServiceException("Error 200: getJobs(vin) returned null");
+    }
+
 }

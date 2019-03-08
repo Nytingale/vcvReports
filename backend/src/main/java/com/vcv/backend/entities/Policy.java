@@ -95,12 +95,23 @@ public class Policy {
                 vin.equals(policy.vin);
     }
 
-    public class CompositeKey implements Serializable {
+    public static class CompositeKey implements Serializable {
         private String companyName;
         private String policyNumber;
 
-        CompositeKey() {
+        CompositeKey() {}
 
+        public String getCompanyName() {
+            return companyName;
+        }
+        public String getPolicyNumber() {
+            return policyNumber;
+        }
+        public void setCompanyName(String companyName) {
+            this.companyName = companyName;
+        }
+        public void setPolicyNumber(String policyNumber) {
+            this.policyNumber = policyNumber;
         }
     }
 }

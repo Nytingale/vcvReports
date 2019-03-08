@@ -1,9 +1,6 @@
 package com.vcv.backend.views;
 
-import com.vcv.backend.entities.Claim;
-import com.vcv.backend.entities.Job;
-import com.vcv.backend.entities.Policy;
-import com.vcv.backend.entities.Vehicle;
+import com.vcv.backend.entities.*;
 
 public class MessageView {
     private String message;
@@ -42,6 +39,24 @@ public class MessageView {
             JobReport view = new JobReport();
 
             view.id = job.getJobId();
+            view.message = new MessageView().build(message);
+
+            return view;
+        }
+    }
+    public static class UserReport {
+        private String type;
+        private String email;
+        private String company;
+        private MessageView message;
+
+        public UserReport() {}
+        public UserReport build(User user, String message) {
+            UserReport view = new UserReport();
+
+            view.type = user.getCompanyType().toString();
+            view.email = user.getEmail();
+            view.company = user.getCompanyName();
             view.message = new MessageView().build(message);
 
             return view;
@@ -93,6 +108,22 @@ public class MessageView {
             return view;
         }
 
+    }
+    public static class CompanyReport {
+        private String name;
+        private String type;
+        private MessageView message;
+
+        public CompanyReport() {}
+        public CompanyReport build(User company, String message) {
+            CompanyReport view = new CompanyReport();
+
+            view.name = company.getCompanyName();
+            view.type = company.getCompanyType().toString();
+            view.message = new MessageView().build(message);
+
+            return view;
+        }
     }
     public static class AccidentReport {
         private String vin;

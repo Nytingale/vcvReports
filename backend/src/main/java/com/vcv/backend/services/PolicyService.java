@@ -14,25 +14,10 @@ import java.util.List;
 
 @Service
 public class PolicyService {
-    @Autowired
-    private PolicyRepository policyRepository;
+    @Autowired private PolicyRepository policyRepository;
+    @Autowired private VehicleRepository vehicleRepository;
 
-    @Autowired
-    private VehicleRepository vehicleRepository;
-
-    public PolicyView getPolicy(String vin) throws PolicyServiceException {
-        Policy policy = policyRepository.findByVin(vin);
-        if(policy != null) return new PolicyView().build(policy);
-        else throw new PolicyServiceException("Error 300: getPolicy(vin) returned null");
-    }
-
-    public PolicyView getPolicy(String company,
-                                String number) throws PolicyServiceException {
-        Policy policy = policyRepository.findByCompanyNameAndPolicyNumber(company, number);
-        if(policy != null) return new PolicyView().build(policy);
-        else throw new PolicyServiceException("Error 300: getPolicy(company, number) returned null");
-    }
-
+    /* Portal (Insurance) */
     public List<PolicyView> getCompanyPolicies(String company) throws PolicyServiceException {
         List<Policy> policies = policyRepository.findByCompanyNameOrderByPolicyDateDesc(company);
         if(!policies.isEmpty()) return new PolicyView().build(policies);
@@ -65,7 +50,15 @@ public class PolicyService {
             policyRepository.save(policy);
             return new MessageView.InsuranceReport().build(policy, "Successfully Added Policy");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new PolicyServiceException("Error 315: addPolicy(policy) failed to add the Policy");
         }
+    }
+
+    /* Per Vehicle */
+    public PolicyView getPolicy(String vin) throws PolicyServiceException {
+        Policy policy = policyRepository.findByVin(vin);
+        if(policy != null) return new PolicyView().build(policy);
+        else throw new PolicyServiceException("Error 300: getPolicy(vin) returned null");
     }
 }
