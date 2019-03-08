@@ -1,9 +1,6 @@
 package com.vcv.backend.controllers;
 
-import com.vcv.backend.entities.Claim;
-import com.vcv.backend.entities.Policy;
-import com.vcv.backend.entities.User;
-import com.vcv.backend.entities.Vehicle;
+import com.vcv.backend.entities.*;
 import com.vcv.backend.enums.CompanyType;
 import com.vcv.backend.exceptions.ControllerException;
 import com.vcv.backend.views.*;
@@ -104,9 +101,10 @@ public class Controller {
     public MessageView resetPassword(@RequestBody User user,
                                      @RequestParam(value = "email", required = false) String email) {
         try {
+            User validUser = (User) Utils.isValidEntity(user);
             String validEmail = Utils.isValidEmail(email);
             if(validEmail != null) {
-                return userService.resetPassword(user, validEmail);
+                return userService.resetPassword(validUser, validEmail);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();
@@ -233,6 +231,35 @@ public class Controller {
             String validCompany = Utils.isValidSubscribingCompany(company, CompanyType.INSURANCE.toString());
             if(validId != null) {
                 return claimService.linkJobToClaim(validId, validNumber, validCompany);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+    /* Garage/Mechanic */
+    @PostMapping("/addJob")
+    public MessageView.JobReport addJob(@RequestBody Job job) {
+        try {
+            Job validJob = (Job) Utils.isValidEntity(job);
+            if(validJob != null) {
+                return jobService.addJob(job);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/updateJob")
+    public MessageView.JobReport updateJob(@RequestBody Job job) {
+        try {
+            Job validJob = (Job) Utils.isValidEntity(job);
+            if(validJob != null) {
+                return jobService.updateJob(job);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();

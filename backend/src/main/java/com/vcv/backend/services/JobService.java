@@ -4,10 +4,12 @@ import com.vcv.backend.entities.Job;
 import com.vcv.backend.exceptions.JobServiceException;
 import com.vcv.backend.repositories.JobRepository;
 import com.vcv.backend.views.JobView;
+import com.vcv.backend.views.MessageView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JobService {
@@ -26,12 +28,25 @@ public class JobService {
         else throw new JobServiceException("Error 200: getCompanyJobs(company) returned null");
     }
 
-    public Boolean addJob(Job job) throws JobServiceException {
+    public MessageView.JobReport addJob(Job job) throws JobServiceException {
         try {
             jobRepository.save(job);
-            return true;
+            return new MessageView.JobReport().build(job, "Successfully Saved the Mechanic Job");
         } catch (Exception e) {
-            throw new JobServiceException("Error 215: addJob(job, company) failed to add the Job");
+            throw new JobServiceException("Error 215: addJob(job) failed to add the Job");
+        }
+    }
+
+    public MessageView.JobReport updateJob(Job job) throws JobServiceException {
+        // First, Confirm that the Job Exists
+        Optional<Job> jobDB = jobRepository.findById(job.getJobId());
+        if(jobDB.isEmpty()) throw new JobServiceException("Error 205: updateJob(job)");
+
+        try {
+            jobRepository.save(job);
+            return new MessageView.JobReport().build(job, "Successfully Saved the Mechanic Job");
+        } catch (Exception e) {
+            throw new JobServiceException("Error 215: addJob(job) failed to add the Job");
         }
     }
 }

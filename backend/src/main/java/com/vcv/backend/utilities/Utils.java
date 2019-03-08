@@ -1,7 +1,6 @@
 package com.vcv.backend.utilities;
 
-import com.vcv.backend.entities.Policy;
-import com.vcv.backend.entities.Vehicle;
+import com.vcv.backend.entities.*;
 import com.vcv.backend.enums.CompanyType;
 
 import org.springframework.util.StringUtils;
@@ -51,13 +50,25 @@ public class Utils {
     public static Object isValidEntity(Object entity) {
         if(entity != null) {
             Field[] entityFields = entity.getClass().getDeclaredFields();
-            if(entity instanceof Vehicle) {
-                Field[] vehicleFields = Vehicle.class.getDeclaredFields();
-                if(Arrays.equals(entityFields, vehicleFields)) return entity;
+            if(entity instanceof Job) {
+                Field[] jobFields = Job.class.getDeclaredFields();
+                if(Arrays.equals(entityFields, jobFields)) return entity;
+                else return null;
+            } else if(entity instanceof User) {
+                Field[] userFields = User.class.getDeclaredFields();
+                if(Arrays.equals(entityFields, userFields)) return entity;
+                else return null;
+            } else if(entity instanceof Claim) {
+                Field[] claimFields = Claim.class.getDeclaredFields();
+                if(Arrays.equals(entityFields, claimFields)) return entity;
                 else return null;
             } else if(entity instanceof Policy) {
                 Field[] policyFields = Policy.class.getDeclaredFields();
                 if(Arrays.equals(entityFields, policyFields)) return entity;
+                else return null;
+            } else if(entity instanceof Vehicle) {
+                Field[] vehicleFields = Vehicle.class.getDeclaredFields();
+                if (Arrays.equals(entityFields, vehicleFields)) return entity;
                 else return null;
             }
         }

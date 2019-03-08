@@ -1,6 +1,7 @@
 package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Claim;
+import com.vcv.backend.entities.Job;
 import com.vcv.backend.entities.Policy;
 import com.vcv.backend.entities.Vehicle;
 
@@ -27,6 +28,20 @@ public class MessageView {
 
             view.vin = vehicle.getVin();
             view.writtenOff = vehicle.isWrittenOff();
+            view.message = new MessageView().build(message);
+
+            return view;
+        }
+    }
+    public static class JobReport {
+        private Long id;
+        private MessageView message;
+
+        public JobReport() {}
+        public JobReport build(Job job, String message) {
+            JobReport view = new JobReport();
+
+            view.id = job.getJobId();
             view.message = new MessageView().build(message);
 
             return view;
