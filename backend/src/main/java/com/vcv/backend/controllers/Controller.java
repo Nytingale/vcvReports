@@ -134,19 +134,6 @@ public class Controller {
         }
     }
 
-    @PostMapping("/updateWebsite")
-    public MessageView.CompanyReport updateWebsite(@RequestBody User admin) {
-        try {
-            User validAdmin = (User) Utils.isValidEntity(admin);
-            if(validAdmin != null) {
-                return userService.updateWebsite(validAdmin);
-            } else throw new ControllerException("Error 001: No Valid Parameters Used");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 
 
     /* Dealership */

@@ -23,7 +23,6 @@ public class User {
     private Timestamp subscriptionEndDate;
     private Boolean passwordReset;
     private Boolean blacklisted;
-    private String website;
     private Integer rating;
     private Boolean admin;
     private Boolean valid;
@@ -51,9 +50,6 @@ public class User {
     }
     public Boolean isBlackisted() {
         return blacklisted;
-    }
-    public String getWebsite() {
-        return website;
     }
     public Integer getRating() {
         return rating;
@@ -89,9 +85,6 @@ public class User {
     public void setBlacklisted(Boolean blacklisted) {
         this.blacklisted = blacklisted;
     }
-    public void setWebsite(String website) {
-        this.website = website;
-    }
     public void setRating(Integer rating) {
         this.rating = rating;
     }
@@ -104,7 +97,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, companyName, password, companyType, subscriptionStartDate, subscriptionEndDate, blacklisted, website, rating, admin, valid);
+        return Objects.hash(email, companyName, password, companyType, subscriptionStartDate, subscriptionEndDate, blacklisted, rating, admin, valid);
     }
 
     @Override
@@ -117,7 +110,6 @@ public class User {
                 valid == user.valid &&
                 rating == user.rating &&
                 email.equals(user.email) &&
-                website.equals(user.website) &&
                 password.equals(user.password) &&
                 companyType == user.companyType &&
                 companyName.equals(user.companyName) &&

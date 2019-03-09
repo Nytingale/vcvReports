@@ -198,33 +198,6 @@ public class UserService {
         }
     }
 
-    public MessageView.CompanyReport updateWebsite(User admin) throws UserServiceException {
-        // First, Confirm that the User is the Admin and they are Not Blacklisted
-        if(admin != null) {
-            if (!admin.isAdmin()) {
-                throw new UserServiceException("Error 405: updateWebsite(admin) has failed you for Admin Authentication");
-            }
-
-            // Second, Confirm that the Company is not Blacklisted
-            if (admin.isBlackisted()) {
-                throw new UserServiceException("Error 410: updateWebsite(admin) has failed you for Company Approved Authentication");
-            }
-        } else throw new UserServiceException("Error 400: updateWebsite(admin) has returned null");
-
-        // Third, Overwrite the Admin's Website with the one in the Database
-        User adminDB = userRepository.findByCompanyNameAndAdmin(admin.getCompanyName(), 1);
-        if(adminDB != null) {
-            adminDB.setWebsite(admin.getWebsite());
-            try {
-                userRepository.save(adminDB);
-                return new MessageView.CompanyReport().build(admin, "Successfully Updated Company Website");
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new UserServiceException("Error 415: updateWebsite(admin) failed to update the Company Website");
-            }
-        } else throw new UserServiceException("Error 400: updateWebsite(admin) returned null");
-    }
-
     public UserView.SubscriptionConsole renewSubscription(User admin) throws UserServiceException {
         // First, Confirm that the User is the Admin and they are Not Blacklisted
         if(admin != null) {
