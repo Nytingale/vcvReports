@@ -19,10 +19,10 @@ public class JobService {
     @Autowired private ClaimRepository claimRepository;
 
     /* Portal (Mechanics/Garages) */
-    public List<JobView> getCompanyJobs(String company) throws JobServiceException {
-        List<Job> jobs = jobRepository.findByCompanyNameOrderByJobIdDesc(company);
+    public List<JobView> getMechanicJobs(String garage) throws JobServiceException {
+        List<Job> jobs = jobRepository.findByCompanyNameOrderByJobIdDesc(garage);
         if(jobs.isEmpty()) return new JobView().build(jobs);
-        else throw new JobServiceException("Error 200: getCompanyJobs(company) returned null");
+        else throw new JobServiceException("Error 200: getMechanicJobs(garage) returned null");
     }
 
     public MessageView.JobReport addJob(Job job) throws JobServiceException {

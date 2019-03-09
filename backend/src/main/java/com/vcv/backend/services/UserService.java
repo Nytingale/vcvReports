@@ -18,24 +18,6 @@ import java.util.List;
 public class UserService {
     @Autowired private UserRepository userRepository;
 
-    /* Website */
-    public List<UserView.CompanyView> getPartners() throws UserServiceException {
-        // First, Gather the List of Companies
-        List<User> companies = userRepository.findByAdminOrderBySubscriptionStartDateDesc(1);
-        if(!companies.isEmpty()) {
-
-            // Second, Remove the Invalid and Blacklisted Companies
-            for(User partner: companies) {
-                if(!partner.isValid() || partner.isBlackisted()) companies.remove(partner);
-            }
-
-            return new UserView.CompanyView().build(new UserView().build(companies));
-        } else throw new UserServiceException("Error 400: getCompanies() returned null");
-
-    }
-
-
-
     /* VCV Staff */
     public UserView searchForUser(User vcv,
                                   String email,
@@ -150,18 +132,18 @@ public class UserService {
 
 
     /* Company Admin */
-    public List<UserView> getCompanyEmployees(User admin) throws UserServiceException {
+    public List<UserView> getEmployees(User admin) throws UserServiceException {
         // First, Confirm that the User is the Admin and they are Not Blacklisted
         if(admin != null) {
             if (!admin.isAdmin()) {
-                throw new UserServiceException("Error 405: getCompanyEmployees(admin) has failed you for Admin Authentication");
+                throw new UserServiceException("Error 405: getEmployees(admin) has failed you for Admin Authentication");
             }
 
             // Second, Confirm that the Company is not Blacklisted
             if (admin.isBlackisted()) {
-                throw new UserServiceException("Error 410: getCompanyEmployees(admin) has failed you for Company Approved Authentication");
+                throw new UserServiceException("Error 410: getEmployees(admin) has failed you for Company Approved Authentication");
             }
-        } else throw new UserServiceException("Error 400: getCompanyEmployees(admin) has returned null");
+        } else throw new UserServiceException("Error 400: getEmployees(admin) has returned null");
 
         List<User> employees = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(admin.getCompanyName());
         if(employees.isEmpty()) return new UserView().build(employees);

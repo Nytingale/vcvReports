@@ -18,10 +18,10 @@ public class PolicyService {
     @Autowired private VehicleRepository vehicleRepository;
 
     /* Portal (Insurance) */
-    public List<PolicyView> getCompanyPolicies(String company) throws PolicyServiceException {
+    public List<PolicyView> getInsurancePolicies(String company) throws PolicyServiceException {
         List<Policy> policies = policyRepository.findByCompanyNameOrderByPolicyDateDesc(company);
         if(!policies.isEmpty()) return new PolicyView().build(policies);
-        else throw new PolicyServiceException("Error 300: getCompanyPolicies(company) returned null");
+        else throw new PolicyServiceException("Error 300: getInsurancePolicies(company) returned null");
     }
 
     public MessageView.InsuranceReport addPolicy(Policy policy) throws PolicyServiceException {

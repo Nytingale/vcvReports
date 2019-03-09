@@ -19,10 +19,10 @@ public class VehicleService {
     @Autowired private VehicleRepository vehicleRepository;
 
     /* Portal (Dealerships) */
-    public List<VehicleView> getDealershipVehicles(String dealership) throws VehicleServiceException {
+    public List<VehicleView> getRegisteredVehicles(String dealership) throws VehicleServiceException {
         List<Vehicle> vehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc(dealership);
         if(!vehicles.isEmpty()) return new VehicleView().build(vehicles);
-        else throw new VehicleServiceException("Error 500: getDealershipVehicles(dealership) returned null");
+        else throw new VehicleServiceException("Error 500: getRegisteredVehicles(dealership) returned null");
     }
 
     public MessageView.Registration register(Vehicle vehicle) throws VehicleServiceException {

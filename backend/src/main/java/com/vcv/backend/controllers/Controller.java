@@ -19,17 +19,6 @@ public class Controller {
     @Autowired private PolicyService  policyService;
     @Autowired private VehicleService vehicleService;
 
-    /* Website */
-    @GetMapping("/getPartners")
-    public List<UserView.CompanyView> getPartners() {
-        try {
-            return userService.getPartners();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     /* Casual Users */
     @GetMapping("/searchForVehicle")
     public VehicleView.BasicReport searchForVehicle(@RequestParam(value = "vin", required = false) String vin,
@@ -76,7 +65,20 @@ public class Controller {
 
     /* Company Users */
     /* Admin */
-    @GetMapping("/renewSubscription")
+    @PostMapping("/getEmployees")
+    public List<UserView> getEmployees(@RequestBody User admin) {
+        try {
+            User validAdmin = (User) Utils.isValidEntity(admin);
+            if(validAdmin != null) {
+                return userService.getEmployees(validAdmin);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/renewSubscription")
     public UserView.SubscriptionConsole rewnewSubscription(@RequestBody User admin) {
         try {
             User validAdmin = (User) Utils.isValidEntity(admin);
@@ -89,7 +91,7 @@ public class Controller {
         }
     }
 
-    @GetMapping("/cancelSubscription")
+    @PostMapping("/cancelSubscription")
     public UserView.SubscriptionConsole cancelSubscription(@RequestBody User admin) {
         try {
             User validAdmin = (User) Utils.isValidEntity(admin);
@@ -146,7 +148,21 @@ public class Controller {
     }
 
 
+
     /* Dealership */
+    @GetMapping("/getRegisteredVehicles")
+    public List<VehicleView> getRegisteredVehicles(@RequestParam(value = "dealership", required = false) String dealership) {
+        try {
+            String validDealership = Utils.isValidString(dealership);
+            if(validDealership != null) {
+                return vehicleService.getRegisteredVehicles(validDealership);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping("/registerVehicle")
     public MessageView.Registration registerVehicle(@RequestBody Vehicle vehicle) {
         try {
@@ -163,6 +179,58 @@ public class Controller {
 
 
     /* Insurance */
+    @GetMapping("/getPolicy")
+    public PolicyView getPolicy(@RequestParam(value = "vin", required = false) String vin) {
+        try {
+            String validVin = Utils.isValidVin(vin);
+            if(validVin != null) {
+                return policyService.getPolicy(validVin);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @GetMapping("/getInsurancePolicies")
+    public List<PolicyView> getInsurancePolicies(@RequestParam(value = "insurance", required = false) String insurance) {
+        try {
+            String validInsurance = Utils.isValidString(insurance);
+            if(validInsurance != null) {
+                return policyService.getInsurancePolicies(validInsurance);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @GetMapping("/getInsuredVehicles")
+    public List<VehicleView> getInsuredVehicles(@RequestParam(value = "insurance", required = false) String insurance) {
+        try {
+            String validInsurance = Utils.isValidString(insurance);
+            if(validInsurance != null) {
+                return vehicleService.getInsuredVehicles(validInsurance);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @GetMapping("/getInsuranceClaims")
+    public List<ClaimView> getInsuranceClaims(@RequestParam(value = "insurance", required = false) String insurance) {
+        try {
+            String validInsurance = Utils.isValidString(insurance);
+            if(validInsurance != null) {
+                return claimService.getInsuranceClaims(validInsurance);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping("/addPolicy")
     public MessageView.InsuranceReport addPolicy(@RequestBody Policy policy) {
         try {
@@ -202,7 +270,7 @@ public class Controller {
         }
     }
 
-    @PostMapping("/reportStolen")
+    @GetMapping("/reportStolen")
     public MessageView.StolenReport reportStolen(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
@@ -215,7 +283,7 @@ public class Controller {
         }
     }
 
-    @PostMapping("/reportAccident")
+    @GetMapping("/reportAccident")
     public MessageView.AccidentReport reportAccident(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
@@ -228,7 +296,7 @@ public class Controller {
         }
     }
 
-    @PostMapping("/reportRecovered")
+    @GetMapping("/reportRecovered")
     public MessageView.StolenReport reportRecovered(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
@@ -241,7 +309,7 @@ public class Controller {
         }
     }
 
-    @PostMapping("/reportWrittenOff")
+    @GetMapping("/reportWrittenOff")
     public MessageView.WriteOff reportWrittenOff(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
@@ -254,7 +322,7 @@ public class Controller {
         }
     }
 
-    @PostMapping("/reportSalvaged")
+    @GetMapping("/reportSalvaged")
     public MessageView.SalvageReport reportSalvaged(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
@@ -267,7 +335,7 @@ public class Controller {
         }
     }
 
-    @PostMapping("/linkJobToClaim")
+    @GetMapping("/linkJobToClaim")
     public MessageView.InsuranceReport linkJobToClaim(@RequestParam(value = "id", required = false) String id,
                                                       @RequestParam(value = "number", required = false) String number,
                                                       @RequestParam(value = "company", required = false) String company) {
@@ -287,6 +355,19 @@ public class Controller {
 
 
     /* Garage/Mechanic */
+    @GetMapping("/getMechanicJobs")
+    public List<JobView> getMechanicJobs(@RequestParam(value = "garage", required = false) String garage) {
+        try {
+            String validGarage = Utils.isValidString(garage);
+            if(validGarage != null) {
+                return jobService.getMechanicJobs(validGarage);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping("/addJob")
     public MessageView.JobReport addJob(@RequestBody Job job) {
         try {
@@ -316,6 +397,19 @@ public class Controller {
 
 
     /* VCV Staff */
+    @PostMapping("/getUsers")
+    public List<UserView> getUsers(@RequestBody User vcv) {
+        try {
+            User validVcv = (User) Utils.isValidEntity(vcv);
+            if(validVcv != null) {
+                return userService.getUsers(validVcv);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping("/changeAdmin")
     public MessageView.UserReport changeAdmin(@RequestBody User vcv,
                                               @RequestBody User employee) {

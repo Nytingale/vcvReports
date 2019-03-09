@@ -22,10 +22,10 @@ public class ClaimService {
     @Autowired private VehicleRepository vehicleRepository;
 
     /* Portal (Insurance) */
-    public List<ClaimView> getCompanyClaims(String company) throws ClaimServiceException {
+    public List<ClaimView> getInsuranceClaims(String company) throws ClaimServiceException {
         List<Claim> claims = claimRepository.findByCompanyNameOrderByClaimDateDesc(company);
         if(!claims.isEmpty()) return new ClaimView().build(claims);
-        else throw new ClaimServiceException("Error 100: getCompanyClaims(company) returned null");
+        else throw new ClaimServiceException("Error 100: getInsuranceClaims(company) returned null");
     }
 
     public MessageView.InsuranceReport addClaim(Claim claim) throws ClaimServiceException {
