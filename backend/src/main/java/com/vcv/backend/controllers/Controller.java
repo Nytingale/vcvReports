@@ -8,6 +8,7 @@ import com.vcv.backend.services.*;
 import com.vcv.backend.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -168,6 +169,21 @@ public class Controller {
             String validWebsite = Utils.isValidString(website);
             if(validAdmin!= null && validWebsite != null) {
                 return userService.updateWebsite(validAdmin, validWebsite);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/uploadImage")
+    public MessageView uploadFile(@RequestBody User admin,
+                                  @RequestParam(value = "image", required = false) MultipartFile image) {
+        try {
+            User validAdmin = (User) Utils.isValidEntity(admin);
+            String validImage = Utils.isValidImage(image);
+            if(validAdmin!= null && validImage != null) {
+                return userService.updateImage(validAdmin, validImage);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

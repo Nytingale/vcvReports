@@ -12,8 +12,8 @@ import java.util.Objects;
 import java.util.Arrays;
 
 public class Utils {
-    public static Boolean isValidAdmin(User admin) {
-        return admin.isAdmin() && admin.isBlackisted() && admin.isValid();
+    private Utils() {
+        throw new IllegalStateException("Utility class");
     }
 
     public static Boolean isValidStaff(User vcv) {
@@ -62,35 +62,21 @@ public class Utils {
             if(entity instanceof Job) {
                 Field[] jobFields = Job.class.getDeclaredFields();
                 if(Arrays.equals(entityFields, jobFields)) return entity;
-                else return null;
             } else if(entity instanceof User) {
                 Field[] userFields = User.class.getDeclaredFields();
                 if(Arrays.equals(entityFields, userFields)) return entity;
-                else return null;
             } else if(entity instanceof Claim) {
                 Field[] claimFields = Claim.class.getDeclaredFields();
                 if(Arrays.equals(entityFields, claimFields)) return entity;
-                else return null;
             } else if(entity instanceof Policy) {
                 Field[] policyFields = Policy.class.getDeclaredFields();
                 if(Arrays.equals(entityFields, policyFields)) return entity;
-                else return null;
             } else if(entity instanceof Vehicle) {
                 Field[] vehicleFields = Vehicle.class.getDeclaredFields();
                 if (Arrays.equals(entityFields, vehicleFields)) return entity;
-                else return null;
             }
         }
         return null;
-    }
-
-    public static MultipartFile isValidExcelFile(MultipartFile file) {
-        if(file == null) return null;
-        else {
-            String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-            if(Objects.equals(extension, "xls") || Objects.equals(extension, "xlsx")) return file;
-            else return null;
-        }
     }
 
     public static String isValidSubscribingCompany(String name, String type) {
