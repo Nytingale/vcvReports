@@ -52,17 +52,18 @@ public class ClaimService {
     /* Per Claim */
     public MessageView.InsuranceReport updateClaim(Claim claim) throws ClaimServiceException {
         // First, find the Claim to be Updated in the Database
-        Claim claimDB = claimRepository.findByCompanyNameAndClaimNumber(claim.getCompanyName(), claim.getClaimNumber());
-        if(claimDB == null) throw new ClaimServiceException("Error 105: updateClaim(claim) failed to find a matching Claim that exists");
+        if(claimRepository.findById(new Claim.CompositeKey(claim.getClaimNumber(), claim.getCompanyName())).isEmpty()) {
+            throw new ClaimServiceException("Error 105: updateClaim(claim) failed to find a matching Claim that exists");
+        }
 
         // Second, Update all Fields of the Database's Claim from the Inputted Claim, except for the PK and FK
-        claimDB.setClaimDate(claim.getClaimDate());
-        claimDB.setClaimType(claim.getClaimType());
-        claimDB.setClaimDetails(claim.getClaimDetails());
+        claim.setClaimDate(claim.getClaimDate());
+        claim.setClaimType(claim.getClaimType());
+        claim.setClaimDetails(claim.getClaimDetails());
 
         try {
             // Third, Save the Updates
-            claimRepository.save(claimDB);
+            claimRepository.save(claim);
             return new MessageView.InsuranceReport().build(claim, "Successfully Updated Claim");
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,18 +79,18 @@ public class ClaimService {
         if(job.isEmpty()) throw new ClaimServiceException("Error 105: linkJobToClaim(id, number, company) failed to find a matching Job that exists");
 
         // Second, Confirm that the Claim Exists
-        Claim claim = claimRepository.findByCompanyNameAndClaimNumber(company, number);
-        if(claim == null) throw new ClaimServiceException("Error 110: linkJobToClaim(id, number, company) failed to find a matching Claim that exists");
+        Optional<Claim> claim = claimRepository.findById(new Claim.CompositeKey(number, company));
+        if(claim.isEmpty()) throw new ClaimServiceException("Error 110: linkJobToClaim(id, number, company) failed to find a matching Claim that exists");
 
         // Third, Link the Job to the Claim and the Claim to the Job in their respective FKs
-        job.get().setClaimNumber(claim.getClaimNumber());
-        claim.setJobId(job.get().getJobId());
+        job.get().setClaimNumber(claim.get().getClaimNumber());
+        claim.get().setJobId(job.get().getJobId());
 
         try {
             // Fourth, Save the Changes to Both the Claim and the Job
             jobRepository.save(job.get());
-            claimRepository.save(claim);
-            return new MessageView.InsuranceReport().build(claim, "Successfully Linked Job to Claim");
+            claimRepository.save(claim.get());
+            return new MessageView.InsuranceReport().build(claim.get(), "Successfully Linked Job to Claim");
         } catch(Exception e) {
             e.printStackTrace();
             throw new ClaimServiceException("Error 115: linkJobToClaim(id, number, company) failed to save the Updates to the Job and Claim");

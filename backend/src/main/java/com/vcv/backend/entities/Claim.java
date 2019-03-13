@@ -109,7 +109,11 @@ public class Claim {
         private String claimNumber;
         private String companyName;
 
-        CompositeKey() {}
+        public CompositeKey() {}
+        public CompositeKey(String claimNumber, String companyName) {
+            this.claimNumber = claimNumber;
+            this.companyName = companyName;
+        }
 
         public String getClaimNumber() {
             return claimNumber;

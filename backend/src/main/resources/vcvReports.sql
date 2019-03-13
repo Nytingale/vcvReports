@@ -11,6 +11,7 @@ CREATE TABLE Users(
     subscription_end_date TIMESTAMP NOT NULL,
     password_reset TINYINT(1) DEFAULT 0,
     blacklisted TINYINT(1) DEFAULT 0,
+    website VARCHAR(64),
     admin TINYINT(1) DEFAULT 1,
     valid TINYINT(1) DEFAULT 1,
     INDEX(email, company_name),

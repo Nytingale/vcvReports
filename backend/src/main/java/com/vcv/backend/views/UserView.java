@@ -18,6 +18,7 @@ public class UserView {
     private String subscriptionEndDate;
     private Boolean blacklisted;
     private Boolean warning;
+    private String website;
     private Boolean admin;
     private Boolean valid;
 
@@ -34,6 +35,7 @@ public class UserView {
         view.subscriptionEndDate = dateFormatter.format(user.getSubscriptionEndDate().toInstant());
         view.blacklisted = user.isBlackisted();
         view.warning = LocalDate.ofInstant(user.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).getDayOfYear() - LocalDate.now().getDayOfYear() <= 7;
+        view.website = user.getWebsite();
         view.admin = user.isAdmin();
         view.valid = user.isValid();
 
@@ -54,6 +56,7 @@ public class UserView {
         private String companyName;
         private String companyType;
         private Boolean blacklisted;
+        private String website;
         private Boolean valid;
 
         public CompanyView() {}
@@ -63,6 +66,7 @@ public class UserView {
             view.companyName = user.companyName;
             view.companyType = user.companyType;
             view.blacklisted = user.blacklisted;
+            view.website = user.website;
             view.valid = user.valid;
 
             return view;

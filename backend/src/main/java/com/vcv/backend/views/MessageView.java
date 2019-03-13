@@ -112,6 +112,7 @@ public class MessageView {
     public static class CompanyReport {
         private String name;
         private String type;
+        private String website;
         private MessageView message;
 
         public CompanyReport() {}
@@ -120,6 +121,7 @@ public class MessageView {
 
             view.name = company.getCompanyName();
             view.type = company.getCompanyType().toString();
+            view.website = company.getWebsite();
             view.message = new MessageView().build(message);
 
             return view;

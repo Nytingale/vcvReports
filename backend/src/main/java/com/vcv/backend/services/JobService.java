@@ -37,24 +37,25 @@ public class JobService {
 
     public MessageView.JobReport updateJob(Job job) throws JobServiceException {
         // First, Confirm that the Job Exists
-        Optional<Job> jobDB = jobRepository.findById(job.getJobId());
-        if(jobDB.isEmpty()) throw new JobServiceException("Error 205: updateJob(job) failed to find a matching Job that exists");
+        if(jobRepository.findById(job.getJobId()).isEmpty()) {
+            throw new JobServiceException("Error 205: updateJob(job) failed to find a matching Job that exists");
+        }
 
         // Second, Update all Fields of the Database's Job from the Inputted Job, except for the PK and FK
-        jobDB.get().setJobCost(job.getJobCost());
-        jobDB.get().setJobDate(job.getJobDate());
-        jobDB.get().setJobType(job.getJobType());
-        jobDB.get().setJobDetails(job.getJobDetails());
+        job.setJobCost(job.getJobCost());
+        job.setJobDate(job.getJobDate());
+        job.setJobType(job.getJobType());
+        job.setJobDetails(job.getJobDetails());
 
         // Third, Ensure that changes to the FKs occur on Existing PKs in other Tables
         Claim claim = claimRepository.findByCompanyNameAndClaimNumber(job.getInsuranceName(), job.getClaimNumber());
         if(claim == null) throw new JobServiceException("Error 210: updateJob(job) failed to find a matching Claim with that Number/Insurance");
-        jobDB.get().setInsuranceName(claim.getCompanyName());
-        jobDB.get().setClaimNumber(claim.getClaimNumber());
+        job.setInsuranceName(claim.getCompanyName());
+        job.setClaimNumber(claim.getClaimNumber());
 
         try {
             // Fourth, Save the Update
-            jobRepository.save(jobDB.get());
+            jobRepository.save(job);
             return new MessageView.JobReport().build(job, "Successfully Saved the Mechanic Job");
         } catch (Exception e) {
             e.printStackTrace();

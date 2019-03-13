@@ -20,6 +20,19 @@ public class Controller {
     @Autowired private VehicleService vehicleService;
 
     /* Casual Users */
+    @GetMapping("/getWebsite")
+    public UserView.CompanyView getWebsite(@RequestParam(value = "company", required = false) String company) {
+        try {
+            String validCompany = Utils.isValidString(company);
+            if(validCompany != null) {
+                return userService.getWebsite(validCompany);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @GetMapping("/searchForVehicle")
     public VehicleView.BasicReport searchForVehicle(@RequestParam(value = "vin", required = false) String vin,
                                                     @RequestParam(value = "year", required = false) String year,
@@ -30,7 +43,6 @@ public class Controller {
             String validVin = Utils.isValidVin(vin);
             String validMake = Utils.isValidString(make);
             String validModel = Utils.isValidString(model);
-
             if(validVin != null && validYear == null && validMake == null && validModel == null) {
                 return new VehicleView.BasicReport().build(vehicleService.getVehicle(validVin));
             } else if(validVin == null && validYear != null && validMake != null && validModel != null) {
@@ -46,7 +58,6 @@ public class Controller {
     public VehicleView.FullReport generateReport(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
-
             if(validVin != null) {
                 VehicleView vehicle = vehicleService.getVehicle(validVin);
                 List<ClaimView> claims = claimService.getClaims(validVin);
@@ -104,6 +115,21 @@ public class Controller {
         }
     }
 
+    @PostMapping("/resetPassword")
+    public MessageView resetPassword(@RequestBody User admin,
+                                     @RequestParam(value = "email", required = false) String email) {
+        try {
+            User validAdmin = (User) Utils.isValidEntity(admin);
+            String validEmail = Utils.isValidEmail(email);
+            if(validAdmin!= null && validEmail != null) {
+                return userService.resetPassword(validAdmin, validEmail);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping("/addEmployee")
     public MessageView.UserReport addEmployee(@RequestBody User admin,
                                               @RequestBody User employee) {
@@ -119,14 +145,29 @@ public class Controller {
         }
     }
 
-    @PostMapping("/resetPassword")
-    public MessageView resetPassword(@RequestBody User admin,
-                                     @RequestParam(value = "email", required = false) String email) {
+    @PostMapping("/removeEmployee")
+    public MessageView.UserReport removeEmployee(@RequestBody User admin,
+                                                 @RequestParam(value = "email", required = false) String email) {
         try {
             User validAdmin = (User) Utils.isValidEntity(admin);
             String validEmail = Utils.isValidEmail(email);
             if(validAdmin!= null && validEmail != null) {
-                return userService.resetPassword(validAdmin, validEmail);
+                return userService.removeEmployee(validAdmin, validEmail);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/updateWebsite")
+    public MessageView.CompanyReport updateWebsite(@RequestBody User admin,
+                                                   @RequestParam(value = "website", required = false) String website) {
+        try {
+            User validAdmin = (User) Utils.isValidEntity(admin);
+            String validWebsite = Utils.isValidString(website);
+            if(validAdmin!= null && validWebsite != null) {
+                return userService.updateWebsite(validAdmin, validWebsite);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

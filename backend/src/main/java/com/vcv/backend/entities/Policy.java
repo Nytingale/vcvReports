@@ -99,7 +99,11 @@ public class Policy {
         private String companyName;
         private String policyNumber;
 
-        CompositeKey() {}
+        public CompositeKey() {}
+        public CompositeKey(String companyName, String policyNumber) {
+            this.companyName = companyName;
+            this.policyNumber = policyNumber;
+        }
 
         public String getCompanyName() {
             return companyName;
