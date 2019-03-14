@@ -85,15 +85,16 @@ public class VehicleView {
         private String colour;
 
         public BasicReport() {}
-        public BasicReport build(VehicleView vehicle) {
+        public BasicReport build(Vehicle vehicle) {
             BasicReport view = new BasicReport();
+            VehicleView vehicleView = new VehicleView().build(vehicle);
 
-            view.vin = vehicle.vin;
-            view.year = vehicle.year;
-            view.make = vehicle.make;
-            view.model = vehicle.model;
-            view.colour = vehicle.colour;
-            view.manufacturer = vehicle.manufacturer;
+            view.vin = vehicleView.vin;
+            view.year = vehicleView.year;
+            view.make = vehicleView.make;
+            view.model = vehicleView.model;
+            view.colour = vehicleView.colour;
+            view.manufacturer = vehicleView.manufacturer;
 
             return view;
         }
@@ -104,12 +105,12 @@ public class VehicleView {
         private List<JobView> jobs;
 
         public FullReport() {}
-        public FullReport build(VehicleView vehicle, List<ClaimView> claims, List<JobView> jobs) {
+        public FullReport build(Vehicle vehicle, List<Claim> claims, List<Job> jobs) {
             FullReport view = new FullReport();
 
-            view.vehicle = vehicle;
-            view.claims = claims;
-            view.jobs = jobs;
+            view.vehicle = new VehicleView().build(vehicle);
+            view.claims = new ClaimView().build(claims);
+            view.jobs = new JobView().build(jobs);
 
             return view;
         }

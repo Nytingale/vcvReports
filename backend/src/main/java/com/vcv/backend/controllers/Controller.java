@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -60,9 +61,9 @@ public class Controller {
         try {
             String validVin = Utils.isValidVin(vin);
             if(validVin != null) {
-                VehicleView vehicle = vehicleService.getVehicle(validVin);
-                List<ClaimView> claims = claimService.getClaims(validVin);
-                List<JobView> jobs = jobService.getJobs(validVin);
+                Vehicle vehicle = vehicleService.getVehicle(validVin);
+                List<Claim> claims = claimService.getClaims(validVin);
+                List<Job> jobs = jobService.getJobs(validVin);
                 return new VehicleView
                         .FullReport()
                         .build(vehicle, claims, jobs);
@@ -177,13 +178,14 @@ public class Controller {
     }
 
     @PostMapping("/uploadImage")
-    public MessageView uploadFile(@RequestBody User admin,
-                                  @RequestParam(value = "image", required = false) MultipartFile image) {
+    public MessageView.FileUpload uploadImage(HttpServletRequest request,
+                                              @RequestBody User admin,
+                                              @RequestParam(value = "image", required = false) MultipartFile image) {
         try {
             User validAdmin = (User) Utils.isValidEntity(admin);
-            String validImage = Utils.isValidImage(image);
+            MultipartFile validImage = Utils.isValidImage(image);
             if(validAdmin!= null && validImage != null) {
-                return userService.updateImage(validAdmin, validImage);
+                return userService.uploadImage(validAdmin, validImage, request);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

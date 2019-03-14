@@ -1,6 +1,7 @@
 package com.vcv.backend.views;
 
 import com.vcv.backend.entities.*;
+import org.springframework.web.multipart.MultipartFile;
 
 public class MessageView {
     private String message;
@@ -12,6 +13,27 @@ public class MessageView {
         view.message = message;
 
         return view;
+    }
+
+    public static class FileUpload {
+        private MessageView message;
+        private String company;
+        private String name;
+        private String type;
+        private Long size;
+
+        public FileUpload() {}
+        public FileUpload build(MultipartFile file, String company, String message) {
+            FileUpload view = new FileUpload();
+
+            view.message = new MessageView().build(message);
+            view.company = company;
+            view.name = file.getName();
+            view.type = file.getContentType();
+            view.size = file.getSize();
+
+            return view;
+        }
     }
 
     public static class WriteOff {

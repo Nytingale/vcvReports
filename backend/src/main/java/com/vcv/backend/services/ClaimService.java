@@ -43,9 +43,9 @@ public class ClaimService {
     }
 
     /* Per Vehicle */
-    public List<ClaimView> getClaims(String vin) throws ClaimServiceException {
+    public List<Claim> getClaims(String vin) throws ClaimServiceException {
         List<Claim> claims = claimRepository.findByVinOrderByClaimDateDesc(vin);
-        if(!claims.isEmpty()) return new ClaimView().build(claims);
+        if(!claims.isEmpty()) return claims;
         else throw new ClaimServiceException("Error 100: getClaims(vin) returned null");
     }
 

@@ -1,7 +1,6 @@
 package com.vcv.backend.services;
 
 import com.vcv.backend.entities.Vehicle;
-import com.vcv.backend.configs.FileStorageConfig;
 import com.vcv.backend.exceptions.VehicleServiceException;
 import com.vcv.backend.repositories.VehicleRepository;
 
@@ -105,17 +104,17 @@ public class VehicleService {
     }
 
     /* General */
-    public VehicleView getVehicle(String vin) throws VehicleServiceException {
+    public Vehicle getVehicle(String vin) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
-        if(vehicle != null) return new VehicleView().build(vehicle);
+        if(vehicle != null) return vehicle;
         else throw new VehicleServiceException("Error 500: getVehicle(vin) returned null");
     }
 
-    public VehicleView getVehicle(Integer year,
+    public Vehicle getVehicle(Integer year,
                                   String make,
                                   String model) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByYearMakeModel(year, make, model);
-        if(vehicle != null) return new VehicleView().build(vehicle);
+        if(vehicle != null) return vehicle;
         else throw new VehicleServiceException("Error 500: getVehicle(year, make, model) returned null");
     }
 }

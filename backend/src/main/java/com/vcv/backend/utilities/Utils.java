@@ -16,6 +16,12 @@ public class Utils {
         throw new IllegalStateException("Utility class");
     }
 
+    public static MultipartFile isValidImage(MultipartFile img) {
+        if(img == null) return null;
+        else if(Objects.requireNonNull(img.getContentType()).matches("^(jpe?g|png|bmp)$")) return img;
+        return null;
+    }
+
     public static Boolean isValidStaff(User vcv) {
         if(vcv == null) return false;
         else return vcv.getCompanyType().toString().equals(CompanyType.VCV_STAFF.toString());

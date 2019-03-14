@@ -1,15 +1,18 @@
 package com.vcv.backend.configs;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 @ConfigurationProperties(prefix = "file")
+@Configuration("fileStorageProperties")
 public class FileStorageConfig {
-    private String uploadDirectory;
 
-    public String getUploadDirectory() {
-        return uploadDirectory;
+    private String uploadDir;
+
+    public String getUploadDir() {
+        return uploadDir;
     }
-    public void setUploadDirectory(String uploadDirectory) {
-        this.uploadDirectory = uploadDirectory;
+    public void setUploadDir(String uploadDir) {
+        this.uploadDir = uploadDir;
     }
 }

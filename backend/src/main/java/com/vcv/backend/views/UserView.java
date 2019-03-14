@@ -60,21 +60,22 @@ public class UserView {
         private Boolean valid;
 
         public CompanyView() {}
-        public CompanyView build(UserView user) {
+        public CompanyView build(User user) {
             CompanyView view = new CompanyView();
+            UserView userView = new UserView().build(user);
 
-            view.companyName = user.companyName;
-            view.companyType = user.companyType;
-            view.blacklisted = user.blacklisted;
-            view.website = user.website;
-            view.valid = user.valid;
+            view.companyName = userView.companyName;
+            view.companyType = userView.companyType;
+            view.blacklisted = userView.blacklisted;
+            view.website = userView.website;
+            view.valid = userView.valid;
 
             return view;
         }
-        public List<CompanyView> build(List<UserView> users) {
+        public List<CompanyView> build(List<User> users) {
             List<CompanyView> views = new ArrayList<>();
 
-            for(UserView user: users) {
+            for(User user: users) {
                 CompanyView view = new CompanyView().build(user);
                 views.add(view);
             }
@@ -90,14 +91,15 @@ public class UserView {
         private Boolean warning;
 
         public SubscriptionConsole() {}
-        public SubscriptionConsole build(UserView user) {
+        public SubscriptionConsole build(User user) {
             SubscriptionConsole view = new SubscriptionConsole();
+            UserView userView = new UserView().build(user);
 
-            view.subscriptionStartDate = user.subscriptionStartDate;
-            view.subscriptionEndDate = user.subscriptionEndDate;
-            view.type = user.companyType;
-            view.name = user.companyName;
-            view.warning = user.warning;
+            view.subscriptionStartDate = userView.subscriptionStartDate;
+            view.subscriptionEndDate = userView.subscriptionEndDate;
+            view.type = userView.companyType;
+            view.name = userView.companyName;
+            view.warning = userView.warning;
 
             return view;
         }

@@ -1,15 +1,24 @@
 package com.vcv.backend.services;
 
+import com.vcv.backend.configs.FileStorageConfig;
 import com.vcv.backend.entities.User;
-import com.vcv.backend.enums.CompanyType;
 import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.UserRepository;
 import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -18,12 +27,13 @@ import java.util.Optional;
 @Service
 public class UserService {
     @Autowired private UserRepository userRepository;
+    @Autowired private FileStorageConfig fileStorageConfig;
 
     /* Website */
     public UserView.CompanyView getWebsite(String company) throws UserServiceException {
         User companyDB = userRepository.findByCompanyNameAndAdmin(company, 1);
         if(companyDB != null) {
-            return new UserView.CompanyView().build(new UserView().build(companyDB));
+            return new UserView.CompanyView().build(companyDB);
         } else throw new UserServiceException("Error 400: getWebsite(company) returned null");
     }
 
@@ -48,7 +58,7 @@ public class UserService {
         // Second, Find the Company to Return
         User companyDB = userRepository.findByCompanyNameAndAdmin(company, 1);
         if(companyDB != null) {
-            return new UserView.CompanyView().build(new UserView().build(companyDB));
+            return new UserView.CompanyView().build(companyDB);
         } else throw new UserServiceException("Error 400: searchForCompany(vcv, company) returned null");
     }
 
@@ -199,6 +209,26 @@ public class UserService {
         }
     }
 
+    public MessageView.FileUpload uploadImage(User admin,
+                                              MultipartFile image,
+                                              HttpServletRequest request) throws UserServiceException {
+        // First, Confirm that the User is an Admin or VCV Staff
+        if(!admin.isAdmin() && admin.getCompanyType().level() != 3) {
+            throw new UserServiceException("Error 405: uploadImage(admin, image, request) has failed to identify the User as a Company Admin or VCV Staff");
+        }
+
+        // Second, Create the Server-Side File Location and Name based on the Company's Name
+        File targetImage = new File(request.getServletContext().getRealPath(fileStorageConfig.getUploadDir()), admin.getCompanyName());
+
+        try {
+            // Third, Upload the Image to the Server
+            image.transferTo(targetImage);
+            return new MessageView.FileUpload().build(image, admin.getCompanyName(), "Successfully Uploaded Image");
+        } catch(Exception e) {
+            throw new UserServiceException("Error 410: uploadImage(admin, image, request) has failed to Upload the Image");
+        }
+    }
+
     public MessageView.UserReport addEmployee(User admin,
                                               User employee) throws UserServiceException {
         // First, Confirm that the User is the Admin and they are Not Blacklisted
@@ -297,7 +327,7 @@ public class UserService {
 
         try {
             userRepository.save(admin);
-            return new UserView.SubscriptionConsole().build(new UserView().build(admin));
+            return new UserView.SubscriptionConsole().build(admin);
         } catch (Exception e) {
             e.printStackTrace();
             throw new UserServiceException("Error 415: renewSubscription(admin) failed to renew the Subscription");
@@ -323,7 +353,7 @@ public class UserService {
 
         try {
             userRepository.save(admin);
-            return new UserView.SubscriptionConsole().build(new UserView().build(admin));
+            return new UserView.SubscriptionConsole().build(admin);
         } catch (Exception e) {
             e.printStackTrace();
             throw new UserServiceException("Error 415: cancelSubscription(admin) failed to cancel the Subscription");
