@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 public class Controller {
     @Autowired private JobService     jobService;
+    @Autowired private FileService    fileService;
     @Autowired private UserService    userService;
     @Autowired private ClaimService   claimService;
     @Autowired private PolicyService  policyService;
@@ -185,7 +186,7 @@ public class Controller {
             User validAdmin = (User) Utils.isValidEntity(admin);
             MultipartFile validImage = Utils.isValidImage(image);
             if(validAdmin!= null && validImage != null) {
-                return userService.uploadImage(validAdmin, validImage, request);
+                return fileService.uploadImage(validAdmin, validImage, request);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

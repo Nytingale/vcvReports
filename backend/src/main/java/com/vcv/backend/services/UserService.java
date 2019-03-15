@@ -27,7 +27,6 @@ import java.util.Optional;
 @Service
 public class UserService {
     @Autowired private UserRepository userRepository;
-    @Autowired private FileStorageConfig fileStorageConfig;
 
     /* Website */
     public UserView.CompanyView getWebsite(String company) throws UserServiceException {
@@ -209,25 +208,7 @@ public class UserService {
         }
     }
 
-    public MessageView.FileUpload uploadImage(User admin,
-                                              MultipartFile image,
-                                              HttpServletRequest request) throws UserServiceException {
-        // First, Confirm that the User is an Admin or VCV Staff
-        if(!admin.isAdmin() && admin.getCompanyType().level() != 3) {
-            throw new UserServiceException("Error 405: uploadImage(admin, image, request) has failed to identify the User as a Company Admin or VCV Staff");
-        }
 
-        // Second, Create the Server-Side File Location and Name based on the Company's Name
-        File targetImage = new File(request.getServletContext().getRealPath(fileStorageConfig.getUploadDir()), admin.getCompanyName());
-
-        try {
-            // Third, Upload the Image to the Server
-            image.transferTo(targetImage);
-            return new MessageView.FileUpload().build(image, admin.getCompanyName(), "Successfully Uploaded Image");
-        } catch(Exception e) {
-            throw new UserServiceException("Error 410: uploadImage(admin, image, request) has failed to Upload the Image");
-        }
-    }
 
     public MessageView.UserReport addEmployee(User admin,
                                               User employee) throws UserServiceException {

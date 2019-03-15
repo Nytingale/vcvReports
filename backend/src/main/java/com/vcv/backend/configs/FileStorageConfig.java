@@ -6,13 +6,12 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "file")
 @Configuration("fileStorageProperties")
 public class FileStorageConfig {
+    private String imagesDir;
 
-    private String uploadDir;
-
-    public String getUploadDir() {
-        return uploadDir;
+    public String getImagesDir() {
+        return imagesDir;
     }
-    public void setUploadDir(String uploadDir) {
-        this.uploadDir = uploadDir;
+    public void setImagesDir(String imagesDir) {
+        this.imagesDir = imagesDir;
     }
 }
