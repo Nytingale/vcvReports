@@ -18,13 +18,19 @@ public class Vehicle {
     private String engine;
     private String colour;
     private String mileage;
-    private String transmission;
     private String dealership;
     private Integer value;
-    private Boolean writtenOff;
-    private Boolean stolen;
     private Timestamp evaluationDate;
     private Timestamp registrationDate;
+    private String transmission;
+    private String fuelType;
+    private String steering;
+    private String drive;
+    private String body;
+    private Integer seats;
+    private Integer doors;
+    private Boolean writtenOff;
+    private Boolean stolen;
     private Integer numAccidents;
     private Integer numRobberies;
     private Integer numSalvages;
@@ -57,11 +63,29 @@ public class Vehicle {
     public String getMileage() {
         return mileage;
     }
+    public String getDealership() {
+        return dealership;
+    }
     public String getTransmission() {
         return transmission;
     }
-    public String getDealership() {
-        return dealership;
+    public String getFuelType() {
+        return fuelType;
+    }
+    public String getSteering() {
+        return steering;
+    }
+    public String getDrive() {
+        return drive;
+    }
+    public String getBody() {
+        return body;
+    }
+    public Integer getDoors() {
+        return doors;
+    }
+    public Integer getSeats() {
+        return seats;
     }
     public Integer getValue() {
         return value;
@@ -127,6 +151,24 @@ public class Vehicle {
     public void setTransmission(String transmission) {
         this.transmission = transmission;
     }
+    public void setFuelType(String fuelType) {
+        this.fuelType = fuelType;
+    }
+    public void setSteering(String steering) {
+        this.steering = steering;
+    }
+    public void setDrive(String drive) {
+        this.drive = drive;
+    }
+    public void setBody(String body) {
+        this.body = body;
+    }
+    public void setSeats(Integer seats) {
+        this.seats = seats;
+    }
+    public void setDoors(Integer doors) {
+        this.doors = doors;
+    }
     public void setDealership(String dealership) {
         this.dealership = dealership;
     }
@@ -169,7 +211,35 @@ public class Vehicle {
 
     @Override
     public int hashCode() {
-        return Objects.hash(vin, year, make, model, manufacturer, engine, colour, mileage, transmission, value, dealership, writtenOff, stolen, evaluationDate, registrationDate, numAccidents, numRobberies, numSalvages, numServices, numOwners, insuranceName, policyNumber);
+        return Objects.hash(
+                vin,
+                year,
+                make,
+                model,
+                manufacturer,
+                engine,
+                colour,
+                mileage,
+                dealership,
+                value,
+                evaluationDate,
+                registrationDate,
+                transmission,
+                fuelType,
+                steering,
+                drive,
+                body,
+                seats,
+                doors,
+                writtenOff,
+                stolen,
+                numAccidents,
+                numRobberies,
+                numSalvages,
+                numServices,
+                numOwners,
+                insuranceName,
+                policyNumber);
     }
 
     @Override
@@ -177,15 +247,15 @@ public class Vehicle {
         if (this == o) return true;
         if (!(o instanceof Vehicle)) return false;
         Vehicle vehicle = (Vehicle) o;
-        return year == vehicle.year &&
-                value == vehicle.value &&
+        return year.equals(vehicle.year) &&
+                value.equals(vehicle.value) &&
                 writtenOff == vehicle.writtenOff &&
                 stolen == vehicle.stolen &&
-                numAccidents == vehicle.numAccidents &&
-                numRobberies == vehicle.numRobberies &&
-                numSalvages == vehicle.numSalvages &&
-                numServices == vehicle.numServices &&
-                numOwners == vehicle.numOwners &&
+                numAccidents.equals(vehicle.numAccidents) &&
+                numRobberies.equals(vehicle.numRobberies) &&
+                numSalvages.equals(vehicle.numSalvages) &&
+                numServices.equals(vehicle.numServices) &&
+                numOwners.equals(vehicle.numOwners) &&
                 vin.equals(vehicle.vin) &&
                 make.equals(vehicle.make) &&
                 model.equals(vehicle.model) &&
@@ -193,6 +263,12 @@ public class Vehicle {
                 engine.equals(vehicle.engine) &&
                 colour.equals(vehicle.colour) &&
                 mileage.equals(vehicle.mileage) &&
+                fuelType.equals(vehicle.fuelType) &&
+                steering.equals(vehicle.steering) &&
+                drive.equals(vehicle.drive) &&
+                body.equals(vehicle.body) &&
+                seats.equals(vehicle.seats) &&
+                doors.equals(vehicle.doors) &&
                 transmission.equals(vehicle.transmission) &&
                 dealership.equals(vehicle.dealership) &&
                 evaluationDate.equals(vehicle.evaluationDate) &&

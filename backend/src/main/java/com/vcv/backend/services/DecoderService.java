@@ -2,12 +2,18 @@ package com.vcv.backend.services;
 
 import com.vcv.backend.configs.VinDecoderConfig;
 import com.vcv.backend.entities.User;
+import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.DecoderServiceException;
 import com.vcv.backend.utilities.Utils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class DecoderService {
@@ -15,35 +21,84 @@ public class DecoderService {
 
     @Autowired private VinDecoderConfig vinDecoderConfig;
 
-    public JSONObject checkInfo(String vin) throws DecoderServiceException {
-        String uri = vinDecoderConfig.info(vin);
-        if(!uri.isEmpty()) {
-            JSONObject result = restTemplate.getForObject(uri, JSONObject.class);
-            if(result != null) {
-                return result;
-            } else throw new DecoderServiceException("Error 700: checkInfo(vin) returned null");
-        } else throw new DecoderServiceException("Error 705: checkInfo(vin) failed to build a URI from the VIN");
+    Vehicle updateVehicle(Vehicle vehicle) throws DecoderServiceException {
+        if(vehicle.getManufacturer() == null ||
+                vehicle.getTransmission() == null ||
+                vehicle.getFuelType() == null ||
+                vehicle.getSteering() == null ||
+                vehicle.getEngine() == null ||
+                vehicle.getDrive() == null ||
+                vehicle.getBody() == null ||
+                vehicle.getSeats() == null ||
+                vehicle.getDoors() == null) {
+            JSONArray labels = check(vehicle.getVin());
+            if(!labels.isEmpty()) {
+                JSONArray values = decode(vehicle.getVin());
+                if(labels.length() == values.length()) {
+                    for(int x = 0; x < values.length(); x++) {
+                       String label = labels.getString(x);
+                       Object value = values.getJSONObject(x).get(label);
+
+                       switch(label) {
+                           case "Transmission (full)":       vehicle.setTransmission(String.valueOf(value));
+                           case "Manufacturer":              vehicle.setManufacturer(String.valueOf(value));
+                           case "Fuel Type - Primary":       vehicle.setFuelType(String.valueOf(value));
+                           case "Steering":                  vehicle.setSteering(String.valueOf(value));
+                           case "Engine Displacement (ccm)": vehicle.setEngine(String.valueOf(value));
+                           case "Drive":                     vehicle.setDrive(String.valueOf(value));
+                           case "Body":                      vehicle.setBody(String.valueOf(value));
+                           case "Number of Seats":           vehicle.setSeats(Integer.valueOf(String.valueOf(value)));
+                           case "Number of Doors":           vehicle.setDoors(Integer.valueOf(String.valueOf(value)));
+                           default:                          break;
+                       }
+                    }
+
+                    return vehicle;
+                } else throw new DecoderServiceException("Error 710: updateVehicle(vehicle) has found a difference in length of VIN Information versus what is Available");
+            } else throw new DecoderServiceException("Error 700: updateVehicle(vehicle) has returned null");
+        } else return vehicle;
     }
 
-    public JSONObject decode(String vin) throws DecoderServiceException {
-        String uri = vinDecoderConfig.decode(vin);
-        if (!uri.isEmpty()) {
-            JSONObject result = restTemplate.getForObject(uri, JSONObject.class);
-            if (result != null) {
-                return result;
-            } else throw new DecoderServiceException("Error 700: decode(vin) returned null");
-        } else throw new DecoderServiceException("Error 705: decode(vin) failed to build a URI from the VIN");
+    List<Vehicle> updateVehicles(List<Vehicle> vehicles) throws DecoderServiceException {
+        List<Vehicle> result = new ArrayList<>();
+
+        for(Vehicle vehicle: vehicles) {
+            vehicle = updateVehicle(vehicle);
+            result.add(vehicle);
+        }
+
+        return result;
     }
 
-    public JSONObject checkBalance(User vcv) throws DecoderServiceException {
+    JSONObject balance(User vcv) throws DecoderServiceException {
         if(!Utils.isValidStaff(vcv)) throw new DecoderServiceException("Error 720: checkBalance(vcv) has failed you for VCV Staff Authentication");
 
         String uri = vinDecoderConfig.balance();
         if (!uri.isEmpty()) {
-            JSONObject result = restTemplate.getForObject(uri, JSONObject.class);
-            if (result != null) {
-                return result;
+            JSONObject response = restTemplate.getForObject(uri, JSONObject.class);
+            if (response != null) {
+                return response;
             } else throw new DecoderServiceException("Error 700: checkBalance(vcv) returned null");
         } else throw new DecoderServiceException("Error 705: checkBalance(vcv) failed to build a URI from the VIN");
+    }
+
+    private JSONArray check(String vin) throws DecoderServiceException {
+        String uri = vinDecoderConfig.info(vin);
+        if(!uri.isEmpty()) {
+            JSONObject response = restTemplate.getForObject(uri, JSONObject.class);
+            if(response != null) {
+                return response.getJSONArray("decode");
+            } else throw new DecoderServiceException("Error 700: check(vin) returned null");
+        } else throw new DecoderServiceException("Error 705: check(vin) failed to build a URI from the VIN");
+    }
+
+    private JSONArray decode(String vin) throws DecoderServiceException {
+        String uri = vinDecoderConfig.decode(vin);
+        if (!uri.isEmpty()) {
+            JSONObject response = restTemplate.getForObject(uri, JSONObject.class);
+            if (response != null) {
+                return response.getJSONArray("decpde");
+            } else throw new DecoderServiceException("Error 700: decode(vin) returned null");
+        } else throw new DecoderServiceException("Error 705: decode(vin) failed to build a URI from the VIN");
     }
 }

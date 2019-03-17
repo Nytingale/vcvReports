@@ -16,15 +16,21 @@ public class VehicleView {
     private Integer year;
     private String make;
     private String model;
-    private String manufacturer;
-    private String engine;
     private String colour;
-    private String mileage;
-    private String transmission;
-    private String dealership;
     private Integer value;
+    private String dealership;
     private String evaluationDate;
     private String registrationDate;
+    private String manufacturer;
+    private String transmission;
+    private String fuelType;
+    private String steering;
+    private String mileage;
+    private String engine;
+    private String drive;
+    private String body;
+    private Integer doors;
+    private Integer seats;
     private Boolean writtenOff;
     private Boolean stolen;
     private Integer numAccidents;
@@ -44,15 +50,21 @@ public class VehicleView {
         view.year = vehicle.getYear();
         view.make = vehicle.getMake();
         view.model = vehicle.getModel();
-        view.manufacturer = vehicle.getManufacturer();
-        view.engine = vehicle.getEngine();
-        view.colour = vehicle.getColour();
-        view.mileage = vehicle.getMileage();
-        view.transmission = vehicle.getTransmission();
         view.dealership = vehicle.getDealership();
         view.value = vehicle.getValue();
         view.evaluationDate = dateFormatter.format(vehicle.getEvaluationDate().toInstant());
         view.registrationDate = dateFormatter.format(vehicle.getRegistrationDate().toInstant());
+        view.manufacturer = vehicle.getManufacturer();
+        view.transmission = vehicle.getTransmission();
+        view.fuelType = vehicle.getFuelType();
+        view.steering = vehicle.getSteering();
+        view.mileage = vehicle.getMileage();
+        view.engine = vehicle.getEngine();
+        view.colour = vehicle.getColour();
+        view.drive = vehicle.getDrive();
+        view.body = vehicle.getBody();
+        view.doors = vehicle.getDoors();
+        view.seats = vehicle.getSeats();
         view.writtenOff = vehicle.isWrittenOff();
         view.stolen = vehicle.isStolen();
         view.numAccidents = vehicle.getNumAccidents();
@@ -81,8 +93,8 @@ public class VehicleView {
         private Integer year;
         private String make;
         private String model;
-        private String manufacturer;
         private String colour;
+        private String manufacturer;
 
         public BasicReport() {}
         public BasicReport build(Vehicle vehicle) {
