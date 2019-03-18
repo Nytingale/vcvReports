@@ -1,6 +1,5 @@
 package com.vcv.backend.services;
 
-import com.vcv.backend.configs.FileStorageConfig;
 import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.UserRepository;
@@ -8,17 +7,8 @@ import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +20,7 @@ public class UserService {
 
     /* Website */
     public UserView.CompanyView getWebsite(String company) throws UserServiceException {
-        User companyDB = userRepository.findByCompanyNameAndAdmin(company, 1);
+        User companyDB = userRepository.findByCompanyId(company, 1);
         if(companyDB != null) {
             return new UserView.CompanyView().build(companyDB);
         } else throw new UserServiceException("Error 400: getWebsite(company) returned null");
@@ -43,7 +33,7 @@ public class UserService {
         // First, Confirm that the User is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: searchForUser(vcv, email, company) has failed you for VCV Staff Authentication");
 
-        User user = userRepository.findByEmailAndCompanyName(email, company);
+        User user = userRepository.findByEmail(email, company);
         if(user != null) {
             return new UserView().build(user);
         } else throw new UserServiceException("Error 400: searchForUser(vcv, email, company) returned null");
@@ -55,7 +45,7 @@ public class UserService {
         if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: searchForCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Find the Company to Return
-        User companyDB = userRepository.findByCompanyNameAndAdmin(company, 1);
+        User companyDB = userRepository.findByCompanyId(company, 1);
         if(companyDB != null) {
             return new UserView.CompanyView().build(companyDB);
         } else throw new UserServiceException("Error 400: searchForCompany(vcv, company) returned null");
@@ -77,7 +67,7 @@ public class UserService {
         if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: changeAdmin(vcv, employee) has failed you for VCV Staff Authentication");
 
         // Second, Find the Admin of the Company
-        User admin = userRepository.findByCompanyNameAndAdmin(employee.getCompanyName(), 1);
+        User admin = userRepository.findByCompanyId(employee.getCompanyId(), 1);
         if(admin != null) {
 
             // Third, Swap the Roles and Website Information of the Employee and Admin
@@ -104,7 +94,7 @@ public class UserService {
         if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: registerCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that no Company with this Name
-        User companyDB = userRepository.findByCompanyNameAndAdmin(company.getCompanyName(), 1);
+        User companyDB = userRepository.findByCompanyId(company.getCompanyId(), 1);
         if(companyDB != null) throw new UserServiceException("Error 405: registerCompany(vcv, company) has found an already-existing Company with this Name");
 
         try {
@@ -125,7 +115,7 @@ public class UserService {
         if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: approveCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that the Company Exists
-        User companyDB = userRepository.findByCompanyNameAndAdmin(company, 1);
+        User companyDB = userRepository.findByCompanyId(company, 1);
         if(companyDB == null) throw new UserServiceException("Error 405: approveCompany(vcv, company) has failed to find such an existing Company");
 
         // Third, Change the Company to be Approved
@@ -147,7 +137,7 @@ public class UserService {
         if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: blacklistCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that the Company Exists
-        User companyDB = userRepository.findByCompanyNameAndAdmin(company, 1);
+        User companyDB = userRepository.findByCompanyId(company, 1);
         if(companyDB == null) throw new UserServiceException("Error 405: blacklistCompany(vcv, company) has failed to find such an existing Company");
 
         // Third, Change the Company to be Blacklisted
@@ -178,9 +168,9 @@ public class UserService {
             }
         } else throw new UserServiceException("Error 400: getEmployees(admin) has returned null");
 
-        List<User> employees = userRepository.findByCompanyNameOrderBySubscriptionStartDateDesc(admin.getCompanyName());
+        List<User> employees = userRepository.findByCompanyIdOrderBySubscriptionStartDateDesc(admin.getCompanyId());
         if(employees.isEmpty()) return new UserView().build(employees);
-        else throw new UserServiceException("Error 400: findByEmailAndCompanyName(email, company) returned null");
+        else throw new UserServiceException("Error 400: findByEmail(email, company) returned null");
     }
 
     public MessageView resetPassword(User admin,
@@ -191,7 +181,7 @@ public class UserService {
         }
 
         // Second, Find the Employee to Reset Password
-        User employee = userRepository.findByEmailAndCompanyName(email, admin.getCompanyName());
+        User employee = userRepository.findByEmail(email, admin.getCompanyId());
         if(employee == null) {
             throw new UserServiceException("Error 410: resetPassword(admin, email) has failed to find an Employee with the Email");
         }
@@ -225,7 +215,7 @@ public class UserService {
         } else throw new UserServiceException("Error 400: addEmployee(admin, employee) has returned null");
 
         // Second, Ensure that the Employee's Company Name and Type are the same as the Admin's
-        employee.setCompanyName(admin.getCompanyName());
+        employee.setCompanyId(admin.getCompanyId());
         employee.setCompanyType(admin.getCompanyType());
 
         try {
@@ -253,7 +243,7 @@ public class UserService {
         } else throw new UserServiceException("Error 400: removeEmployee(admin, email) has returned null");
 
         // Second, Confirm that the Employee Exists
-        Optional<User> employee = userRepository.findById(new User.CompositeKey(email, admin.getCompanyName()));
+        Optional<User> employee = userRepository.findById(new User.CompositeKey(email, admin.getCompanyId()));
         if(employee.isEmpty()) throw new UserServiceException("Error 410: removeEmployee(admin, email) has failed to find an Employee with the Email");
 
         try {

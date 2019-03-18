@@ -19,14 +19,14 @@ public class PolicyService {
 
     /* Portal (Insurance) */
     public List<PolicyView> getInsurancePolicies(String company) throws PolicyServiceException {
-        List<Policy> policies = policyRepository.findByCompanyNameOrderByPolicyDateDesc(company);
+        List<Policy> policies = policyRepository.findByCompanyIdOrderByPolicyDateDesc(company);
         if(!policies.isEmpty()) return new PolicyView().build(policies);
         else throw new PolicyServiceException("Error 300: getInsurancePolicies(company) returned null");
     }
 
     public MessageView.InsuranceReport addPolicy(Policy policy) throws PolicyServiceException {
         // First, Ensure that the Policy Number does not Already Exist with this Insurance Company
-        Policy policyDB = policyRepository.findByCompanyNameAndPolicyNumber(policy.getCompanyName(), policy.getPolicyNumber());
+        Policy policyDB = policyRepository.findByCompanyIdAndPolicyNumber(policy.getCompanyId(), policy.getPolicyNumber());
         if(policyDB != null) throw new PolicyServiceException("Error 305: addPolicy(policy) found an already existing copy of this Policy");
 
         // Second, Confirm that the VIN in the new Policy Exists
@@ -43,7 +43,7 @@ public class PolicyService {
 
         try {
             // Fourth, Save the new Policy and Update the Vehicle Record
-            vehicle.setInsuranceName(policy.getCompanyName());
+            vehicle.setInsuranceId(policy.getCompanyId());
             vehicle.setPolicyNumber(policy.getPolicyNumber());
             vehicle.setNumOwners(vehicle.getNumOwners() + 1);
             vehicleRepository.save(vehicle);

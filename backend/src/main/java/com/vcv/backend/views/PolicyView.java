@@ -20,7 +20,7 @@ public class PolicyView {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
         PolicyView view = new PolicyView();
 
-        view.companyName = policy.getCompanyName();
+        view.companyName = policy.getCompanyId();
         view.policyNumber = policy.getPolicyNumber();
         view.policyDate = dateFormatter.format(policy.getPolicyDate().toInstant());
         view.financer = policy.getFinancer();

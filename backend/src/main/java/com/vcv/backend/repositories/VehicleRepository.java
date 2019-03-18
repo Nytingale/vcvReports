@@ -12,5 +12,5 @@ public interface VehicleRepository extends PagingAndSortingRepository<Vehicle, S
     Vehicle findByYearMakeModel(Integer year, String make, String model);
 
     List<Vehicle> findByDealershipOrderByRegistrationDateDesc(String dealership);
-    List<Vehicle> findByInsuranceNameOrderByRegistrationDateDesc(String insurance);
+    List<Vehicle> findByInsuranceIdOrderByRegistrationDateDesc(Long insuranceId);
 }

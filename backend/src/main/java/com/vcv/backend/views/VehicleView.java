@@ -2,10 +2,8 @@ package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Claim;
 import com.vcv.backend.entities.Job;
-import com.vcv.backend.entities.Policy;
 import com.vcv.backend.entities.Vehicle;
 
-import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -72,7 +70,7 @@ public class VehicleView {
         view.numSalvages = vehicle.getNumSalvages();
         view.numServices = vehicle.getNumServices();
         view.numOwners = vehicle.getNumOwners();
-        view.insuranceName = vehicle.getInsuranceName();
+        view.insuranceName = vehicle.getInsuranceId();
         view.policyNumber = vehicle.getPolicyNumber();
 
         return view;

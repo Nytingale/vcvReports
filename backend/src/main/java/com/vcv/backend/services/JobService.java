@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class JobService {
@@ -20,7 +19,7 @@ public class JobService {
 
     /* Portal (Mechanics/Garages) */
     public List<JobView> getMechanicJobs(String garage) throws JobServiceException {
-        List<Job> jobs = jobRepository.findByCompanyNameOrderByJobIdDesc(garage);
+        List<Job> jobs = jobRepository.findByCompanyIdOrderByJobIdDesc(garage);
         if(jobs.isEmpty()) return new JobView().build(jobs);
         else throw new JobServiceException("Error 200: getMechanicJobs(garage) returned null");
     }
@@ -48,9 +47,9 @@ public class JobService {
         job.setJobDetails(job.getJobDetails());
 
         // Third, Ensure that changes to the FKs occur on Existing PKs in other Tables
-        Claim claim = claimRepository.findByCompanyNameAndClaimNumber(job.getInsuranceName(), job.getClaimNumber());
+        Claim claim = claimRepository.findByCompanyIdAndClaimNumber(job.getInsuranceId(), job.getClaimNumber());
         if(claim == null) throw new JobServiceException("Error 210: updateJob(job) failed to find a matching Claim with that Number/Insurance");
-        job.setInsuranceName(claim.getCompanyName());
+        job.setInsuranceId(claim.getCompanyId());
         job.setClaimNumber(claim.getClaimNumber());
 
         try {

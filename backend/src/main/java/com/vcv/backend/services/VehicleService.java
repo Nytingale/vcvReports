@@ -42,7 +42,7 @@ public class VehicleService {
 
     /* Portal (Insurance) */
     public List<VehicleView> getInsuredVehicles(String insurance) throws VehicleServiceException, DecoderServiceException {
-        List<Vehicle> vehicles = vehicleRepository.findByInsuranceNameOrderByRegistrationDateDesc(insurance);
+        List<Vehicle> vehicles = vehicleRepository.findByInsuranceIdOrderByRegistrationDateDesc(insurance);
         if(!vehicles.isEmpty()) return new VehicleView().build(decoderService.updateVehicles(vehicles));
         else throw new VehicleServiceException("Error 500: getInsuredVehicles(insurance) returned null");
     }

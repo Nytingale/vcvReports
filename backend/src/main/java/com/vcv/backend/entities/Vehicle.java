@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Vehicles")
+@Table(name = "Vehicle")
 public class Vehicle {
     @Id
     private String vin;
@@ -36,8 +36,8 @@ public class Vehicle {
     private Integer numSalvages;
     private Integer numServices;
     private Integer numOwners;
-    private String insuranceName;
     private String policyNumber;
+    private Long insuranceId;
 
     public String getVin() {
         return vin;
@@ -117,11 +117,11 @@ public class Vehicle {
     public Integer getNumOwners() {
         return numOwners;
     }
-    public String getInsuranceName() {
-        return insuranceName;
-    }
     public String getPolicyNumber() {
         return policyNumber;
+    }
+    public Long getInsuranceId() {
+        return insuranceId;
     }
 
     public void setVin(String vin) {
@@ -202,11 +202,11 @@ public class Vehicle {
     public void setNumOwners(Integer numOwners) {
         this.numOwners = numOwners;
     }
-    public void setInsuranceName(String insuranceName) {
-        this.insuranceName = insuranceName;
-    }
     public void setPolicyNumber(String policyNumber) {
         this.policyNumber = policyNumber;
+    }
+    public void setInsuranceId(Long insuranceId) {
+        this.insuranceId = insuranceId;
     }
 
     @Override
@@ -238,7 +238,7 @@ public class Vehicle {
                 numSalvages,
                 numServices,
                 numOwners,
-                insuranceName,
+                insuranceId,
                 policyNumber);
     }
 
@@ -273,7 +273,7 @@ public class Vehicle {
                 dealership.equals(vehicle.dealership) &&
                 evaluationDate.equals(vehicle.evaluationDate) &&
                 registrationDate.equals(vehicle.registrationDate) &&
-                insuranceName.equals(vehicle.insuranceName) &&
+                insuranceId.equals(vehicle.insuranceId) &&
                 policyNumber.equals(vehicle.policyNumber);
     }
 }

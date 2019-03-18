@@ -23,7 +23,7 @@ public class ClaimView {
         ClaimView view = new ClaimView();
 
         view.claimNumber = claim.getClaimNumber();
-        view.companyName = claim.getCompanyName();
+        view.companyName = claim.getCompanyId();
         view.claimType = claim.getClaimType();
         view.claimDate = dateFormatter.format(claim.getClaimDate().toInstant());
         view.claimDetails = claim.getClaimDetails();

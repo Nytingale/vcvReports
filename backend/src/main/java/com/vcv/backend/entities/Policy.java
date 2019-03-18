@@ -12,10 +12,10 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Policies")
+@Table(name = "Policy")
 @IdClass(Policy.CompositeKey.class)
 public class Policy {
-    @Id private String companyName;
+    @Id private Long companyId;
     @Id private String policyNumber;
 
     private String policyOwner;
@@ -25,8 +25,8 @@ public class Policy {
     private Boolean valid;
     private String vin;
 
-    public String getCompanyName() {
-        return companyName;
+    public Long getCompanyId() {
+        return companyId;
     }
     public String getPolicyNumber() {
         return policyNumber;
@@ -50,8 +50,8 @@ public class Policy {
         return vin;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
     public void setPolicyNumber(String policyNumber) {
         this.policyNumber = policyNumber;
@@ -77,7 +77,7 @@ public class Policy {
 
     @Override
     public int hashCode() {
-        return Objects.hash(companyName, policyNumber, policyOwner, policyDate, policyType, financer, valid, vin);
+        return Objects.hash(companyId, policyNumber, policyOwner, policyDate, policyType, financer, valid, vin);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class Policy {
         if (!(o instanceof Policy)) return false;
         Policy policy = (Policy) o;
         return valid == policy.valid &&
-                companyName.equals(policy.companyName) &&
+                companyId.equals(policy.companyId) &&
                 policyNumber.equals(policy.policyNumber) &&
                 policyOwner.equals(policy.policyOwner) &&
                 policyDate.equals(policy.policyDate) &&
@@ -96,23 +96,23 @@ public class Policy {
     }
 
     public static class CompositeKey implements Serializable {
-        private String companyName;
+        private Long companyId;
         private String policyNumber;
 
         public CompositeKey() {}
-        public CompositeKey(String companyName, String policyNumber) {
-            this.companyName = companyName;
+        public CompositeKey(Long companyId, String policyNumber) {
+            this.companyId = companyId;
             this.policyNumber = policyNumber;
         }
 
-        public String getCompanyName() {
-            return companyName;
+        public Long getCompanyId() {
+            return companyId;
         }
         public String getPolicyNumber() {
             return policyNumber;
         }
-        public void setCompanyName(String companyName) {
-            this.companyName = companyName;
+        public void setCompanyId(Long companyId) {
+            this.companyId = companyId;
         }
         public void setPolicyNumber(String policyNumber) {
             this.policyNumber = policyNumber;

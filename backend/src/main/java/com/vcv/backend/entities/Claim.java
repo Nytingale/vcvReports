@@ -14,11 +14,11 @@ import java.sql.Timestamp;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Claims")
+@Table(name = "Claim")
 @IdClass(Claim.CompositeKey.class)
 public class Claim {
+    @Id private Long companyId;
     @Id private String claimNumber;
-    @Id private String companyName;
 
     private ClaimType claimType;
     private Timestamp claimDate;
@@ -28,11 +28,11 @@ public class Claim {
     private String vin;
     private Long jobId;
 
+    public Long getCompanyId() {
+        return companyId;
+    }
     public String getClaimNumber() {
         return claimNumber;
-    }
-    public String getCompanyName() {
-        return companyName;
     }
     public ClaimType getClaimType() {
         return claimType;
@@ -56,11 +56,11 @@ public class Claim {
         return vin;
     }
 
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
     public void setClaimNumber(String claimNumber) {
         this.claimNumber = claimNumber;
-    }
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
     }
     public void setClaimType(ClaimType claimType) {
         this.claimType = claimType;
@@ -86,7 +86,7 @@ public class Claim {
 
     @Override
     public int hashCode() {
-        return Objects.hash(claimNumber, companyName, claimType, claimDate, claimDetails, policyNumber, value, jobId, vin);
+        return Objects.hash(claimNumber, companyId, claimType, claimDate, claimDetails, policyNumber, value, jobId, vin);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class Claim {
         if (!(o instanceof Claim)) return false;
         Claim claim = (Claim) o;
         return claimNumber.equals(claim.claimNumber) &&
-                companyName.equals(claim.companyName) &&
+                companyId.equals(claim.companyId) &&
                 claimType == claim.claimType &&
                 claimDate.equals(claim.claimDate) &&
                 claimDetails.equals(claim.claimDetails) &&
@@ -106,26 +106,26 @@ public class Claim {
     }
 
     public static class CompositeKey implements Serializable {
+        private Long companyId;
         private String claimNumber;
-        private String companyName;
 
         public CompositeKey() {}
-        public CompositeKey(String claimNumber, String companyName) {
+        public CompositeKey(String claimNumber, Long companyId) {
             this.claimNumber = claimNumber;
-            this.companyName = companyName;
+            this.companyId = companyId;
         }
 
+        public Long getCompanyId() {
+            return companyId;
+        }
         public String getClaimNumber() {
             return claimNumber;
         }
-        public String getCompanyName() {
-            return companyName;
+        public void setCompanyId(Long companyId) {
+            this.companyId = companyId;
         }
         public void setClaimNumber(String claimNumber) {
             this.claimNumber = claimNumber;
-        }
-        public void setCompanyName(String companyName) {
-            this.companyName = companyName;
         }
     }
 }

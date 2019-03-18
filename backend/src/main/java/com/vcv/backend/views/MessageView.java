@@ -78,7 +78,7 @@ public class MessageView {
 
             view.type = user.getCompanyType().toString();
             view.email = user.getEmail();
-            view.company = user.getCompanyName();
+            view.company = user.getCompanyId();
             view.message = new MessageView().build(message);
 
             return view;
@@ -141,7 +141,7 @@ public class MessageView {
         public CompanyReport build(User company, String message) {
             CompanyReport view = new CompanyReport();
 
-            view.name = company.getCompanyName();
+            view.name = company.getCompanyId();
             view.type = company.getCompanyType().toString();
             view.website = company.getWebsite();
             view.message = new MessageView().build(message);
@@ -175,7 +175,7 @@ public class MessageView {
             InsuranceReport view = new InsuranceReport();
 
             view.number = claim.getClaimNumber();
-            view.company = claim.getCompanyName();
+            view.company = claim.getCompanyId();
             view.message = new MessageView().build(message);
 
             return view;
@@ -184,7 +184,7 @@ public class MessageView {
             InsuranceReport view = new InsuranceReport();
 
             view.number = policy.getPolicyNumber();
-            view.company = policy.getCompanyName();
+            view.company = policy.getCompanyId();
             view.message = new MessageView().build(message);
 
             return view;

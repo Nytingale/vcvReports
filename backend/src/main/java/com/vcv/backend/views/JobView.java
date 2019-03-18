@@ -29,8 +29,8 @@ public class JobView {
         view.jobType = job.getJobType();
         view.jobDate = dateFormatter.format(job.getJobDate().toInstant());
         view.jobDetails = job.getJobDetails();
-        view.companyName = job.getCompanyName();
-        view.insuranceName = job.getInsuranceName();
+        view.companyName = job.getCompanyId();
+        view.insuranceName = job.getInsuranceId();
         view.claimNumber = job.getClaimNumber();
         view.vin = job.getVin();
 

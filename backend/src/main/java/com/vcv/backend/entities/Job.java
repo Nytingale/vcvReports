@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Jobs")
+@Table(name = "Job")
 public class Job {
     @Id
     private Long jobId;
@@ -17,10 +17,10 @@ public class Job {
     private JobType jobType;
     private Timestamp jobDate;
     private String jobDetails;
-    private String companyName;
-    private String insuranceName;
     private String claimNumber;
     private String vin;
+    private Long insuranceId;
+    private Long companyId;
 
     public Long getJobId() {
         return jobId;
@@ -37,17 +37,17 @@ public class Job {
     public String getJobDetails() {
         return jobDetails;
     }
-    public String getCompanyName() {
-        return companyName;
-    }
-    public String getInsuranceName() {
-        return insuranceName;
-    }
     public String getClaimNumber() {
         return claimNumber;
     }
     public String getVin() {
         return vin;
+    }
+    public Long getInsuranceId() {
+        return insuranceId;
+    }
+    public Long getCompanyId() {
+        return companyId;
     }
 
     public void setJobId(Long jobId) {
@@ -65,22 +65,22 @@ public class Job {
     public void setJobDetails(String jobDetails) {
         this.jobDetails = jobDetails;
     }
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-    public void setInsuranceName(String insuranceName) {
-        this.insuranceName = insuranceName;
-    }
     public void setClaimNumber(String claimNumber) {
         this.claimNumber = claimNumber;
     }
     public void setVin(String vin) {
         this.vin = vin;
     }
+    public void setInsuranceId(Long insuranceId) {
+        this.insuranceId = insuranceId;
+    }
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(jobId, jobCost, jobType, jobDate, jobDetails, companyName, insuranceName, claimNumber, vin);
+        return Objects.hash(jobId, jobCost, jobType, jobDate, jobDetails, companyId, insuranceId, claimNumber, vin);
     }
 
     @Override
@@ -93,8 +93,8 @@ public class Job {
                 jobType == job.jobType &&
                 jobDate.equals(job.jobDate) &&
                 jobDetails.equals(job.jobDetails) &&
-                companyName.equals(job.companyName) &&
-                Objects.equals(insuranceName, job.insuranceName) &&
+                companyId.equals(job.companyId) &&
+                Objects.equals(insuranceId, job.insuranceId) &&
                 Objects.equals(claimNumber, job.claimNumber) &&
                 vin.equals(job.vin);
     }

@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface PolicyRepository extends PagingAndSortingRepository<Policy, Policy.CompositeKey> {
     Policy findByVin(String vin);
-    Policy findByCompanyNameAndPolicyNumber(String companyName, String policyNumber);
+    Policy findByCompanyIdAndPolicyNumber(Long companyId, String policyNumber);
 
-    List<Policy> findByCompanyNameOrderByPolicyDateDesc(String companyName);
+    List<Policy> findByCompanyIdOrderByPolicyDateDesc(Long companyId);
 }

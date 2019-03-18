@@ -7,10 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends PagingAndSortingRepository<User, User.CompositeKey> {
-    User findByEmailAndCompanyName(String email, String companyName);
-    User findByCompanyNameAndAdmin(String companyName, Integer admin);
+public interface UserRepository extends PagingAndSortingRepository<User, String> {
+    User findByEmail(String email);
+    User findByCompanyId(Long companyId);
 
-    List<User> findByCompanyNameOrderBySubscriptionStartDateDesc(String companyName);
-    List<User> findByAdminOrderBySubscriptionStartDateDesc(Integer admin);
+    List<User> findByCompanyIdOrderBySubscriptionStartDateDesc(Long companyId);
 }

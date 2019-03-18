@@ -3,7 +3,6 @@ package com.vcv.backend.services;
 import com.vcv.backend.configs.FileStorageConfig;
 import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.FileServiceException;
-import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.UserRepository;
 import com.vcv.backend.views.MessageView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +27,12 @@ public class FileService {
         }
 
         // Second, Create the Server-Side File Location and Name based on the Company's Name
-        File targetImage = new File(request.getServletContext().getRealPath(fileStorageConfig.getImagesDir()), admin.getCompanyName());
+        File targetImage = new File(request.getServletContext().getRealPath(fileStorageConfig.getImagesDir()), admin.getCompanyId());
 
         try {
             // Third, Upload the Image to the Server
             image.transferTo(targetImage);
-            return new MessageView.FileUpload().build(image, admin.getCompanyName(), "Successfully Uploaded Image");
+            return new MessageView.FileUpload().build(image, admin.getCompanyId(), "Successfully Uploaded Image");
         } catch(Exception e) {
             throw new FileServiceException("Error 610: uploadImage(admin, image, request) has failed to Upload the Image");
         }

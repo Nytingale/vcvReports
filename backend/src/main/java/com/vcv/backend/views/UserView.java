@@ -28,7 +28,7 @@ public class UserView {
         UserView view = new UserView();
 
         view.email = user.getEmail();
-        view.companyName = user.getCompanyName();
+        view.companyName = user.getCompanyId();
         view.password = user.getPassword();
         view.companyType = user.getCompanyType().toString();
         view.subscriptionStartDate = dateFormatter.format(user.getSubscriptionStartDate().toInstant());
