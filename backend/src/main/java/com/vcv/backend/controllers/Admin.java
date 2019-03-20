@@ -74,6 +74,22 @@ public class Admin {
         }
     }
 
+    @PostMapping("/uploadImage")
+    public MessageView.FileUpload uploadImage(HttpServletRequest request,
+                                              @RequestBody User admin,
+                                              @RequestParam(value = "image", required = false) MultipartFile image) {
+        try {
+            User validAdmin = (User) Utils.isValidEntity(admin);
+            MultipartFile validImage = Utils.isValidImage(image);
+            if(validAdmin!= null && validImage != null) {
+                return fileService.uploadImage(validAdmin, validImage, request);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping("/addEmployee")
     public MessageView.UserReport addEmployee(@RequestBody User admin,
                                               @RequestBody User employee) {
@@ -112,22 +128,6 @@ public class Admin {
             String validWebsite = Utils.isValidString(website);
             if(validAdmin!= null && validWebsite != null) {
                 return companyService.updateWebsite(validAdmin, validWebsite);
-            } else throw new ControllerException("Error 001: No Valid Parameters Used");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @PostMapping("/uploadImage")
-    public MessageView.FileUpload uploadImage(HttpServletRequest request,
-                                              @RequestBody User admin,
-                                              @RequestParam(value = "image", required = false) MultipartFile image) {
-        try {
-            User validAdmin = (User) Utils.isValidEntity(admin);
-            MultipartFile validImage = Utils.isValidImage(image);
-            if(validAdmin!= null && validImage != null) {
-                return fileService.uploadImage(validAdmin, validImage, request);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();
