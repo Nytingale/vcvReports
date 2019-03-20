@@ -1,7 +1,9 @@
 package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Claim;
-import com.vcv.backend.enums.ClaimType;
+import com.vcv.backend.repositories.CompanyRepository;
+import com.vcv.backend.services.CompanyService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -9,11 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClaimView {
+    @Autowired
+    private CompanyRepository companyRepository;
+
     private String claimNumber;
-    private String companyName;
-    private ClaimType claimType;
-    private String claimDate;
-    private String claimDetails;
+    private String company;
+    private String type;
+    private String date;
+    private String details;
     private String policyNumber;
     private String vin;
 
@@ -23,10 +28,10 @@ public class ClaimView {
         ClaimView view = new ClaimView();
 
         view.claimNumber = claim.getClaimNumber();
-        view.companyName = claim.getCompanyId();
-        view.claimType = claim.getClaimType();
-        view.claimDate = dateFormatter.format(claim.getClaimDate().toInstant());
-        view.claimDetails = claim.getClaimDetails();
+        view.company = companyRepository.findById(claim.getCompanyId()).get().getName();
+        view.type = claim.getClaimType().toString();
+        view.date = dateFormatter.format(claim.getClaimDate().toInstant());
+        view.details = claim.getClaimDetails();
         view.policyNumber = claim.getPolicyNumber();
         view.vin = claim.getVin();
 

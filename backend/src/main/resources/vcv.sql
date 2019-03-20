@@ -135,9 +135,9 @@ ALTER TABLE `Vehicle` ADD CONSTRAINT vehicle_policy_fk FOREIGN KEY(policy_number
 # ==============================================================
 # = Adding in Roles
 # ==============================================================
-INSERT INTO Role VALUES (1, 1, 0, 0);
-INSERT INTO Role VALUES (2, 0, 1, 0);
-INSERT INTO Role VALUES (3, 0, 0, 1);
+INSERT INTO Role VALUES (1, 1, 0, 0);               # = User
+INSERT INTO Role VALUES (2, 0, 1, 0);               # = Admin
+INSERT INTO Role VALUES (3, 0, 0, 1);               # = Staff
 
 # ==============================================================
 # = Dummy Data for Demo

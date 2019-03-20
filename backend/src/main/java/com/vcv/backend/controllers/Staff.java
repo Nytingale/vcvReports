@@ -1,9 +1,12 @@
 package com.vcv.backend.controllers;
 
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.ControllerException;
+import com.vcv.backend.services.CompanyService;
 import com.vcv.backend.services.UserService;
 import com.vcv.backend.utilities.Utils;
+import com.vcv.backend.views.CompanyView;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +18,8 @@ import java.util.List;
 @RequestMapping(value = "/staff")
 public class Staff {
 
-    @Autowired
-    private UserService userService;
+    @Autowired private UserService       userService;
+    @Autowired private CompanyService companyService;
 
     @PostMapping("/getUsers")
     public List<UserView> getUsers(@RequestBody User vcv) {
@@ -48,14 +51,12 @@ public class Staff {
 
     @PostMapping("/searchForUser")
     public UserView searchForUser(@RequestBody User vcv,
-                                  @RequestParam(value = "email", required = false) String email,
-                                  @RequestParam(value = "company", required = false) String company) {
+                                  @RequestParam(value = "email", required = false) String email) {
         try {
             User validVcv = (User) Utils.isValidEntity(vcv);
             String validEmail = Utils.isValidEmail(email);
-            String validCompany = Utils.isValidString(company);
-            if(validVcv != null && validEmail != null && validCompany != null) {
-                return userService.searchForUser(validVcv, validEmail, validCompany);
+            if(validVcv != null && validEmail != null) {
+                return userService.searchForUser(validVcv, validEmail);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -64,13 +65,13 @@ public class Staff {
     }
 
     @PostMapping("/searchForCompany")
-    public UserView.CompanyView searchForCompany(@RequestBody User vcv,
-                                                 @RequestParam(value = "company", required = false) String company) {
+    public CompanyView searchForCompany(@RequestBody User vcv,
+                                        @RequestParam(value = "company", required = false) String company) {
         try {
             User validVcv = (User) Utils.isValidEntity(vcv);
             String validCompany = Utils.isValidString(company);
             if(validVcv != null && validCompany != null) {
-                return userService.searchForCompany(validVcv, validCompany);
+                return companyService.searchForCompany(validVcv, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -80,12 +81,14 @@ public class Staff {
 
     @PostMapping("/registerCompany")
     public MessageView.CompanyReport registerCompany(@RequestBody User vcv,
-                                                     @RequestBody User company) {
+                                                     @RequestBody User admin,
+                                                     @RequestBody Company company) {
         try {
             User validVcv = (User) Utils.isValidEntity(vcv);
-            User validCompany = (User) Utils.isValidEntity(company);
-            if(validVcv != null && validCompany != null) {
-                return userService.registerCompany(validVcv, validCompany);
+            User validAdmin = (User) Utils.isValidEntity(admin);
+            Company validCompany = (Company) Utils.isValidEntity(company);
+            if(validVcv != null && validAdmin != null && validCompany != null) {
+                return companyService.registerCompany(validVcv, validAdmin, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -100,7 +103,7 @@ public class Staff {
             User validVcv = (User) Utils.isValidEntity(vcv);
             String validCompany = Utils.isValidString(company);
             if(validVcv != null && validCompany != null) {
-                return userService.approveCompany(validVcv, validCompany);
+                return companyService.approveCompany(validVcv, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -115,7 +118,7 @@ public class Staff {
             User validVcv = (User) Utils.isValidEntity(vcv);
             String validCompany = Utils.isValidString(company);
             if(validVcv != null && validCompany != null) {
-                return userService.blacklistCompany(validVcv, validCompany);
+                return companyService.blacklistCompany(validVcv, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();

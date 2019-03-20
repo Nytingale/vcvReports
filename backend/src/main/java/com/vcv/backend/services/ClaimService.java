@@ -1,6 +1,7 @@
 package com.vcv.backend.services;
 
 import com.vcv.backend.entities.Claim;
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.Job;
 import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.ClaimServiceException;
@@ -24,10 +25,11 @@ public class ClaimService {
     @Autowired private VehicleRepository vehicleRepository;
 
     /* Portal (Insurance) */
-    public List<ClaimView> getInsuranceClaims(String company) throws ClaimServiceException {
-        List<Claim> claims = claimRepository.findByCompanyIdOrderByClaimDateDesc(company);
+    public List<ClaimView> getInsuranceClaims(String insurance) throws ClaimServiceException {
+        Company company = companyRepository.findByName(insurance);
+        List<Claim> claims = claimRepository.findByCompanyIdOrderByClaimDateDesc(company.getId());
         if(!claims.isEmpty()) return new ClaimView().build(claims);
-        else throw new ClaimServiceException("Error 100: getInsuranceClaims(company) returned null");
+        else throw new ClaimServiceException("Error 100: getInsuranceClaims(insurance) returned null");
     }
 
     public MessageView.InsuranceReport addClaim(Claim claim) throws ClaimServiceException {
@@ -75,27 +77,31 @@ public class ClaimService {
 
     public MessageView.InsuranceReport linkJobToClaim(Long id,
                                                       String number,
-                                                      String company) throws ClaimServiceException {
+                                                      String insurance) throws ClaimServiceException {
         // First, Confirm that the Job Exists
         Optional<Job> job = jobRepository.findById(id);
-        if(job.isEmpty()) throw new ClaimServiceException("Error 105: linkJobToClaim(id, number, company) failed to find a matching Job that exists");
+        if(job.isEmpty()) throw new ClaimServiceException("Error 105: linkJobToClaim(id, number, insurance) failed to find a matching Job that exists");
 
-        // Second, Confirm that the Claim Exists
-        Optional<Claim> claim = claimRepository.findById(new Claim.CompositeKey(number, company));
-        if(claim.isEmpty()) throw new ClaimServiceException("Error 110: linkJobToClaim(id, number, company) failed to find a matching Claim that exists");
+        // Second, Find the Insurance Company
+        Company company = companyRepository.findByName(insurance);
+        if(company == null) throw new ClaimServiceException("Error 110: linkJobToClaim(id, number, insurance) failed to find a matching Company by that name");
 
-        // Third, Link the Job to the Claim and the Claim to the Job in their respective FKs
+        // Third, Confirm that the Claim Exists
+        Optional<Claim> claim = claimRepository.findById(new Claim.CompositeKey(number, company.getId()));
+        if(claim.isEmpty()) throw new ClaimServiceException("Error 115: linkJobToClaim(id, number, insurance) failed to find a matching Claim that exists");
+
+        // Fourth, Link the Job to the Claim and the Claim to the Job in their respective FKs
         job.get().setClaimNumber(claim.get().getClaimNumber());
         claim.get().setJobId(job.get().getJobId());
 
         try {
-            // Fourth, Save the Changes to Both the Claim and the Job
+            // Fifth, Save the Changes to Both the Claim and the Job
             jobRepository.save(job.get());
             claimRepository.save(claim.get());
             return new MessageView.InsuranceReport().build(claim.get(), "Successfully Linked Job to Claim");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new ClaimServiceException("Error 115: linkJobToClaim(id, number, company) failed to save the Updates to the Job and Claim");
+            throw new ClaimServiceException("Error 120: linkJobToClaim(id, number, insurance) failed to save the Updates to the Job and Claim");
         }
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<User, String> {
     User findByEmail(String email);
-    User findByCompanyId(Long companyId);
+    User findByEmailAndCompanyId(String email, Long companyId);
 
     List<User> findByCompanyIdOrderBySubscriptionStartDateDesc(Long companyId);
 }

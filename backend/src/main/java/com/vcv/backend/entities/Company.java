@@ -13,6 +13,7 @@ import java.util.Objects;
 public class Company {
     @Id
     private Long id;
+    private String name;
     private CompanyType type;
     private Timestamp subscriptionStartDate;
     private Timestamp subscriptionEndDate;
@@ -24,6 +25,9 @@ public class Company {
 
     public Long getId() {
         return id;
+    }
+    public String getName() {
+        return name;
     }
     public CompanyType getType() {
         return type;
@@ -52,6 +56,9 @@ public class Company {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
     public void setType(CompanyType type) {
         this.type = type;

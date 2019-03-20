@@ -16,8 +16,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/admin")
 public class Admin {
-    @Autowired private FileService fileService;
-    @Autowired private UserService userService;
+    @Autowired private FileService       fileService;
+    @Autowired private UserService       userService;
+    @Autowired private CompanyService companyService;
 
     @PostMapping("/getEmployees")
     public List<UserView> getEmployees(@RequestBody User admin) {
@@ -33,11 +34,11 @@ public class Admin {
     }
 
     @PostMapping("/renewSubscription")
-    public UserView.SubscriptionConsole rewnewSubscription(@RequestBody User admin) {
+    public MessageView.CompanyReport rewnewSubscription(@RequestBody User admin) {
         try {
             User validAdmin = (User) Utils.isValidEntity(admin);
             if(validAdmin != null) {
-                return userService.renewSubscription(validAdmin);
+                return companyService.renewSubscription(validAdmin);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -46,11 +47,11 @@ public class Admin {
     }
 
     @PostMapping("/cancelSubscription")
-    public UserView.SubscriptionConsole cancelSubscription(@RequestBody User admin) {
+    public MessageView.CompanyReport cancelSubscription(@RequestBody User admin) {
         try {
             User validAdmin = (User) Utils.isValidEntity(admin);
             if(validAdmin != null) {
-                return userService.cancelSubscription(validAdmin);
+                return companyService.cancelSubscription(validAdmin);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -110,7 +111,7 @@ public class Admin {
             User validAdmin = (User) Utils.isValidEntity(admin);
             String validWebsite = Utils.isValidString(website);
             if(validAdmin!= null && validWebsite != null) {
-                return userService.updateWebsite(validAdmin, validWebsite);
+                return companyService.updateWebsite(validAdmin, validWebsite);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

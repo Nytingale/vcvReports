@@ -1,7 +1,8 @@
 package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Job;
-import com.vcv.backend.enums.JobType;
+import com.vcv.backend.repositories.CompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -9,14 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JobView {
-    private Long jobId;
-    private Integer jobCost;
-    private JobType jobType;
-    private String jobDate;
-    private String jobDetails;
-    private String companyName;
-    private String insuranceName;
-    private String claimNumber;
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    private Integer cost;
+    private String type;
+    private String date;
+    private String details;
+    private String garage;
+    private String insurance;
+    private String claim;
     private String vin;
 
     public JobView() {}
@@ -24,14 +27,13 @@ public class JobView {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
         JobView view = new JobView();
 
-        view.jobId = job.getJobId();
-        view.jobCost = job.getJobCost();
-        view.jobType = job.getJobType();
-        view.jobDate = dateFormatter.format(job.getJobDate().toInstant());
-        view.jobDetails = job.getJobDetails();
-        view.companyName = job.getCompanyId();
-        view.insuranceName = job.getInsuranceId();
-        view.claimNumber = job.getClaimNumber();
+        view.cost = job.getJobCost();
+        view.type = job.getJobType().toString();
+        view.date = dateFormatter.format(job.getJobDate().toInstant());
+        view.details = job.getJobDetails();
+        view.garage = companyRepository.findById(job.getCompanyId()).get().getName();
+        view.insurance = companyRepository.findById(job.getInsuranceId()).get().getName();
+        view.claim = job.getClaimNumber();
         view.vin = job.getVin();
 
         return view;

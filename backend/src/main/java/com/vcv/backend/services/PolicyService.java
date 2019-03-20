@@ -1,8 +1,10 @@
 package com.vcv.backend.services;
 
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.Policy;
 import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.PolicyServiceException;
+import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.PolicyRepository;
 import com.vcv.backend.repositories.VehicleRepository;
 import com.vcv.backend.views.MessageView;
@@ -15,13 +17,15 @@ import java.util.List;
 @Service
 public class PolicyService {
     @Autowired private PolicyRepository policyRepository;
+    @Autowired private CompanyRepository companyRepository;
     @Autowired private VehicleRepository vehicleRepository;
 
     /* Portal (Insurance) */
-    public List<PolicyView> getInsurancePolicies(String company) throws PolicyServiceException {
-        List<Policy> policies = policyRepository.findByCompanyIdOrderByPolicyDateDesc(company);
+    public List<PolicyView> getInsurancePolicies(String insurance) throws PolicyServiceException {
+        Company company = companyRepository.findByName(insurance);
+        List<Policy> policies = policyRepository.findByCompanyIdOrderByPolicyDateDesc(company.getId());
         if(!policies.isEmpty()) return new PolicyView().build(policies);
-        else throw new PolicyServiceException("Error 300: getInsurancePolicies(company) returned null");
+        else throw new PolicyServiceException("Error 300: getInsurancePolicies(insurance) returned null");
     }
 
     public MessageView.InsuranceReport addPolicy(Policy policy) throws PolicyServiceException {
@@ -38,7 +42,6 @@ public class PolicyService {
         if(policyDB.getVin().equals(vehicle.getVin())) {
             policy.setValid(true);
             policyDB.setValid(false);
-            policyRepository.save(policyDB);
         }
 
         try {

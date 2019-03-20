@@ -24,7 +24,12 @@ public class Utils {
 
     public static Boolean isValidStaff(User vcv) {
         if(vcv == null) return false;
-        else return vcv.getCompanyType().toString().equals(CompanyType.VCV_STAFF.toString());
+        else return vcv.getRoleId().equals(3L);
+    }
+
+    public static Boolean isValidStaffOrAdmin(User user) {
+        if(user == null) return false;
+        else return user.getRoleId() > 1L;
     }
 
     public static String isValidVin(String vin) {
@@ -68,6 +73,9 @@ public class Utils {
             if(entity instanceof Job) {
                 Field[] jobFields = Job.class.getDeclaredFields();
                 if(Arrays.equals(entityFields, jobFields)) return entity;
+            } else if(entity instanceof Role) {
+                Field[] roleFields = Role.class.getDeclaredFields();
+                if(Arrays.equals(entityFields, roleFields)) return entity;
             } else if(entity instanceof User) {
                 Field[] userFields = User.class.getDeclaredFields();
                 if(Arrays.equals(entityFields, userFields)) return entity;
@@ -80,6 +88,9 @@ public class Utils {
             } else if(entity instanceof Vehicle) {
                 Field[] vehicleFields = Vehicle.class.getDeclaredFields();
                 if (Arrays.equals(entityFields, vehicleFields)) return entity;
+            } else if(entity instanceof Company) {
+                Field[] companyFields = Company.class.getDeclaredFields();
+                if (Arrays.equals(entityFields, companyFields)) return entity;
             }
         }
         return null;

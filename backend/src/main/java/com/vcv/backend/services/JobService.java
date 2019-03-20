@@ -1,9 +1,11 @@
 package com.vcv.backend.services;
 
 import com.vcv.backend.entities.Claim;
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.Job;
 import com.vcv.backend.exceptions.JobServiceException;
 import com.vcv.backend.repositories.ClaimRepository;
+import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.JobRepository;
 import com.vcv.backend.views.JobView;
 import com.vcv.backend.views.MessageView;
@@ -16,10 +18,12 @@ import java.util.List;
 public class JobService {
     @Autowired private JobRepository jobRepository;
     @Autowired private ClaimRepository claimRepository;
+    @Autowired private CompanyRepository companyRepository;
 
     /* Portal (Mechanics/Garages) */
     public List<JobView> getMechanicJobs(String garage) throws JobServiceException {
-        List<Job> jobs = jobRepository.findByCompanyIdOrderByJobIdDesc(garage);
+        Company company = companyRepository.findByName(garage);
+        List<Job> jobs = jobRepository.findByCompanyIdOrderByJobIdDesc(company.getId());
         if(jobs.isEmpty()) return new JobView().build(jobs);
         else throw new JobServiceException("Error 200: getMechanicJobs(garage) returned null");
     }

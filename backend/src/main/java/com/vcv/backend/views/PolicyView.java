@@ -1,6 +1,8 @@
 package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Policy;
+import com.vcv.backend.repositories.CompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -8,9 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PolicyView {
-    private String companyName;
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    private String company;
     private String policyNumber;
-    private String policyDate;
+    private String date;
     private String financer;
     private Boolean valid;
     private String vin;
@@ -20,9 +25,9 @@ public class PolicyView {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
         PolicyView view = new PolicyView();
 
-        view.companyName = policy.getCompanyId();
+        view.company = companyRepository.findById(policy.getCompanyId()).get().getName();
         view.policyNumber = policy.getPolicyNumber();
-        view.policyDate = dateFormatter.format(policy.getPolicyDate().toInstant());
+        view.date = dateFormatter.format(policy.getPolicyDate().toInstant());
         view.financer = policy.getFinancer();
         view.valid = policy.isValid();
         view.vin = policy.getVin();

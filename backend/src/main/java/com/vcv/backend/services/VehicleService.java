@@ -1,8 +1,10 @@
 package com.vcv.backend.services;
 
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.DecoderServiceException;
 import com.vcv.backend.exceptions.VehicleServiceException;
+import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.VehicleRepository;
 
 import com.vcv.backend.views.MessageView;
@@ -16,6 +18,7 @@ import java.util.List;
 @Service
 public class VehicleService {
     @Autowired private DecoderService decoderService;
+    @Autowired private CompanyRepository companyRepository;
     @Autowired private VehicleRepository vehicleRepository;
 
     /* Portal (Dealerships) */
@@ -42,7 +45,8 @@ public class VehicleService {
 
     /* Portal (Insurance) */
     public List<VehicleView> getInsuredVehicles(String insurance) throws VehicleServiceException, DecoderServiceException {
-        List<Vehicle> vehicles = vehicleRepository.findByInsuranceIdOrderByRegistrationDateDesc(insurance);
+        Company company = companyRepository.findByName(insurance);
+        List<Vehicle> vehicles = vehicleRepository.findByInsuranceIdOrderByRegistrationDateDesc(company.getId());
         if(!vehicles.isEmpty()) return new VehicleView().build(decoderService.updateVehicles(vehicles));
         else throw new VehicleServiceException("Error 500: getInsuredVehicles(insurance) returned null");
     }

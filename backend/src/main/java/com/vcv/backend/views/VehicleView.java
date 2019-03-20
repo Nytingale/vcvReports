@@ -3,6 +3,8 @@ package com.vcv.backend.views;
 import com.vcv.backend.entities.Claim;
 import com.vcv.backend.entities.Job;
 import com.vcv.backend.entities.Vehicle;
+import com.vcv.backend.repositories.CompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -10,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VehicleView {
+    @Autowired
+    private CompanyRepository companyRepository;
+
     private String vin;
     private Integer year;
     private String make;
@@ -36,7 +41,7 @@ public class VehicleView {
     private Integer numSalvages;
     private Integer numServices;
     private Integer numOwners;
-    private String insuranceName;
+    private String insurance;
     private String policyNumber;
 
     public VehicleView() {}
@@ -70,7 +75,7 @@ public class VehicleView {
         view.numSalvages = vehicle.getNumSalvages();
         view.numServices = vehicle.getNumServices();
         view.numOwners = vehicle.getNumOwners();
-        view.insuranceName = vehicle.getInsuranceId();
+        view.insurance = companyRepository.findById(vehicle.getInsuranceId()).get().getName();
         view.policyNumber = vehicle.getPolicyNumber();
 
         return view;

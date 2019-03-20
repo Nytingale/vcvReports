@@ -1,7 +1,12 @@
 package com.vcv.backend.views;
 
 import com.vcv.backend.entities.*;
+import com.vcv.backend.repositories.CompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 public class MessageView {
     private String message;
@@ -67,7 +72,9 @@ public class MessageView {
         }
     }
     public static class UserReport {
-        private String type;
+        @Autowired
+        private CompanyRepository companyRepository;
+
         private String email;
         private String company;
         private MessageView message;
@@ -76,9 +83,8 @@ public class MessageView {
         public UserReport build(User user, String message) {
             UserReport view = new UserReport();
 
-            view.type = user.getCompanyType().toString();
             view.email = user.getEmail();
-            view.company = user.getCompanyId();
+            view.company = companyRepository.findById(user.getCompanyId()).get().getName();
             view.message = new MessageView().build(message);
 
             return view;
@@ -135,15 +141,20 @@ public class MessageView {
         private String name;
         private String type;
         private String website;
+        private String subscriptionStartDate;
+        private String subscriptionEndDate;
         private MessageView message;
 
         public CompanyReport() {}
-        public CompanyReport build(User company, String message) {
+        public CompanyReport build(Company company, String message) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
             CompanyReport view = new CompanyReport();
 
-            view.name = company.getCompanyId();
-            view.type = company.getCompanyType().toString();
+            view.name = company.getName();
+            view.type = company.getType().toString();
             view.website = company.getWebsite();
+            view.subscriptionStartDate = dateFormatter.format(company.getSubscriptionStartDate().toInstant());
+            view.subscriptionEndDate = dateFormatter.format(company.getSubscriptionEndDate().toInstant());
             view.message = new MessageView().build(message);
 
             return view;
@@ -166,6 +177,9 @@ public class MessageView {
         }
     }
     public static class InsuranceReport {
+        @Autowired
+        private CompanyRepository companyRepository;
+
         private String number;
         private String company;
         private MessageView message;
@@ -175,7 +189,7 @@ public class MessageView {
             InsuranceReport view = new InsuranceReport();
 
             view.number = claim.getClaimNumber();
-            view.company = claim.getCompanyId();
+            view.company = companyRepository.findById(claim.getCompanyId()).get().getName();
             view.message = new MessageView().build(message);
 
             return view;
@@ -184,7 +198,7 @@ public class MessageView {
             InsuranceReport view = new InsuranceReport();
 
             view.number = policy.getPolicyNumber();
-            view.company = policy.getCompanyId();
+            view.company = companyRepository.findById(policy.getCompanyId()).get().getName();
             view.message = new MessageView().build(message);
 
             return view;

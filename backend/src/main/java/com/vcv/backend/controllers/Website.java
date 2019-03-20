@@ -15,19 +15,20 @@ import java.util.List;
 
 @RestController
 public class Website {
-    @Autowired private JobService     jobService;
-    @Autowired private UserService    userService;
-    @Autowired private ClaimService   claimService;
-    @Autowired private PolicyService  policyService;
+    @Autowired private JobService         jobService;
+    @Autowired private UserService       userService;
+    @Autowired private ClaimService     claimService;
+    @Autowired private PolicyService   policyService;
     @Autowired private VehicleService vehicleService;
+    @Autowired private CompanyService companyService;
 
     /* Casual Users */
     @GetMapping("/getWebsite")
-    public UserView.CompanyView getWebsite(@RequestParam(value = "company", required = false) String company) {
+    public CompanyView getWebsite(@RequestParam(value = "company", required = false) String company) {
         try {
             String validCompany = Utils.isValidString(company);
             if(validCompany != null) {
-                return userService.getWebsite(validCompany);
+                return companyService.getWebsite(validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();
