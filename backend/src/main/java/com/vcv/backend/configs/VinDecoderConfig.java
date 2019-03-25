@@ -32,17 +32,17 @@ public class VinDecoderConfig {
     }
 
     public String info(String vin) {
-        String hash = DigestUtils.sha1Hex("info-" + vin + "|" + apiKey + "|" + secretKey).substring(0, 10);
+        String hash = DigestUtils.shaHex("info-" + vin + "|" + apiKey + "|" + secretKey).substring(0, 10);
         return url + "/" + apiKey + "/" + hash + "/decode/info/" + vin + ".json";
     }
 
     public String decode(String vin) {
-        String hash = DigestUtils.sha1Hex(vin + "|" + apiKey + "|" + secretKey).substring(0, 10);
+        String hash = DigestUtils.shaHex(vin + "|" + apiKey + "|" + secretKey).substring(0, 10);
         return url + "/" + apiKey + "/" + hash + "/decode/" + vin + ".json";
     }
 
     public String balance() {
-        String hash = DigestUtils.sha1Hex("balance|" + apiKey + "|" + secretKey).substring(0, 10);
+        String hash = DigestUtils.shaHex("balance|" + apiKey + "|" + secretKey).substring(0, 10);
         return url + "/" + apiKey + "/" + hash + "balance.json";
     }
 }

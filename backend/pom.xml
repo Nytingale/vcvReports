@@ -14,6 +14,7 @@
         <java.version>11</java.version>
 
         <org.springboot.version>2.1.3.RELEASE</org.springboot.version>
+        <org.springsecurity.version>5.1.4.RELEASE</org.springsecurity.version>
     </properties>
 
     <build>
@@ -55,8 +56,18 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${org.springsecurity.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>5.1.4.RELEASE</version>
+            <version>${org.springsecurity.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${org.springsecurity.version}</version>
         </dependency>
 
         <!--MariaDB-->
@@ -64,6 +75,18 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>2.4.0</version>
+        </dependency>
+
+        <!--Swagger-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
         </dependency>
 
         <!--Miscellaneous-->
@@ -83,14 +106,9 @@
             <version>20180813</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons.io</groupId>
-            <artifactId>commonsIO</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.12</version>
+            <version>1.4</version>
         </dependency>
     </dependencies>
 </project>
