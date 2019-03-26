@@ -84,7 +84,7 @@ public class MessageView {
             UserReport view = new UserReport();
 
             view.email = user.getEmail();
-            view.company = companyRepository.findById(user.getCompanyId()).get().getName();
+            view.company = companyRepository.findById(user.getCompanyId()).get().getCompanyName();
             view.message = new MessageView().build(message);
 
             return view;
@@ -150,8 +150,8 @@ public class MessageView {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
             CompanyReport view = new CompanyReport();
 
-            view.name = company.getName();
-            view.type = company.getType().toString();
+            view.name = company.getCompanyName();
+            view.type = company.getCompanyType().toString();
             view.website = company.getWebsite();
             view.subscriptionStartDate = dateFormatter.format(company.getSubscriptionStartDate().toInstant());
             view.subscriptionEndDate = dateFormatter.format(company.getSubscriptionEndDate().toInstant());
@@ -189,7 +189,7 @@ public class MessageView {
             InsuranceReport view = new InsuranceReport();
 
             view.number = claim.getClaimNumber();
-            view.company = companyRepository.findById(claim.getCompanyId()).get().getName();
+            view.company = companyRepository.findById(claim.getCompanyId()).get().getCompanyName();
             view.message = new MessageView().build(message);
 
             return view;
@@ -198,7 +198,7 @@ public class MessageView {
             InsuranceReport view = new InsuranceReport();
 
             view.number = policy.getPolicyNumber();
-            view.company = companyRepository.findById(policy.getCompanyId()).get().getName();
+            view.company = companyRepository.findById(policy.getCompanyId()).get().getCompanyName();
             view.message = new MessageView().build(message);
 
             return view;

@@ -24,8 +24,8 @@ public class CompanyView {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
         CompanyView view = new CompanyView();
 
-        view.name = company.getName();
-        view.type = company.getType().toString();
+        view.name = company.getCompanyName();
+        view.type = company.getCompanyType().toString();
         view.subscriptionStartDate = dateFormatter.format(company.getSubscriptionStartDate().toInstant());
         view.subscriptionEndDate = dateFormatter.format(company.getSubscriptionEndDate().toInstant());
         view.blacklisted = company.getBlacklisted();

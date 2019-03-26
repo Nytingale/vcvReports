@@ -13,8 +13,8 @@ import java.util.Objects;
 public class Company {
     @Id
     private Long id;
-    private String name;
-    private CompanyType type;
+    private String companyName;
+    private CompanyType companyType;
     private Timestamp subscriptionStartDate;
     private Timestamp subscriptionEndDate;
     private Integer rating;
@@ -26,11 +26,11 @@ public class Company {
     public Long getId() {
         return id;
     }
-    public String getName() {
-        return name;
+    public String getCompanyName() {
+        return companyName;
     }
-    public CompanyType getType() {
-        return type;
+    public CompanyType getCompanyType() {
+        return companyType;
     }
     public Timestamp getSubscriptionStartDate() {
         return subscriptionStartDate;
@@ -57,11 +57,11 @@ public class Company {
     public void setId(Long id) {
         this.id = id;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
-    public void setType(CompanyType type) {
-        this.type = type;
+    public void setCompanyType(CompanyType companyType) {
+        this.companyType = companyType;
     }
     public void setSubscriptionStartDate(Timestamp subscriptionStartDate) {
         this.subscriptionStartDate = subscriptionStartDate;
@@ -87,7 +87,7 @@ public class Company {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, subscriptionStartDate, subscriptionEndDate, rating, website, admin, blacklisted, valid);
+        return Objects.hash(id, companyType, subscriptionStartDate, subscriptionEndDate, rating, website, admin, blacklisted, valid);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class Company {
         if (o == null || getClass() != o.getClass()) return false;
         Company company = (Company) o;
         return id.equals(company.id) &&
-                type == company.type &&
+                companyType == company.companyType &&
                 subscriptionStartDate.equals(company.subscriptionStartDate) &&
                 subscriptionEndDate.equals(company.subscriptionEndDate) &&
                 rating.equals(company.rating) &&

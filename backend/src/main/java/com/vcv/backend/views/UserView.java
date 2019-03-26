@@ -1,12 +1,9 @@
 package com.vcv.backend.views;
 
-import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.User;
 import com.vcv.backend.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -27,7 +24,7 @@ public class UserView {
         UserView view = new UserView();
 
         view.email = user.getEmail();
-        view.company = companyRepository.findById(user.getCompanyId()).get().getName();;
+        view.company = companyRepository.findById(user.getCompanyId()).get().getCompanyName();;
         view.password = user.getPassword();
 
         if(user.getRoleId() == 1L) view.role = "User";

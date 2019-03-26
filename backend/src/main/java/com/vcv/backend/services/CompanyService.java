@@ -3,13 +3,11 @@ package com.vcv.backend.services;
 import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.CompanyServiceException;
-import com.vcv.backend.exceptions.CompanyServiceException;
 import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.UserRepository;
 import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.CompanyView;
 import com.vcv.backend.views.MessageView;
-import com.vcv.backend.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
@@ -46,7 +44,7 @@ public class CompanyService {
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: registerCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that no Company with this Name
-        Company companyDB = companyRepository.findByName(company.getName());
+        Company companyDB = companyRepository.findByName(company.getCompanyName());
         if(companyDB != null) throw new CompanyServiceException("Error 805: registerCompany(vcv, company) has found an already-existing Company with this Name");
 
         try {

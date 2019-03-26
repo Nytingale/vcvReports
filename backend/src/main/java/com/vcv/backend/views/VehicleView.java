@@ -75,7 +75,7 @@ public class VehicleView {
         view.numSalvages = vehicle.getNumSalvages();
         view.numServices = vehicle.getNumServices();
         view.numOwners = vehicle.getNumOwners();
-        view.insurance = companyRepository.findById(vehicle.getInsuranceId()).get().getName();
+        view.insurance = companyRepository.findById(vehicle.getInsuranceId()).get().getCompanyName();
         view.policyNumber = vehicle.getPolicyNumber();
 
         return view;

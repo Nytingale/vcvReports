@@ -35,12 +35,12 @@ public class FileService {
         if(company.isEmpty()) throw new FileServiceException("Error 610: uploadImage(admin, image, request) could not find the Admin's Company");
 
         // Third, Create the Server-Side File Location and Name based on the Company's Name
-        File targetImage = new File(request.getServletContext().getRealPath(fileStorageConfig.getImagesDir()), company.get().getName());
+        File targetImage = new File(request.getServletContext().getRealPath(fileStorageConfig.getImagesDir()), company.get().getCompanyName());
 
         try {
             // Fourth, Upload the Image to the Server
             image.transferTo(targetImage);
-            return new MessageView.FileUpload().build(image, company.get().getName(), "Successfully Uploaded Image");
+            return new MessageView.FileUpload().build(image, company.get().getCompanyName(), "Successfully Uploaded Image");
         } catch(Exception e) {
             throw new FileServiceException("Error 615: uploadImage(admin, image, request) has failed to Upload the Image");
         }

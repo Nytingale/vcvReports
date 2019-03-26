@@ -2,7 +2,6 @@ package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Claim;
 import com.vcv.backend.repositories.CompanyRepository;
-import com.vcv.backend.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.format.DateTimeFormatter;
@@ -28,7 +27,7 @@ public class ClaimView {
         ClaimView view = new ClaimView();
 
         view.claimNumber = claim.getClaimNumber();
-        view.company = companyRepository.findById(claim.getCompanyId()).get().getName();
+        view.company = companyRepository.findById(claim.getCompanyId()).get().getCompanyName();
         view.type = claim.getClaimType().toString();
         view.date = dateFormatter.format(claim.getClaimDate().toInstant());
         view.details = claim.getClaimDetails();
