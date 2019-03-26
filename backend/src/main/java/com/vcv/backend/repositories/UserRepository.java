@@ -11,5 +11,5 @@ public interface UserRepository extends PagingAndSortingRepository<User, String>
     User findByEmail(String email);
     User findByEmailAndCompanyId(String email, Long companyId);
 
-    List<User> findByCompanyIdOrderBySubscriptionStartDateDesc(Long companyId);
+    List<User> findByCompanyId(Long companyId);
 }

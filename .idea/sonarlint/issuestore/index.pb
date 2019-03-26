@@ -27,8 +27,6 @@ C
 backend/pom.xml,f/9/f9590cd73598b6f2427c8b1327d922c50d1dc504
 a
 1.idea/libraries/Maven__org_json_json_20180813.xml,9/0/904bbc1e03d5309903bff3c8eb7281811a6365fa
-q
-Abackend/src/main/java/com/vcv/backend/controllers/Controller.java,9/3/93d2e8e0ca550c5c5a850a0f5e639a04bdac2e71
 i
 9backend/src/main/java/com/vcv/backend/entities/Claim.java,d/2/d208605d7ea610afba8ad3dd5cd365c98c4da846
 j
@@ -55,8 +53,6 @@ k
 ;backend/src/main/java/com/vcv/backend/enums/PolicyType.java,9/5/956c5ecfc7a371a7c87ad01301c4f554658ce355
 l
 <backend/src/main/java/com/vcv/backend/enums/CompanyType.java,c/6/c657ea7a3532cdd946791f78f92d38aa088cb765
-Y
-)backend/src/main/resources/vcvReports.sql,e/3/e35887968717f9cdfb969ff5f07ecc29221c7413
 j
 :backend/src/main/java/com/vcv/backend/enums/ClaimType.java,e/0/e0cac47fb4fd43893b92c69d2bb5c7452964d5bf
 q
@@ -85,3 +81,9 @@ x
 Hbackend/src/main/java/com/vcv/backend/repositories/PolicyRepository.java,4/a/4ab7bd7a7560c0662256b7cb32b9cee290149fdd
 @
 frontend/pom.xml,d/6/d6193ec3edfd8c416bb7a1164257c50166469ff6
+s
+Cbackend/src/main/java/com/vcv/backend/configs/VinDecoderConfig.java,9/5/9544a12f86d76b750965ac300177269d9961736f
+o
+?backend/src/main/java/com/vcv/backend/services/FileService.java,7/8/78228bdd173f1ab16cf3cbe418982b8f8c42a063
+r
+Bbackend/src/main/java/com/vcv/backend/services/DecoderService.java,8/d/8d08643559a3697a7c3de7c82a52420cff6efc15

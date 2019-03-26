@@ -26,7 +26,7 @@ public class ClaimService {
 
     /* Portal (Insurance) */
     public List<ClaimView> getInsuranceClaims(String insurance) throws ClaimServiceException {
-        Company company = companyRepository.findByName(insurance);
+        Company company = companyRepository.findByCompanyName(insurance);
         List<Claim> claims = claimRepository.findByCompanyIdOrderByClaimDateDesc(company.getId());
         if(!claims.isEmpty()) return new ClaimView().build(claims);
         else throw new ClaimServiceException("Error 100: getInsuranceClaims(insurance) returned null");
@@ -83,7 +83,7 @@ public class ClaimService {
         if(job.isEmpty()) throw new ClaimServiceException("Error 105: linkJobToClaim(id, number, insurance) failed to find a matching Job that exists");
 
         // Second, Find the Insurance Company
-        Company company = companyRepository.findByName(insurance);
+        Company company = companyRepository.findByCompanyName(insurance);
         if(company == null) throw new ClaimServiceException("Error 110: linkJobToClaim(id, number, insurance) failed to find a matching Company by that name");
 
         // Third, Confirm that the Claim Exists

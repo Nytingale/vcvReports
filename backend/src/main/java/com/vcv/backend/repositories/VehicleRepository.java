@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface VehicleRepository extends PagingAndSortingRepository<Vehicle, String> {
     Vehicle findByVin(String vin);
-    Vehicle findByYearMakeModel(Integer year, String make, String model);
+    Vehicle findByYearAndMakeAndModel(Integer year, String make, String model);
 
     List<Vehicle> findByDealershipOrderByRegistrationDateDesc(String dealership);
     List<Vehicle> findByInsuranceIdOrderByRegistrationDateDesc(Long insuranceId);

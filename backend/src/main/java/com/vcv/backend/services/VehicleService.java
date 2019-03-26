@@ -45,7 +45,7 @@ public class VehicleService {
 
     /* Portal (Insurance) */
     public List<VehicleView> getInsuredVehicles(String insurance) throws VehicleServiceException, DecoderServiceException {
-        Company company = companyRepository.findByName(insurance);
+        Company company = companyRepository.findByCompanyName(insurance);
         List<Vehicle> vehicles = vehicleRepository.findByInsuranceIdOrderByRegistrationDateDesc(company.getId());
         if(!vehicles.isEmpty()) return new VehicleView().build(decoderService.updateVehicles(vehicles));
         else throw new VehicleServiceException("Error 500: getInsuredVehicles(insurance) returned null");
@@ -118,7 +118,7 @@ public class VehicleService {
     public Vehicle getVehicle(Integer year,
                               String make,
                               String model) throws VehicleServiceException, DecoderServiceException {
-        Vehicle vehicle = vehicleRepository.findByYearMakeModel(year, make, model);
+        Vehicle vehicle = vehicleRepository.findByYearAndMakeAndModel(year, make, model);
         if(vehicle != null) return decoderService.updateVehicle(vehicle);
         else throw new VehicleServiceException("Error 500: getVehicle(year, make, model) returned null");
     }

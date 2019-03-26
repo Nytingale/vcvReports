@@ -9,17 +9,19 @@ import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.CompanyView;
 import com.vcv.backend.views.MessageView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Optional;
 
+@Service
 public class CompanyService {
     @Autowired private UserRepository userRepository;
     @Autowired private CompanyRepository companyRepository;
 
     public CompanyView getWebsite(String company) throws CompanyServiceException {
-        Company companyDB = companyRepository.findByName(company);
+        Company companyDB = companyRepository.findByCompanyName(company);
         if(companyDB != null) {
             return new CompanyView().build(companyDB);
         } else throw new CompanyServiceException("Error 800: getWebsite(company) returned null");
@@ -31,7 +33,7 @@ public class CompanyService {
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: searchForCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Find the Company to Return
-        Company companyDB = companyRepository.findByName(company);
+        Company companyDB = companyRepository.findByCompanyName(company);
         if(companyDB != null) {
             return new CompanyView().build(companyDB);
         } else throw new CompanyServiceException("Error 800: searchForCompany(vcv, company) returned null");
@@ -44,7 +46,7 @@ public class CompanyService {
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: registerCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that no Company with this Name
-        Company companyDB = companyRepository.findByName(company.getCompanyName());
+        Company companyDB = companyRepository.findByCompanyName(company.getCompanyName());
         if(companyDB != null) throw new CompanyServiceException("Error 805: registerCompany(vcv, company) has found an already-existing Company with this Name");
 
         try {
@@ -67,7 +69,7 @@ public class CompanyService {
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: approveCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that the Company Exists
-        Company companyDB = companyRepository.findByName(company);
+        Company companyDB = companyRepository.findByCompanyName(company);
         if(companyDB == null) throw new CompanyServiceException("Error 805: approveCompany(vcv, company) has failed to find such an existing Company");
 
         // Third, Change the Company to be Approved
@@ -89,7 +91,7 @@ public class CompanyService {
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: blacklistCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that the Company Exists
-        Company companyDB = companyRepository.findByName(company);
+        Company companyDB = companyRepository.findByCompanyName(company);
         if(companyDB == null) throw new CompanyServiceException("Error 805: blacklistCompany(vcv, company) has failed to find such an existing Company");
 
         // Third, Change the Company to be Blacklisted

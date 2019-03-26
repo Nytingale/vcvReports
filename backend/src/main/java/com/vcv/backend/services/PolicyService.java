@@ -22,7 +22,7 @@ public class PolicyService {
 
     /* Portal (Insurance) */
     public List<PolicyView> getInsurancePolicies(String insurance) throws PolicyServiceException {
-        Company company = companyRepository.findByName(insurance);
+        Company company = companyRepository.findByCompanyName(insurance);
         List<Policy> policies = policyRepository.findByCompanyIdOrderByPolicyDateDesc(company.getId());
         if(!policies.isEmpty()) return new PolicyView().build(policies);
         else throw new PolicyServiceException("Error 300: getInsurancePolicies(insurance) returned null");
