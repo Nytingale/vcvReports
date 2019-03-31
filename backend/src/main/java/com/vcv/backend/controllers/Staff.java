@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping(value = "/staff")
 public class Staff {
 
-    @Autowired private UserService       userService;
+    @Autowired private UserService userService;
     @Autowired private CompanyService companyService;
 
     @PostMapping("/getUsers")
@@ -79,6 +79,21 @@ public class Staff {
         }
     }
 
+    @PostMapping("/addEmployee")
+    public MessageView.UserReport addEmployee(@RequestBody User vcv,
+                                              @RequestBody User employee) {
+        try {
+            User validVcv = (User) Utils.isValidEntity(vcv);
+            User validEmployee = (User) Utils.isValidEntity(employee);
+            if(validVcv != null && validEmployee != null) {
+                return userService.addEmployee(validVcv, validEmployee);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping("/registerCompany")
     public MessageView.CompanyReport registerCompany(@RequestBody User vcv,
                                                      @RequestBody User admin,
@@ -119,6 +134,21 @@ public class Staff {
             String validCompany = Utils.isValidString(company);
             if(validVcv != null && validCompany != null) {
                 return companyService.blacklistCompany(validVcv, validCompany);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/changePassword")
+    public MessageView.UserReport changePassword(@RequestBody User user,
+                                                 @RequestParam(value = "newPassword", required = false) String newPassword) {
+        try {
+            User validUser = (User) Utils.isValidEntity(user);
+            String validNewPassword = Utils.isValidPassword(newPassword);
+            if(validUser != null && validNewPassword != null) {
+                return userService.changePassword(validUser, validNewPassword);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();

@@ -10,6 +10,10 @@ import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,19 +54,19 @@ public class UserService {
                                      String email) throws UserServiceException {
         // First, Confirm that the User is an Admin or VCV Staff
         if (Utils.isValidStaffOrAdmin(admin)) {
-            throw new UserServiceException("Error 405: resetPassword(admin, email) has failed to identify the User as a Company Admin or VCV Staff");
+            throw new UserServiceException("Error 420: resetPassword(admin, email) has failed to identify the User as a Company Admin or VCV Staff");
         }
 
         // Second, Find the Employee to Reset Password
-        User employee = userRepository.findByEmailAndCompanyId(email, admin.getCompanyId());
-        if(employee == null) {
-            throw new UserServiceException("Error 410: resetPassword(admin, email) has failed to find an Employee with the Email");
+        Optional<User> employee = userRepository.findById(email);
+        if(employee.isEmpty()) {
+            throw new UserServiceException("Error 405: resetPassword(admin, email) has failed to find an Employee with the Email");
         }
 
         try {
             // Third, Set the Flag that the Password has been Reset and Saving it
-            employee.setPasswordReset(true);
-            userRepository.save(employee);
+            employee.get().setPasswordReset(true);
+            userRepository.save(employee.get());
             return new MessageView().build(email + "'s Password has been Successfully Reset. The next time they attempt to login, " +
                     "they will be prompted to Enter a new Password");
         } catch(Exception e) {
@@ -73,7 +77,7 @@ public class UserService {
 
     public MessageView.UserReport changeAdmin(User admin,
                                               User employee) throws UserServiceException {
-        // First, Confirm that the User is VCV Staff
+        // First, Confirm that the User is an Admin or VCV Staff
         if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: changeAdmin(admin, employee) has failed to identify the User as a Company Admin or VCV Staff");
 
         // Second, Find the Company of the Employee
@@ -102,6 +106,43 @@ public class UserService {
         } else throw new UserServiceException("Error 400: changeAdmin(admin, employee) returned null");
     }
 
+    public MessageView.UserReport addEmployee(User admin,
+                                              User employee) throws UserServiceException {
+        // First, Confirm that the User is an Admin or VCV Staff
+        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: addEmployee(admin, employee) has failed to identify the User as a Company Admin or VCV Staff");
+
+        // Third, Ensure the Email doesn't Already Exist
+        Optional<User> employeeDB = userRepository.findById(employee.getEmail());
+        if(employeeDB.isPresent()) {
+            throw new UserServiceException("Error 425: addEmployee(admin, employee) cannot add this Employee as the Email already exists");
+        }
+
+        // Fourth, Ensure the Employee's Password is Valid
+        if(Utils.isValidPassword(employee.getPassword()) == null) {
+            throw new UserServiceException("Error 430: addEmployee(admin, employee) cannot add this Employee as the Password is not valid");
+        }
+
+        // Fifth, Ensure that the Employee's Company Name and Type are the same as the Admin's
+        employee.setCompanyId(admin.getCompanyId());
+
+        // Sixth, Encode the Employee's Password
+        employee.setPassword(new BCryptPasswordEncoder(11).encode(employee.getPassword()));
+
+        // Seventh, Check if the Admin is a VCV Staff and if so, Change the Employee's Role ID
+        if(admin.getRoleId() == 3) {
+            employee.setRoleId(3L);
+        }
+
+        try {
+            // Seventh, Save the new Employee to the Database
+            userRepository.save(employee);
+            return new MessageView.UserReport().build(employee,"Successfully Added new Employee to the Company");
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new UserServiceException("Error 415: addEmployee(admin, employee) has failed to add the new Employee to the Database");
+        }
+    }
+
 
 
     /* Company Admin */
@@ -122,34 +163,6 @@ public class UserService {
         List<User> employees = userRepository.findByCompanyId(admin.getCompanyId());
         if(employees.isEmpty()) return new UserView().build(employees);
         else throw new UserServiceException("Error 400: findByEmail(email, company) returned null");
-    }
-
-    public MessageView.UserReport addEmployee(User admin,
-                                              User employee) throws UserServiceException {
-        // First, Confirm that the User is the Admin and they are Not Blacklisted
-        Optional<Company> company = companyRepository.findById(admin.getCompanyId());
-        if(company.isPresent()) {
-            if (admin.getRoleId() != 2L) {
-                throw new UserServiceException("Error 405: addEmployee(admin, employee) has failed you for Admin Authentication");
-            }
-
-            // Second, Confirm that the Company is not Blacklisted
-            if (company.get().getBlacklisted()) {
-                throw new UserServiceException("Error 410: addEmployee(admin, employee) has failed you for Company Approved Authentication");
-            }
-        } else throw new UserServiceException("Error 400: addEmployee(admin, employee) has returned null");
-
-        // Second, Ensure that the Employee's Company Name and Type are the same as the Admin's
-        employee.setCompanyId(admin.getCompanyId());
-
-        try {
-            // Third, Save the new Employee to the Database
-            userRepository.save(employee);
-            return new MessageView.UserReport().build(employee,"Successfully Added new Employee to the Company");
-        } catch(Exception e) {
-            e.printStackTrace();
-            throw new UserServiceException("Error 415: addEmployee(admin, employee) has failed to add the new Employee to the Database");
-        }
     }
 
     public MessageView.UserReport removeEmployee(User admin,
@@ -178,6 +191,24 @@ public class UserService {
         } catch(Exception e) {
             e.printStackTrace();
             throw new UserServiceException("Error 415: removeEmployee(admin, email) has failed to add the new Employee to the Database");
+        }
+    }
+
+
+
+    /* Miscellaneous */
+    public MessageView.UserReport changePassword(User user,
+                                                 String newPassword) throws UserServiceException {
+        // First, Encode the New Password
+        user.setPassword(new BCryptPasswordEncoder(11).encode(newPassword));
+
+        try {
+            // Second, Update the User Record to the Database
+            userRepository.save(user);
+            return new MessageView.UserReport().build(user, "Successfully Changed Password");
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new UserServiceException("Error 415: changePassword(user, newPassword) has failed to change the User's Password");
         }
     }
 }

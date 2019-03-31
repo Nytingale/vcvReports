@@ -4,13 +4,13 @@ USE vcv;
 
 CREATE TABLE `User`(
     `email` VARCHAR(32) NOT NULL,
-    `password` VARCHAR(32) NOT NULL,
+    `password` VARCHAR(64) NOT NULL,
     `password_reset` TINYINT(1) DEFAULT 0,
-    `role_id` BIGINT NOT NULL,
+    `role_id` BIGINT DEFAULT 1,
     `company_id` BIGINT NOT NULL,
     INDEX(role_id),
     INDEX(company_id),
-    PRIMARY KEY(email, company_id)
+    PRIMARY KEY(email)
 ) ENGINE = InnoDB;
 
 CREATE TABLE `Role`(
@@ -28,13 +28,14 @@ CREATE TABLE `Company`(
     `subscription_start_date` TIMESTAMP NOT NULL,
     `subscription_end_date` TIMESTAMP NOT NULL,
     `rating` INT DEFAULT 0,
-    `website` VARCHAR(64),
+    `website` VARCHAR(64) DEFAULT '',
     `admin` VARCHAR(64) NOT NULL,
     `blacklisted` TINYINT(1) DEFAULT 0,
     `valid` TINYINT(1) DEFAULT 1,
     INDEX(company_name),
     INDEX(company_type),
     INDEX(website),
+    INDEX(admin),
     PRIMARY KEY(id)
 ) ENGINE = InnoDB;
 
@@ -44,7 +45,7 @@ CREATE TABLE `Policy`(
     `policy_owner` VARCHAR(64) NOT NULL,
     `policy_type` ENUM('Third Party', 'Comprehensive') DEFAULT 'Comprehensive',
     `policy_date` TIMESTAMP NOT NULL,
-    `financer` VARCHAR(64),
+    `financer` VARCHAR(64) DEFAULT '',
     `valid` TINYINT(1) DEFAULT 1,
     `vin` VARCHAR(17) NOT NULL,
     INDEX(vin),
@@ -58,11 +59,11 @@ CREATE TABLE `Claim`(
     `claim_number` VARCHAR(64) NOT NULL,
     `claim_type` ENUM('Personal Injury', 'Total Loss', 'Liability', 'Accident') DEFAULT 'Accident',
     `claim_date` TIMESTAMP NOT NULL,
-    `claim_details` TEXT,
+    `claim_details` TEXT DEFAULT '',
     `value` BIGINT NOT NULL,
     `policy_number` VARCHAR(64) NOT NULL,
     `vin` VARCHAR(17) NOT NULL,
-    `job_id` BIGINT,
+    `job_id` BIGINT DEFAULT 0,
     INDEX(vin),
     INDEX(job_id),
     INDEX(claim_date),
@@ -75,10 +76,10 @@ CREATE TABLE `Job`(
     `job_type` ENUM('Accident', 'Service', 'Upgrade', 'Repair') DEFAULT 'Repair',
     `job_date` TIMESTAMP NOT NULL,
     `job_cost` INT NOT NULL,
-    `job_details` TEXT,
+    `job_details` TEXT DEFAULT '',
     `company_id` BIGINT NOT NULL,
-    `insurance_id` BIGINT,
-    `claim_number` VARCHAR(64),
+    `insurance_id` BIGINT DEFAULT 0,
+    `claim_number` VARCHAR(64) DEFAULT '',
     `vin` VARCHAR(17) NOT NULL,
     INDEX(vin),
     INDEX(job_date),
@@ -113,7 +114,7 @@ CREATE TABLE `Vehicle`(
     `num_robberies` INT DEFAULT 0,
     `num_services` INT DEFAULT 0,
     `num_salvages` INT DEFAULT 0,
-    `num_owners` INT DEFAULT 0,
+    `num_owners` INT DEFAULT 1,
     `insurance_id` BIGINT,
     `policy_number` VARCHAR(64),
     INDEX(evaluation_date),
@@ -141,5 +142,6 @@ INSERT INTO `Role` VALUES (2, 0, 1, 0);               # = Admin
 INSERT INTO `Role` VALUES (3, 0, 0, 1);               # = Staff
 
 # ==============================================================
-# = Dummy Data for Demo
+# = Adding VCV as a Company
 # ==============================================================
+INSERT INTO `Company` VALUES (1, 'VCV', 'VCV Staff', 2019-04-01 00:00:00, 3019-04-01 00:00:00, 5, 'https://vcv.com', 'RSJMorris@gmail.com', 0, 1);

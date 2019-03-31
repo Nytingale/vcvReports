@@ -1,8 +1,10 @@
 package com.vcv.backend.controllers;
 
 import com.vcv.backend.entities.Job;
+import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.ControllerException;
 import com.vcv.backend.services.JobService;
+import com.vcv.backend.services.UserService;
 import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.JobView;
 import com.vcv.backend.views.MessageView;
@@ -14,8 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/mechanic")
 public class Mechanic {
-    @Autowired
-    private JobService jobService;
+    @Autowired private JobService jobService;
+    @Autowired private UserService userService;
 
     @GetMapping("/getMechanicJobs")
     public List<JobView> getMechanicJobs(@RequestParam(value = "garage", required = false) String garage) {
@@ -49,6 +51,21 @@ public class Mechanic {
             Job validJob = (Job) Utils.isValidEntity(job);
             if(validJob != null) {
                 return jobService.updateJob(job);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/changePassword")
+    public MessageView.UserReport changePassword(@RequestBody User user,
+                                                 @RequestParam(value = "newPassword", required = false) String newPassword) {
+        try {
+            User validUser = (User) Utils.isValidEntity(user);
+            String validNewPassword = Utils.isValidPassword(newPassword);
+            if(validUser != null && validNewPassword != null) {
+                return userService.changePassword(validUser, validNewPassword);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();

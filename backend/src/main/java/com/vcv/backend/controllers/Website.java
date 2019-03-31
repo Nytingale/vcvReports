@@ -18,9 +18,8 @@ public class Website {
     @Autowired private JobService         jobService;
     @Autowired private UserService       userService;
     @Autowired private ClaimService     claimService;
-    @Autowired private PolicyService   policyService;
-    @Autowired private VehicleService vehicleService;
     @Autowired private CompanyService companyService;
+    @Autowired private VehicleService vehicleService;
 
     /* Casual Users */
     @GetMapping("/getWebsite")

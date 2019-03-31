@@ -16,8 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/admin")
 public class Admin {
-    @Autowired private FileService       fileService;
-    @Autowired private UserService       userService;
+    @Autowired private FileService fileService;
+    @Autowired private UserService userService;
     @Autowired private CompanyService companyService;
 
     @PostMapping("/getEmployees")
@@ -69,6 +69,21 @@ public class Admin {
                 return userService.resetPassword(validAdmin, validEmail);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/changeAdmin")
+    public MessageView.UserReport changeAdmin(@RequestBody User admin,
+                                              @RequestBody User employee) {
+        try {
+            User validAdmin = (User) Utils.isValidEntity(admin);
+            User validEmployee = (User) Utils.isValidEntity(employee);
+            if(validAdmin != null && validEmployee != null) {
+                return userService.changeAdmin(validAdmin, validEmployee);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }

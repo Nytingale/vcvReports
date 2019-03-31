@@ -52,7 +52,7 @@ public class Utils {
 
     public static String isValidPassword(String password) {
         if(password == null || password.trim().isEmpty()) return null;
-        else if(password.length() > 8 && password.length() <= 32) return password;
+        else if(password.length() > 8) return password;
         else return null;
     }
 
