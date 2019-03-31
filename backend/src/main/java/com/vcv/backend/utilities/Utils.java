@@ -1,5 +1,6 @@
 package com.vcv.backend.utilities;
 
+import com.google.common.base.CaseFormat;
 import com.vcv.backend.entities.*;
 import com.vcv.backend.enums.CompanyType;
 
@@ -58,7 +59,7 @@ public class Utils {
 
     public static String isValidString(String string) {
         if(string == null || string.trim().isEmpty()) return null;
-        else return string;
+        else return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, string);
     }
 
     public static Integer isValidYear(String year) {

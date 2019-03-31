@@ -15,11 +15,11 @@ INSERT INTO `User` VALUES
     ('Jane.Peralta@sagicor.com', 'e4rwg325qwsd',  0, 2, 6);
 
 INSERT INTO `Company` VALUES
-    (2, 'Trident Insurance',     'Insurance',  2019-04-01 00:00:00, 2020-04-01 00:00:00, 0, 'https://tridentins.com', 'GeorgeOrwell@trident.com', 0, 1),
-    (3, 'Courtesy Garage',       'Garage',     2019-04-01 00:00:00, 2020-04-01 00:00:00, 0, 'https://courtesy.com',   'Jen@courtesy.com',         0, 1),
-    (4, 'Tramaine Shop',         'Mechanic',   2019-04-01 00:00:00, 2019-04-01 00:00:00, 0, '',                       'T_man@hotmail.com',        0, 1),
-    (5, 'MQI',                   'Dealership', 2019-04-01 00:00:00, 2020-04-01 00:00:00, 0, 'https://mqi.com',        'YKlint@mqi.bb.com',        0, 1),
-    (6, 'Sagicor Car Insurance', 'Mechanic',   2019-04-01 00:00:00, 2019-04-01 00:00:00, 0, 'https://sagicor.com',    'T_man@hotmail.com',        0, 1);
+    (2, 'TridentInsurance',    'Insurance',  2019-04-01 00:00:00, 2020-04-01 00:00:00, 0, 'https://tridentins.com', 'GeorgeOrwell@trident.com', 0, 1),
+    (3, 'CourtesyGarage',      'Garage',     2019-04-01 00:00:00, 2020-04-01 00:00:00, 0, 'https://courtesy.com',   'Jen@courtesy.com',         0, 1),
+    (4, 'TramaineShop',        'Mechanic',   2019-04-01 00:00:00, 2019-04-01 00:00:00, 0, '',                       'T_man@hotmail.com',        0, 1),
+    (5, 'MQI',                 'Dealership', 2019-04-01 00:00:00, 2020-04-01 00:00:00, 0, 'https://mqi.com',        'YKlint@mqi.bb.com',        0, 1),
+    (6, 'SagicorCarInsurance', 'Mechanic',   2019-04-01 00:00:00, 2019-04-01 00:00:00, 0, 'https://sagicor.com',    'T_man@hotmail.com',        0, 1);
 
 INSERT INTO `Policy` VALUES
     (2, 'ABC123JKL789', 'Frank Johnson',   'Third Party',   2015-06-25 00:00:00, 'Royal Bank of Canada',               1, 'MPATFS85JDT000196'),

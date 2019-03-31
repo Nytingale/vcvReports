@@ -3,45 +3,70 @@ package com.vcv.backend.controllers;
 import com.vcv.backend.entities.*;
 import com.vcv.backend.repositories.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.Before;
+import com.vcv.backend.views.CompanyView;
+import com.vcv.backend.views.VehicleView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 @RunWith(SpringRunner.class)
-@WebMvcTest(Website.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WebsiteTest {
-    @Autowired private MockMvc mvc;
 
-    @MockBean private JobRepository jobRepo;
-    @MockBean private UserRepository userRepo;
-    @MockBean private ClaimRepository claimRepo;
-    @MockBean private CompanyRepository companyRepo;
-    @MockBean private VehicleRepository vehicleRepo;
+    @LocalServerPort private int port;
 
-    private JacksonTester<Job> jsonJob;
-    private JacksonTester<User> jsonUser;
-    private JacksonTester<Claim> jsonClaim;
-    private JacksonTester<Company> jsonCompany;
-    private JacksonTester<Vehicle> jsonVehicle;
+    @Autowired private TestRestTemplate restTemplate;
 
-    @Before
-    public void setup() {
-        JacksonTester.initFields(this, new ObjectMapper());
-    }
+    @Autowired private JobRepository jobRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private ClaimRepository claimRepository;
+    @Autowired private CompanyRepository companyRepository;
+    @Autowired private VehicleRepository vehicleRepository;
+
+    private String vin = "MPATFS85JDT000196";
+    private String year = "2011";
+    private String make = "Isuzu";
+    private String model = "Bobbette";
+    private String companyName = "TridentInsurance";
+
+    private List<Job> testJobs = jobRepository.findByVinOrderByJobDateDesc(vin);
+    private List<Claim> testClaims = claimRepository.findByVinOrderByClaimDateDesc(vin);
+    private Company testCompany = companyRepository.findByCompanyName(companyName);
+    private Vehicle testVehicle = vehicleRepository.findByVin(vin);
 
     @Test
     public void canGetWebsite() {
+        CompanyView response = restTemplate.getForObject("http://localhost:" + port + "/getWebsite?company=" + companyName, CompanyView.class);
+        assertThat(response).isEqualTo(new CompanyView().build(testCompany));
+    }
 
+    @Test
+    public void canSearchVehicleByVin() {
+        VehicleView.BasicReport response = restTemplate.getForObject("http://localhost:" + port + "/searchForVehicle?vin=" + vin, VehicleView.BasicReport.class);
+        assertThat(response).isEqualTo(new VehicleView.BasicReport().build(testVehicle));
+    }
+
+    @Test
+    public void canSearchVehicleByYearMakeModel() {
+        VehicleView.BasicReport response = restTemplate.getForObject("http://localhost:" + port + "/searchForVehicle?year=" + year + "&make=" + make + "&model=" + model, VehicleView.BasicReport.class);
+        assertThat(response).isEqualTo(new VehicleView.BasicReport().build(testVehicle));
+    }
+
+    @Test
+    public void canGeneerateReport() {
+        VehicleView.FullReport response = restTemplate.getForObject("http://localhost:" + port + "/generateReport?vin=" + vin, VehicleView.FullReport.class);
+        assertThat(response).isEqualTo(new VehicleView.FullReport().build(testVehicle, testClaims, testJobs));
     }
 }
