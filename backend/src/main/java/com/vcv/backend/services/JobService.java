@@ -40,7 +40,7 @@ public class JobService {
 
     public MessageView.JobReport updateJob(Job job) throws JobServiceException {
         // First, Confirm that the Job Exists
-        if(jobRepository.findById(job.getJobId()).isEmpty()) {
+        if(jobRepository.findById(job.getId()).isEmpty()) {
             throw new JobServiceException("Error 205: updateJob(job) failed to find a matching Job that exists");
         }
 

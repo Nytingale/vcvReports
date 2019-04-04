@@ -118,4 +118,63 @@ public class Policy {
             this.policyNumber = policyNumber;
         }
     }
+
+    public static class Builder {
+        private Long companyId;
+        private String policyNumber;
+        private String policyOwner;
+        private Timestamp policyDate;
+        private PolicyType policyType;
+        private String financer;
+        private Boolean valid;
+        private String vin;
+
+        public Builder setCompanyId(Long companyId) {
+            this.companyId = companyId;
+            return this;
+        }
+        public Builder setPolicyNumber(String policyNumber) {
+            this.policyNumber = policyNumber;
+            return this;
+        }
+        public Builder setPolicyOwner(String policyOwner) {
+            this.policyOwner = policyOwner;
+            return this;
+        }
+        public Builder setPolicyDate(Timestamp policyDate) {
+            this.policyDate = policyDate;
+            return this;
+        }
+        public Builder setPolicyType(PolicyType policyType) {
+            this.policyType = policyType;
+            return this;
+        }
+        public Builder setFinancer(String financer) {
+            this.financer = financer;
+            return this;
+        }
+        public Builder setValid(Boolean valid) {
+            this.valid = valid;
+            return this;
+        }
+        public Builder setVin(String vin) {
+            this.vin = vin;
+            return this;
+        }
+
+        public Policy build() {
+            Policy policy = new Policy();
+
+            policy.setCompanyId(this.companyId);
+            policy.setPolicyNumber(this.policyNumber);
+            policy.setPolicyOwner(this.policyOwner);
+            policy.setPolicyDate(this.policyDate);
+            policy.setPolicyType(this.policyType);
+            policy.setFinancer(this.financer);
+            policy.setValid(this.valid);
+            policy.setVin(this.vin);
+
+            return policy;
+        }
+    }
 }

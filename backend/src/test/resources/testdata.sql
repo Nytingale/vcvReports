@@ -19,7 +19,7 @@ INSERT INTO `Company` VALUES
     (3, 'CourtesyGarage',      'Garage',     2019-04-01 00:00:00, 2020-04-01 00:00:00, 0, 'https://courtesy.com',   'Jen@courtesy.com',         0, 1),
     (4, 'TramaineShop',        'Mechanic',   2019-04-01 00:00:00, 2019-04-01 00:00:00, 0, '',                       'T_man@hotmail.com',        0, 1),
     (5, 'MQI',                 'Dealership', 2019-04-01 00:00:00, 2020-04-01 00:00:00, 0, 'https://mqi.com',        'YKlint@mqi.bb.com',        0, 1),
-    (6, 'SagicorCarInsurance', 'Mechanic',   2019-04-01 00:00:00, 2019-04-01 00:00:00, 0, 'https://sagicor.com',    'T_man@hotmail.com',        0, 1);
+    (6, 'SagicorCarInsurance', 'Insurance',  2019-04-01 00:00:00, 2019-04-01 00:00:00, 0, 'https://sagicor.com',    'T_man@hotmail.com',        0, 1);
 
 INSERT INTO `Policy` VALUES
     (2, 'ABC123JKL789', 'Frank Johnson',   'Third Party',   2015-06-25 00:00:00, 'Royal Bank of Canada',               1, 'MPATFS85HCT102885'),

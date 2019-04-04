@@ -65,7 +65,7 @@ public class MessageView {
         public JobReport build(Job job, String message) {
             JobReport view = new JobReport();
 
-            view.id = job.getJobId();
+            view.id = job.getId();
             view.message = new MessageView().build(message);
 
             return view;

@@ -92,7 +92,7 @@ public class ClaimService {
 
         // Fourth, Link the Job to the Claim and the Claim to the Job in their respective FKs
         job.get().setClaimNumber(claim.get().getClaimNumber());
-        claim.get().setJobId(job.get().getJobId());
+        claim.get().setJobId(job.get().getId());
 
         try {
             // Fifth, Save the Changes to Both the Claim and the Job

@@ -105,4 +105,76 @@ public class Company {
                 blacklisted.equals(company.blacklisted) &&
                 valid.equals(company.valid);
     }
+
+    public static class Builder {
+        private Long id;
+        private String companyName;
+        private CompanyType companyType;
+        private Timestamp subscriptionStartDate;
+        private Timestamp subscriptionEndDate;
+        private Integer rating;
+        private String website;
+        private String admin;
+        private Boolean blacklisted;
+        private Boolean valid;
+
+
+        public Builder setId(Long id) {
+            this.id = id;
+            return this;
+        }
+        public Builder setCompanyName(String companyName) {
+            this.companyName = companyName;
+            return this;
+        }
+        public Builder setCompanyType(CompanyType companyType) {
+            this.companyType = companyType;
+            return this;
+        }
+        public Builder setSubscriptionStartDate(Timestamp subscriptionStartDate) {
+            this.subscriptionStartDate = subscriptionStartDate;
+            return this;
+        }
+        public Builder setSubscriptionEndDate(Timestamp subscriptionEndDate) {
+            this.subscriptionEndDate = subscriptionEndDate;
+            return this;
+        }
+        public Builder setRating(Integer rating) {
+            this.rating = rating;
+            return this;
+        }
+        public Builder setWebsite(String website) {
+            this.website = website;
+            return this;
+        }
+        public Builder setAdmin(String admin) {
+            this.admin = admin;
+            return this;
+        }
+        public Builder setBlacklisted(Boolean blacklisted) {
+            this.blacklisted = blacklisted;
+            return this;
+        }
+        public Builder setValid(Boolean valid) {
+            this.valid = valid;
+            return this;
+        }
+
+        public Company build() {
+            Company company = new Company();
+
+            company.setId(this.id);
+            company.setCompanyName(this.companyName);
+            company.setCompanyType(this.companyType);
+            company.setSubscriptionStartDate(this.subscriptionStartDate);
+            company.setSubscriptionEndDate(this.subscriptionEndDate);
+            company.setRating(this.rating);
+            company.setWebsite(this.website);
+            company.setAdmin(this.admin);
+            company.setBlacklisted(this.blacklisted);
+            company.setValid(this.valid);
+
+            return company;
+        }
+    }
 }

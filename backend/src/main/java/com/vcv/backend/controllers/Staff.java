@@ -50,13 +50,12 @@ public class Staff {
     }
 
     @PostMapping("/searchForUser")
-    public UserView searchForUser(@RequestBody User vcv,
-                                  @RequestParam(value = "email", required = false) String email) {
+    public UserView searchForUser(@RequestBody Map<String, Object> map) {
         try {
-            User validVcv = (User) Utils.isValidEntity(vcv);
-            String validEmail = Utils.isValidEmail(email);
-            if(validVcv != null && validEmail != null) {
-                return userService.searchForUser(validVcv, validEmail);
+            User validVcv = (User) Utils.isValidEntity(map.get("VCV"));
+            String validClient = Utils.isValidEmail((String) map.get("Client"));
+            if(validVcv != null && validClient != null) {
+                return userService.searchForUser(validVcv, validClient);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -65,11 +64,10 @@ public class Staff {
     }
 
     @PostMapping("/searchForCompany")
-    public CompanyView searchForCompany(@RequestBody User vcv,
-                                        @RequestParam(value = "company", required = false) String company) {
+    public CompanyView searchForCompany(@RequestBody Map<String, Object> map) {
         try {
-            User validVcv = (User) Utils.isValidEntity(vcv);
-            String validCompany = Utils.isValidString(company);
+            User validVcv = (User) Utils.isValidEntity(map.get("VCV"));
+            String validCompany = Utils.isValidString((String) map.get("Company"));
             if(validVcv != null && validCompany != null) {
                 return companyService.searchForCompany(validVcv, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -80,11 +78,10 @@ public class Staff {
     }
 
     @PostMapping("/addEmployee")
-    public MessageView.UserReport addEmployee(@RequestBody User vcv,
-                                              @RequestBody User employee) {
+    public MessageView.UserReport addEmployee(@RequestBody Map<String, User> map) {
         try {
-            User validVcv = (User) Utils.isValidEntity(vcv);
-            User validEmployee = (User) Utils.isValidEntity(employee);
+            User validVcv = (User) Utils.isValidEntity(map.get("VCV"));
+            User validEmployee = (User) Utils.isValidEntity(map.get("Employee"));
             if(validVcv != null && validEmployee != null) {
                 return userService.addEmployee(validVcv, validEmployee);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -95,13 +92,11 @@ public class Staff {
     }
 
     @PostMapping("/registerCompany")
-    public MessageView.CompanyReport registerCompany(@RequestBody User vcv,
-                                                     @RequestBody User admin,
-                                                     @RequestBody Company company) {
+    public MessageView.CompanyReport registerCompany(@RequestBody Map<String, Object> map) {
         try {
-            User validVcv = (User) Utils.isValidEntity(vcv);
-            User validAdmin = (User) Utils.isValidEntity(admin);
-            Company validCompany = (Company) Utils.isValidEntity(company);
+            User validVcv = (User) Utils.isValidEntity(map.get("VCV"));
+            User validAdmin = (User) Utils.isValidEntity(map.get("Admin"));
+            Company validCompany = (Company) Utils.isValidEntity(map.get("Company"));
             if(validVcv != null && validAdmin != null && validCompany != null) {
                 return companyService.registerCompany(validVcv, validAdmin, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -112,11 +107,10 @@ public class Staff {
     }
 
     @PostMapping("/approveCompany")
-    public MessageView.CompanyReport approveCompany(@RequestBody User vcv,
-                                                    @RequestParam(value = "company", required = false) String company) {
+    public MessageView.CompanyReport approveCompany(@RequestBody Map<String, Object> map) {
         try {
-            User validVcv = (User) Utils.isValidEntity(vcv);
-            String validCompany = Utils.isValidString(company);
+            User validVcv = (User) Utils.isValidEntity(map.get("VCV"));
+            String validCompany = Utils.isValidString((String) map.get("Company"));
             if(validVcv != null && validCompany != null) {
                 return companyService.approveCompany(validVcv, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -127,11 +121,10 @@ public class Staff {
     }
 
     @PostMapping("/blacklistCompany")
-    public MessageView.CompanyReport blacklistCompany(@RequestBody User vcv,
-                                                      @RequestParam(value = "company", required = false) String company) {
+    public MessageView.CompanyReport blacklistCompany(@RequestBody Map<String, Object> map) {
         try {
-            User validVcv = (User) Utils.isValidEntity(vcv);
-            String validCompany = Utils.isValidString(company);
+            User validVcv = (User) Utils.isValidEntity(map.get("VCV"));
+            String validCompany = Utils.isValidString((String) map.get("Company"));
             if(validVcv != null && validCompany != null) {
                 return companyService.blacklistCompany(validVcv, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -142,11 +135,10 @@ public class Staff {
     }
 
     @PostMapping("/changePassword")
-    public MessageView.UserReport changePassword(@RequestBody User user,
-                                                 @RequestParam(value = "newPassword", required = false) String newPassword) {
+    public MessageView.UserReport changePassword(@RequestBody Map<String, Object> map) {
         try {
-            User validUser = (User) Utils.isValidEntity(user);
-            String validNewPassword = Utils.isValidPassword(newPassword);
+            User validUser = (User) Utils.isValidEntity(map.get("User"));
+            String validNewPassword = Utils.isValidPassword((String) map.get("New Password"));
             if(validUser != null && validNewPassword != null) {
                 return userService.changePassword(validUser, validNewPassword);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");

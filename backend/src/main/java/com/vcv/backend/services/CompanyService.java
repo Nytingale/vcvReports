@@ -56,7 +56,7 @@ public class CompanyService {
             companyRepository.save(company);
             userRepository.save(admin);
 
-            return new MessageView.CompanyReport().build(companyDB, "Successfully Created Company");
+            return new MessageView.CompanyReport().build(company, "Successfully Created Company");
         } catch(Exception e) {
             e.printStackTrace();
             throw new CompanyServiceException("Error 815: registerCompany(vcv, company) has failed to register the Company");

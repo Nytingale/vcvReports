@@ -87,3 +87,17 @@ o
 ?backend/src/main/java/com/vcv/backend/services/FileService.java,7/8/78228bdd173f1ab16cf3cbe418982b8f8c42a063
 r
 Bbackend/src/main/java/com/vcv/backend/services/DecoderService.java,8/d/8d08643559a3697a7c3de7c82a52420cff6efc15
+h
+8backend/src/main/java/com/vcv/backend/entities/Role.java,1/b/1bfdfbc16f5da87b9e4f60206ee622b91a12411d
+k
+;backend/src/main/java/com/vcv/backend/entities/Company.java,2/3/238bbdc3d9b3e6893e38cc8a945980d6829e6b10
+p
+@backend/src/main/java/com/vcv/backend/configs/SwaggerConfig.java,9/b/9befb22a4ace38159182185482a200e097ad421f
+y
+Ibackend/src/main/java/com/vcv/backend/repositories/CompanyRepository.java,2/f/2fe03f69ffda68171d6ea533f2a569f834830c76
+v
+Fbackend/src/main/java/com/vcv/backend/repositories/RoleRepository.java,c/4/c4a889dc02d246a4ad54a2b171726d9f44fe73f8
+r
+Bbackend/src/main/java/com/vcv/backend/services/CompanyService.java,b/4/b49aea750dff8ec9c3568a056a022bba920bdb01
+a
+1backend/src/main/resources/application.properties,3/f/3f2f17daa13c76ba02d9d8cf5498cdfd7ebe2ce8

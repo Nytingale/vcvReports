@@ -47,7 +47,7 @@ public class WebsiteTest {
 
     @Test
     public void canGetWebsite() {
-        CompanyView response = restTemplate.getForObject("http://localhost:" + port + "/getWebsite?company=" + companyName, CompanyView.class);
+        CompanyView response = restTemplate.getForObject("http://localhost:" + port + "/getWebsite?testCompany=" + companyName, CompanyView.class);
         assertThat(response).isEqualTo(new CompanyView().build(testCompany));
     }
 

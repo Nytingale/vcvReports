@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/insurance")
@@ -199,11 +200,10 @@ public class Insurance {
     }
 
     @PostMapping("/changePassword")
-    public MessageView.UserReport changePassword(@RequestBody User user,
-                                                 @RequestParam(value = "newPassword", required = false) String newPassword) {
+    public MessageView.UserReport changePassword(@RequestBody Map<String, Object> map) {
         try {
-            User validUser = (User) Utils.isValidEntity(user);
-            String validNewPassword = Utils.isValidPassword(newPassword);
+            User validUser = (User) Utils.isValidEntity(map.get("User"));
+            String validNewPassword = Utils.isValidPassword((String) map.get("New Password"));
             if(validUser != null && validNewPassword != null) {
                 return userService.changePassword(validUser, validNewPassword);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");

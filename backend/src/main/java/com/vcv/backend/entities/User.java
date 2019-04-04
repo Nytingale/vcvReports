@@ -67,4 +67,45 @@ public class User {
                 companyId.equals(user.companyId) &&
                 roleId.equals(user.roleId);
     }
+
+    public static class Builder {
+        private String email;
+        private String password;
+        private Boolean passwordReset;
+        private Long companyId;
+        private Long roleId;
+
+        public Builder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+        public Builder setPassword(String password) {
+            this.password = password;
+            return this;
+        }
+        public Builder setPasswordReset(Boolean passwordReset) {
+            this.passwordReset = passwordReset;
+            return this;
+        }
+        public Builder setCompanyId(Long companyId) {
+            this.companyId = companyId;
+            return this;
+        }
+        public Builder setRoleId(Long roleId) {
+            this.roleId = roleId;
+            return this;
+        }
+
+        public User build() {
+            User user = new User();
+
+            user.setEmail(this.email);
+            user.setPassword(this.password);
+            user.setPasswordReset(this.passwordReset);
+            user.setCompanyId(this.companyId);
+            user.setRoleId(this.roleId);
+
+            return user;
+        }
+    }
 }

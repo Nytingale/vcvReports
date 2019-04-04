@@ -55,4 +55,39 @@ public class Role {
                 admin.equals(role.admin) &&
                 staff.equals(role.staff);
     }
+
+    public static class Builder {
+        private Long id;
+        private Boolean user;
+        private Boolean admin;
+        private Boolean staff;
+
+        public Builder setId(Long id) {
+            this.id = id;
+            return this;
+        }
+        public Builder setUser(Boolean user) {
+            this.user = user;
+            return this;
+        }
+        public Builder setAdmin(Boolean admin) {
+            this.admin = admin;
+            return this;
+        }
+        public Builder setStaff(Boolean staff) {
+            this.staff = staff;
+            return this;
+        }
+
+        public Role build() {
+            Role role = new Role();
+
+            role.setId(this.id);
+            role.setUser(this.user);
+            role.setAdmin(this.admin);
+            role.setStaff(this.staff);
+
+            return role;
+        }
+    }
 }

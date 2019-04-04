@@ -128,4 +128,69 @@ public class Claim {
             this.claimNumber = claimNumber;
         }
     }
+
+    public static class Builder {
+        private Long companyId;
+        private String claimNumber;
+        private ClaimType claimType;
+        private Timestamp claimDate;
+        private String claimDetails;
+        private String policyNumber;
+        private Integer value;
+        private String vin;
+        private Long jobId;
+
+        public Builder setCompanyId(Long companyId) {
+            this.companyId = companyId;
+            return this;
+        }
+        public Builder setClaimNumber(String claimNumber) {
+            this.claimNumber = claimNumber;
+            return this;
+        }
+        public Builder setClaimType(ClaimType claimType) {
+            this.claimType = claimType;
+            return this;
+        }
+        public Builder setClaimDate(Timestamp claimDate) {
+            this.claimDate = claimDate;
+            return this;
+        }
+        public Builder setClaimDetails(String claimDetails) {
+            this.claimDetails = claimDetails;
+            return this;
+        }
+        public Builder setPolicyNumber(String policyNumber) {
+            this.policyNumber = policyNumber;
+            return this;
+        }
+        public Builder setValue(Integer value) {
+            this.value = value;
+            return this;
+        }
+        public Builder setVin(String vin) {
+            this.vin = vin;
+            return this;
+        }
+        public Builder setJobId(Long jobId) {
+            this.jobId = jobId;
+            return this;
+        }
+
+        public Claim build() {
+            Claim claim = new Claim();
+
+            claim.setCompanyId(this.companyId);
+            claim.setClaimNumber(this.claimNumber);
+            claim.setClaimType(this.claimType);
+            claim.setClaimDate(this.claimDate);
+            claim.setClaimDetails(this.claimDetails);
+            claim.setPolicyNumber(this.policyNumber);
+            claim.setValue(this.value);
+            claim.setVin(this.vin);
+            claim.setJobId(this.jobId);
+
+            return claim;
+        }
+    }
 }

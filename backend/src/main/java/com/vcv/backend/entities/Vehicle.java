@@ -276,4 +276,183 @@ public class Vehicle {
                 insuranceId.equals(vehicle.insuranceId) &&
                 policyNumber.equals(vehicle.policyNumber);
     }
+
+    public static class Builder {
+        private String vin;
+        private Integer year;
+        private String make;
+        private String model;
+        private String manufacturer;
+        private String engine;
+        private String colour;
+        private String mileage;
+        private String dealership;
+        private Integer value;
+        private Timestamp evaluationDate;
+        private Timestamp registrationDate;
+        private String transmission;
+        private String fuelType;
+        private String steering;
+        private String drive;
+        private String body;
+        private Integer seats;
+        private Integer doors;
+        private Boolean writtenOff;
+        private Boolean stolen;
+        private Integer numAccidents;
+        private Integer numRobberies;
+        private Integer numSalvages;
+        private Integer numServices;
+        private Integer numOwners;
+        private String policyNumber;
+        private Long insuranceId;
+
+        public Builder setVin(String vin) {
+            this.vin = vin;
+            return this;
+        }
+        public Builder setYear(Integer year) {
+            this.year = year;
+            return this;
+        }
+        public Builder setMake(String make) {
+            this.make = make;
+            return this;
+        }
+        public Builder setModel(String model) {
+            this.model = model;
+            return this;
+        }
+        public Builder setManufacturer(String manufacturer) {
+            this.manufacturer = manufacturer;
+            return this;
+        }
+        public Builder setEngine(String engine) {
+            this.engine = engine;
+            return this;
+        }
+        public Builder setColour(String colour) {
+            this.colour = colour;
+            return this;
+        }
+        public Builder setMileage(String mileage) {
+            this.mileage = mileage;
+            return this;
+        }
+        public Builder setDealership(String dealership) {
+            this.dealership = dealership;
+            return this;
+        }
+        public Builder setValue(Integer value) {
+            this.value = value;
+            return this;
+        }
+        public Builder setEvaluationDate(Timestamp evaluationDate) {
+            this.evaluationDate = evaluationDate;
+            return this;
+        }
+        public Builder setRegistrationDate(Timestamp registrationDate) {
+            this.registrationDate = registrationDate;
+            return this;
+        }
+        public Builder setTransmission(String transmission) {
+            this.transmission = transmission;
+            return this;
+        }
+        public Builder setFuelType(String fuelType) {
+            this.fuelType = fuelType;
+            return this;
+        }
+        public Builder setSteering(String steering) {
+            this.steering = steering;
+            return this;
+        }
+        public Builder setDrive(String drive) {
+            this.drive = drive;
+            return this;
+        }
+        public Builder setBody(String body) {
+            this.body = body;
+            return this;
+        }
+        public Builder setSeats(Integer seats) {
+            this.seats = seats;
+            return this;
+        }
+        public Builder setDoors(Integer doors) {
+            this.doors = doors;
+            return this;
+        }
+        public Builder setWrittenOff(Boolean writtenOff) {
+            this.writtenOff = writtenOff;
+            return this;
+        }
+        public Builder setStolen(Boolean stolen) {
+            this.stolen = stolen;
+            return this;
+        }
+        public Builder setNumAccidents(Integer numAccidents) {
+            this.numAccidents = numAccidents;
+            return this;
+        }
+        public Builder setNumRobberies(Integer numRobberies) {
+            this.numRobberies = numRobberies;
+            return this;
+        }
+        public Builder setNumSalvages(Integer numSalvages) {
+            this.numSalvages = numSalvages;
+            return this;
+        }
+        public Builder setNumServices(Integer numServices) {
+            this.numServices = numServices;
+            return this;
+        }
+        public Builder setNumOwners(Integer numOwners) {
+            this.numOwners = numOwners;
+            return this;
+        }
+        public Builder setPolicyNumber(String policyNumber) {
+            this.policyNumber = policyNumber;
+            return this;
+        }
+        public Builder setInsuranceId(Long insuranceId) {
+            this.insuranceId = insuranceId;
+            return this;
+        }
+
+        public Vehicle build() {
+            Vehicle vehicle = new Vehicle();
+
+            vehicle.setVin(this.vin);
+            vehicle.setYear(this.year);
+            vehicle.setMake(this.make);
+            vehicle.setModel(this.model);
+            vehicle.setManufacturer(this.manufacturer);
+            vehicle.setEngine(this.engine);
+            vehicle.setColour(this.colour);
+            vehicle.setMileage(this.mileage);
+            vehicle.setDealership(this.dealership);
+            vehicle.setValue(this.value);
+            vehicle.setEvaluationDate(this.evaluationDate);
+            vehicle.setRegistrationDate(this.registrationDate);
+            vehicle.setTransmission(this.transmission);
+            vehicle.setFuelType(this.fuelType);
+            vehicle.setSteering(this.steering);
+            vehicle.setDrive(this.drive);
+            vehicle.setBody(this.body);
+            vehicle.setSeats(this.seats);
+            vehicle.setDoors(this.doors);
+            vehicle.setWrittenOff(this.writtenOff);
+            vehicle.setStolen(this.stolen);
+            vehicle.setNumAccidents(this.numAccidents);
+            vehicle.setNumRobberies(this.numRobberies);
+            vehicle.setNumSalvages(this.numSalvages);
+            vehicle.setNumServices(this.numServices);
+            vehicle.setNumOwners(this.numOwners);
+            vehicle.setPolicyNumber(this.policyNumber);
+            vehicle.setInsuranceId(this.insuranceId);
+
+            return vehicle;
+        }
+    }
 }
