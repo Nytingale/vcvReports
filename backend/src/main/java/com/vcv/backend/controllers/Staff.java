@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/staff")
@@ -35,11 +36,10 @@ public class Staff {
     }
 
     @PostMapping("/changeAdmin")
-    public MessageView.UserReport changeAdmin(@RequestBody User vcv,
-                                              @RequestBody User employee) {
+    public MessageView.UserReport changeAdmin(@RequestBody Map<String, User> map) {
         try {
-            User validVcv = (User) Utils.isValidEntity(vcv);
-            User validEmployee = (User) Utils.isValidEntity(employee);
+            User validVcv = (User) Utils.isValidEntity(map.get("VCV"));
+            User validEmployee = (User) Utils.isValidEntity(map.get("Employee"));
             if(validVcv != null && validEmployee != null) {
                 return userService.changeAdmin(validVcv, validEmployee);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");

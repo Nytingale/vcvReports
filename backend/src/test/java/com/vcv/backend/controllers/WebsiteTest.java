@@ -34,10 +34,10 @@ public class WebsiteTest {
     @Autowired private CompanyRepository companyRepository;
     @Autowired private VehicleRepository vehicleRepository;
 
-    private String vin = "MPATFS85JDT000196";
-    private String year = "2011";
+    private String vin = "MPATFS85HCT102885";
+    private String year = "2012";
     private String make = "Isuzu";
-    private String model = "Bobbette";
+    private String model = "D-Max";
     private String companyName = "TridentInsurance";
 
     private List<Job> testJobs = jobRepository.findByVinOrderByJobDateDesc(vin);

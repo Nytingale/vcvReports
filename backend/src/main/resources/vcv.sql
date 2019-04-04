@@ -93,7 +93,7 @@ CREATE TABLE `Vehicle`(
     `year` INT NOT NULL,
     `make` VARCHAR(64) NOT NULL,
     `model` VARCHAR(64) NOT NULL,
-    `colour` VARCHAR(64) NOT NULL,
+    `colour` VARCHAR(64),
     `value` INT NOT NULL,
     `mileage` INT,
     `dealership` VARCHAR(64) NOT NULL,

@@ -26,10 +26,11 @@ public class DecoderService {
                 vehicle.getTransmission() == null ||
                 vehicle.getFuelType() == null ||
                 vehicle.getSteering() == null ||
+                vehicle.getColour() == null ||
                 vehicle.getEngine() == null ||
                 vehicle.getDrive() == null ||
-                vehicle.getBody() == null ||
                 vehicle.getSeats() == null ||
+                vehicle.getBody() == null ||
                 vehicle.getDoors() == null) {
             JSONArray labels = check(vehicle.getVin());
             if(!labels.isEmpty()) {

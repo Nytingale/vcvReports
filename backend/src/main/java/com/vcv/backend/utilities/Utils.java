@@ -35,7 +35,8 @@ public class Utils {
 
     public static String isValidVin(String vin) {
         if(vin == null || vin.trim().isEmpty()) return null;
-        else if(vin.length() == 17) return vin;
+        else if(vin.toUpperCase().contains("I") || vin.toUpperCase().contains("O") || vin.toUpperCase().contains("Q")) return null;
+        else if(vin.length() == 17) return vin.toUpperCase();
         else return null;
     }
 
