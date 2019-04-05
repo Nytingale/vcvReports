@@ -34,38 +34,38 @@ public class WebsiteTest {
     @Autowired private CompanyRepository companyRepository;
     @Autowired private VehicleRepository vehicleRepository;
 
-    private String vin = "MPATFS85HCT102885";
-    private String year = "2012";
-    private String make = "Isuzu";
-    private String model = "D-Max";
-    private String companyName = "TridentInsurance";
+    String vinString = "JSZYA215195102215";
+    String yearString = "2012";
+    String makeString = "Isuzu";
+    String modelString = "D-Max";
+    String companyString = "TridentInsurance";
 
-    private List<Job> testJobs = jobRepository.findByVinOrderByJobDateDesc(vin);
-    private List<Claim> testClaims = claimRepository.findByVinOrderByClaimDateDesc(vin);
-    private Company testCompany = companyRepository.findByCompanyName(companyName);
-    private Vehicle testVehicle = vehicleRepository.findByVin(vin);
+    List<Job> testJobs = jobRepository.findByVinOrderByJobDateDesc(vinString);
+    List<Claim> testClaims = claimRepository.findByVinOrderByClaimDateDesc(vinString);
+    Company testCompany = companyRepository.findByCompanyName(companyString);
+    Vehicle testVehicle = vehicleRepository.findByVin(vinString);
 
     @Test
     public void canGetWebsite() {
-        CompanyView response = restTemplate.getForObject("http://localhost:" + port + "/getWebsite?testCompany=" + companyName, CompanyView.class);
+        CompanyView response = restTemplate.getForObject("http://localhost:" + port + "/getWebsite?company=" + companyString, CompanyView.class);
         assertThat(response).isEqualTo(new CompanyView().build(testCompany));
     }
 
     @Test
     public void canSearchVehicleByVin() {
-        VehicleView.BasicReport response = restTemplate.getForObject("http://localhost:" + port + "/searchForVehicle?vin=" + vin, VehicleView.BasicReport.class);
+        VehicleView.BasicReport response = restTemplate.getForObject("http://localhost:" + port + "/searchForVehicle?vinString=" + vinString, VehicleView.BasicReport.class);
         assertThat(response).isEqualTo(new VehicleView.BasicReport().build(testVehicle));
     }
 
     @Test
     public void canSearchVehicleByYearMakeModel() {
-        VehicleView.BasicReport response = restTemplate.getForObject("http://localhost:" + port + "/searchForVehicle?year=" + year + "&make=" + make + "&model=" + model, VehicleView.BasicReport.class);
+        VehicleView.BasicReport response = restTemplate.getForObject("http://localhost:" + port + "/searchForVehicle?yearString=" + yearString + "&makeString=" + makeString + "&modelString=" + modelString, VehicleView.BasicReport.class);
         assertThat(response).isEqualTo(new VehicleView.BasicReport().build(testVehicle));
     }
 
     @Test
     public void canGeneerateReport() {
-        VehicleView.FullReport response = restTemplate.getForObject("http://localhost:" + port + "/generateReport?vin=" + vin, VehicleView.FullReport.class);
+        VehicleView.FullReport response = restTemplate.getForObject("http://localhost:" + port + "/generateReport?vinString=" + vinString, VehicleView.FullReport.class);
         assertThat(response).isEqualTo(new VehicleView.FullReport().build(testVehicle, testClaims, testJobs));
     }
 }

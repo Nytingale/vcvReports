@@ -41,15 +41,15 @@ public class DecoderService {
                        Object value = values.getJSONObject(x).get(label);
 
                        switch(label) {
-                           case "Transmission (full)":       vehicle.setTransmission(String.valueOf(value));
-                           case "Manufacturer":              vehicle.setManufacturer(String.valueOf(value));
-                           case "Fuel Type - Primary":       vehicle.setFuelType(String.valueOf(value));
-                           case "Steering":                  vehicle.setSteering(String.valueOf(value));
-                           case "Engine Displacement (ccm)": vehicle.setEngine(String.valueOf(value));
-                           case "Drive":                     vehicle.setDrive(String.valueOf(value));
-                           case "Body":                      vehicle.setBody(String.valueOf(value));
-                           case "Number of Seats":           vehicle.setSeats(Integer.valueOf(String.valueOf(value)));
-                           case "Number of Doors":           vehicle.setDoors(Integer.valueOf(String.valueOf(value)));
+                           case "Transmission (full)":       vehicle.setTransmission(String.valueOf(value).replaceAll(" ", ""));
+                           case "Manufacturer":              vehicle.setManufacturer(String.valueOf(value).replaceAll(" ", ""));
+                           case "Fuel Type - Primary":       vehicle.setFuelType(String.valueOf(value).replaceAll(" ", ""));
+                           case "Steering":                  vehicle.setSteering(String.valueOf(value).replaceAll(" ", ""));
+                           case "Engine Displacement (ccm)": vehicle.setEngine(String.valueOf(value).replaceAll(" ", ""));
+                           case "Drive":                     vehicle.setDrive(String.valueOf(value).replaceAll(" ", ""));
+                           case "Body":                      vehicle.setBody(String.valueOf(value).replaceAll(" ", ""));
+                           case "Number of Seats":           vehicle.setSeats(Integer.valueOf(String.valueOf(value).replaceAll(" ", "")));
+                           case "Number of Doors":           vehicle.setDoors(Integer.valueOf(String.valueOf(value).replaceAll(" ", "")));
                            default:                          break;
                        }
                     }

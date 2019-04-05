@@ -51,12 +51,12 @@ public class VehicleService {
         else throw new VehicleServiceException("Error 500: getInsuredVehicles(insurance) returned null");
     }
 
-    public MessageView.WriteOff reportWrittenOff(String vin) throws VehicleServiceException {
+    public MessageView.WriteOffReport reportWrittenOff(String vin) throws VehicleServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
         if(vehicle != null) {
             vehicle.setWrittenOff(true);
             vehicleRepository.save(vehicle);
-            return new MessageView.WriteOff().build(vehicle, "Successfully Written Off Vehicle");
+            return new MessageView.WriteOffReport().build(vehicle, "Successfully Written Off Vehicle");
         }
 
         throw new VehicleServiceException("Error 500: reportWrittenOff(vehicle, dealership) returned null");
@@ -79,7 +79,7 @@ public class VehicleService {
         if(vehicle != null) {
             vehicle.setStolen(false);
             vehicleRepository.save(vehicle);
-            return new MessageView.StolenReport().build(vehicle, "Successfully Recovered Vehicle");
+            return new MessageView.StolenReport().build(vehicle, "Successfully Reported Vehicle Recovered");
         }
 
         throw new VehicleServiceException("Error 500: reportRecovered(vehicle, dealership) returned null");
@@ -91,7 +91,7 @@ public class VehicleService {
             vehicle.setWrittenOff(false);
             vehicle.setNumSalvages(vehicle.getNumSalvages() + 1);
             vehicleRepository.save(vehicle);
-            return new MessageView.SalvageReport().build(vehicle, "Successfully Salvaged Vehicle");
+            return new MessageView.SalvageReport().build(vehicle, "Successfully Reported Vehicle Salvaged");
         }
 
         throw new VehicleServiceException("Error 500: reportSalvaged(vehicle, dealership) returned null");
@@ -102,7 +102,7 @@ public class VehicleService {
         if(vehicle != null) {
             vehicle.setNumAccidents(vehicle.getNumAccidents() + 1);
             vehicleRepository.save(vehicle);
-            return new MessageView.AccidentReport().build(vehicle, "Successfully Reported Accident on Vehicle");
+            return new MessageView.AccidentReport().build(vehicle, "Successfully Reported Vehicle Accident");
         }
 
         throw new VehicleServiceException("Error 500: reportAccident(vin) returned null");

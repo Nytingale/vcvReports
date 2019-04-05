@@ -53,14 +53,14 @@ public class Utils {
     }
 
     public static String isValidPassword(String password) {
-        if(password == null || password.trim().isEmpty()) return null;
+        if(password == null || password.trim().isEmpty() || password.contains(" ")) return null;
         else if(password.length() > 8) return password;
         else return null;
     }
 
     public static String isValidString(String string) {
         if(string == null || string.trim().isEmpty()) return null;
-        else return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, string);
+        else return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, string).replaceAll(" ", "");
     }
 
     public static Integer isValidYear(String year) {

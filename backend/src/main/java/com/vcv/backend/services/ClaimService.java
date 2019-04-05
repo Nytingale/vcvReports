@@ -34,8 +34,8 @@ public class ClaimService {
 
     public MessageView.InsuranceReport addClaim(Claim claim) throws ClaimServiceException {
         // First, Confirm that the VIN in the new Claim Exists
-        Vehicle vehicle = vehicleRepository.findByVin(claim.getVin());
-        if(vehicle == null) throw new ClaimServiceException("Error 105: addClaim(claim) failed to find a matching VIN that exists");
+        Optional<Vehicle> vehicle = vehicleRepository.findById(claim.getVin());
+        if(vehicle.isEmpty()) throw new ClaimServiceException("Error 105: addClaim(claim) failed to find a matching VIN that exists");
 
         try {
             claimRepository.save(claim);

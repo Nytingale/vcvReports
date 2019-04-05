@@ -41,14 +41,14 @@ public class MessageView {
         }
     }
 
-    public static class WriteOff {
+    public static class WriteOffReport {
         private String vin;
         private Boolean writtenOff;
         private MessageView message;
 
-        public WriteOff() {}
-        public WriteOff build(Vehicle vehicle, String message) {
-            WriteOff view = new WriteOff();
+        public WriteOffReport() {}
+        public WriteOffReport build(Vehicle vehicle, String message) {
+            WriteOffReport view = new WriteOffReport();
 
             view.vin = vehicle.getVin();
             view.writtenOff = vehicle.isWrittenOff();

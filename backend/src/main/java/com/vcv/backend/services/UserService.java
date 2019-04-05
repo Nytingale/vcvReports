@@ -143,9 +143,28 @@ public class UserService {
         }
     }
 
+    public MessageView.UserReport removeEmployee(User admin,
+                                                 String email) throws UserServiceException {
+        // First, Confirm that the User is an Admin or VCV Staff
+        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: removeEmployee(admin, employee) has failed to identify the User as a Company Admin or VCV Staff");
+
+        // Second, Confirm that the Employee Exists
+        Optional<User> employee = userRepository.findById(email);
+        if(employee.isEmpty()) throw new UserServiceException("Error 410: removeEmployee(admin, email) has failed to find an Employee with the Email");
+
+        try {
+            // Third, Remove the Employee from the Database
+            userRepository.delete(employee.get());
+            return new MessageView.UserReport().build(employee.get(),"Successfully Removed the Employee from the Company");
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new UserServiceException("Error 415: removeEmployee(admin, email) has failed to add the new Employee to the Database");
+        }
+    }
 
 
     /* Company Admin */
+
     public List<UserView> getEmployees(User admin) throws UserServiceException {
         // First, Confirm that the User is the Admin and they are Not Blacklisted
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
@@ -163,35 +182,6 @@ public class UserService {
         List<User> employees = userRepository.findByCompanyId(admin.getCompanyId());
         if(employees.isEmpty()) return new UserView().build(employees);
         else throw new UserServiceException("Error 400: findByEmail(email, company) returned null");
-    }
-
-    public MessageView.UserReport removeEmployee(User admin,
-                                                 String email) throws UserServiceException {
-        // First, Confirm that the User is the Admin and they are Not Blacklisted
-        Optional<Company> company = companyRepository.findById(admin.getCompanyId());
-        if(company.isPresent()) {
-            if (admin.getRoleId() != 2L) {
-                throw new UserServiceException("Error 405: removeEmployee(admin, email) has failed you for Admin Authentication");
-            }
-
-            // Second, Confirm that the Company is not Blacklisted
-            if (company.get().getBlacklisted()) {
-                throw new UserServiceException("Error 410: removeEmployee(admin, email) has failed you for Company Approved Authentication");
-            }
-        } else throw new UserServiceException("Error 400: removeEmployee(admin, email) has returned null");
-
-        // Second, Confirm that the Employee Exists
-        Optional<User> employee = userRepository.findById(email);
-        if(employee.isEmpty()) throw new UserServiceException("Error 410: removeEmployee(admin, email) has failed to find an Employee with the Email");
-
-        try {
-            // Third, Remove the Employee from the Database
-            userRepository.delete(employee.get());
-            return new MessageView.UserReport().build(employee.get(),"Successfully Removed the Employee from the Company");
-        } catch(Exception e) {
-            e.printStackTrace();
-            throw new UserServiceException("Error 415: removeEmployee(admin, email) has failed to add the new Employee to the Database");
-        }
     }
 
 

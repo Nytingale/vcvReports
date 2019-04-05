@@ -17,8 +17,8 @@ public class Vehicle {
     private String manufacturer;
     private String engine;
     private String colour;
-    private String mileage;
     private String dealership;
+    private Integer mileage;
     private Integer value;
     private Timestamp evaluationDate;
     private Timestamp registrationDate;
@@ -60,7 +60,7 @@ public class Vehicle {
     public String getColour() {
         return colour;
     }
-    public String getMileage() {
+    public Integer getMileage() {
         return mileage;
     }
     public String getDealership() {
@@ -145,7 +145,7 @@ public class Vehicle {
     public void setColour(String colour) {
         this.colour = colour;
     }
-    public void setMileage(String mileage) {
+    public void setMileage(Integer mileage) {
         this.mileage = mileage;
     }
     public void setTransmission(String transmission) {
@@ -285,7 +285,7 @@ public class Vehicle {
         private String manufacturer;
         private String engine;
         private String colour;
-        private String mileage;
+        private Integer mileage;
         private String dealership;
         private Integer value;
         private Timestamp evaluationDate;
@@ -335,7 +335,7 @@ public class Vehicle {
             this.colour = colour;
             return this;
         }
-        public Builder setMileage(String mileage) {
+        public Builder setMileage(Integer mileage) {
             this.mileage = mileage;
             return this;
         }

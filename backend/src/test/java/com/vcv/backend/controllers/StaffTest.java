@@ -82,26 +82,20 @@ public class StaffTest {
     Company testCompany = companyRepository.findById(3L).get();
 
     public static class UserViewList {
-        public List<UserView> getUserViews() {
-            return userViews;
-        }
-
-        public void setUserViews(List<UserView> userViews) {
-            this.userViews = userViews;
-        }
-
         List<UserView> userViews;
 
         public UserViewList() {
             userViews = new ArrayList<>();
+        }
+        public List<UserView> getUserViews() {
+            return userViews;
         }
     }
 
     @Test
     public void canGetUsers() {
         UserViewList response = restTemplate.postForObject("http://localhost:" + port + "/getUsers", vcvStaff, UserViewList.class);
-        List<UserView> users = response.getUserViews();
-        assertThat(users).isEqualTo(new UserView().build(testUsers));
+        assertThat(response.getUserViews()).isEqualTo(new UserView().build(testUsers));
     }
 
     @Test

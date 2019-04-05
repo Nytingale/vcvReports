@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PolicyService {
@@ -34,22 +35,22 @@ public class PolicyService {
         if(policyDB != null) throw new PolicyServiceException("Error 305: addPolicy(policy) found an already existing copy of this Policy");
 
         // Second, Confirm that the VIN in the new Policy Exists
-        Vehicle vehicle = vehicleRepository.findByVin(policy.getVin());
-        if(vehicle == null) throw new PolicyServiceException("Error 310: addPolicy(policy) failed to find a matching VIN that exists");
+        Optional<Vehicle> vehicle = vehicleRepository.findById(policy.getVin());
+        if(vehicle.isEmpty()) throw new PolicyServiceException("Error 310: addPolicy(policy) failed to find a matching VIN that exists");
 
         // Third, Check whether this VIN Exists on Another Policy and if so, Update to the Latter Policy as Valid
-        policyDB = policyRepository.findByVin(vehicle.getVin());
-        if(policyDB.getVin().equals(vehicle.getVin())) {
+        policyDB = policyRepository.findByVin(vehicle.get().getVin());
+        if(policyDB.getVin().equals(vehicle.get().getVin())) {
             policy.setValid(true);
             policyDB.setValid(false);
         }
 
         try {
             // Fourth, Save the new Policy and Update the Vehicle Record
-            vehicle.setInsuranceId(policy.getCompanyId());
-            vehicle.setPolicyNumber(policy.getPolicyNumber());
-            vehicle.setNumOwners(vehicle.getNumOwners() + 1);
-            vehicleRepository.save(vehicle);
+            vehicle.get().setInsuranceId(policy.getCompanyId());
+            vehicle.get().setPolicyNumber(policy.getPolicyNumber());
+            vehicle.get().setNumOwners(vehicle.get().getNumOwners() + 1);
+            vehicleRepository.save(vehicle.get());
             policyRepository.save(policy);
             return new MessageView.InsuranceReport().build(policy, "Successfully Added Policy");
         } catch (Exception e) {

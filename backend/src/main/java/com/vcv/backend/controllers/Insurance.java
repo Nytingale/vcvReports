@@ -157,7 +157,7 @@ public class Insurance {
     }
 
     @GetMapping("/reportWrittenOff")
-    public MessageView.WriteOff reportWrittenOff(@RequestParam(value = "vin", required = false) String vin) {
+    public MessageView.WriteOffReport reportWrittenOff(@RequestParam(value = "vin", required = false) String vin) {
         try {
             String validVin = Utils.isValidVin(vin);
             if(validVin != null) {

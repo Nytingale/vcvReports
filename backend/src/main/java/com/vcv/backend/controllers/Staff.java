@@ -77,6 +77,20 @@ public class Staff {
         }
     }
 
+    @PostMapping("/resetPassword")
+    public MessageView resetPassword(@RequestBody Map<String, Object> map) {
+        try {
+            User validVcv = (User) Utils.isValidEntity(map.get("Vcv"));
+            String validEmail = Utils.isValidEmail((String) map.get("Email"));
+            if(validVcv != null && validEmail != null) {
+                return userService.resetPassword(validVcv, validEmail);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PostMapping("/addEmployee")
     public MessageView.UserReport addEmployee(@RequestBody Map<String, User> map) {
         try {
@@ -84,6 +98,20 @@ public class Staff {
             User validEmployee = (User) Utils.isValidEntity(map.get("Employee"));
             if(validVcv != null && validEmployee != null) {
                 return userService.addEmployee(validVcv, validEmployee);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/removeEmployee")
+    public MessageView.UserReport removeEmployee(@RequestBody Map<String, Object> map) {
+        try {
+            User validVcv = (User) Utils.isValidEntity(map.get("VCV"));
+            String validEmail = Utils.isValidEmail((String) map.get("Email"));
+            if(validVcv!= null && validEmail != null) {
+                return userService.removeEmployee(validVcv, validEmail);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();
