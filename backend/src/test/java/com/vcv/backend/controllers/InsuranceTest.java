@@ -10,6 +10,7 @@ import com.vcv.backend.views.ClaimView;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.PolicyView;
 import com.vcv.backend.views.VehicleView;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,16 +46,16 @@ public class InsuranceTest {
     Policy testPolicy = policyRepository.findByVin(vinString);
     Vehicle testVehicle = vehicleRepository.findById(vinString).get();
 
-    List<Claim> testClaims = claimRepository.findByCompanyIdOrderByClaimDateDesc(2L);
-    List<Policy> testPolicies = policyRepository.findByCompanyIdOrderByPolicyDateDesc(2L);
-    List<Vehicle> testVehicles = vehicleRepository.findByInsuranceIdOrderByRegistrationDateDesc(2L);
+    List<Claim> testClaims;
+    List<Policy> testPolicies;
+    List<Vehicle> testVehicles;
 
     Policy newPolicy = new Policy.Builder()
             .setCompanyId(2L)
             .setPolicyNumber("D78FDG785563")
             .setPolicyOwner("Bobby Reynolds")
             .setPolicyDate(Timestamp.valueOf(LocalDateTime.now()))
-            .setPolicyType(PolicyType.THIRD_PARTY)
+            .setPolicyType(PolicyType.Third_Party)
             .setFinancer("")
             .setValid(true)
             .setVin("JMYSTC3A4U000993 ")
@@ -82,7 +83,7 @@ public class InsuranceTest {
     Claim newClaim = new Claim.Builder()
             .setCompanyId(2L)
             .setClaimNumber("ISDFKG899RWEFAS")
-            .setClaimType(ClaimType.ACCIDENT)
+            .setClaimType(ClaimType.Accident)
             .setClaimDate(Timestamp.valueOf(LocalDateTime.now()))
             .setClaimDetails("Some text here")
             .setPolicyNumber("D78FDG785563")
@@ -93,7 +94,7 @@ public class InsuranceTest {
     Claim updatedClaim = new Claim.Builder()
             .setCompanyId(2L)
             .setClaimNumber("ISDFKG899RWEFAS")
-            .setClaimType(ClaimType.ACCIDENT)
+            .setClaimType(ClaimType.Accident)
             .setClaimDate(Timestamp.valueOf(LocalDateTime.now()))
             .setClaimDetails("Right. The windshield goofed")
             .setPolicyNumber("D78FDG785563")
@@ -135,6 +136,13 @@ public class InsuranceTest {
         public List<VehicleView> getVehicleViews() {
             return vehicleViews;
         }
+    }
+
+    @Before
+    public void setup() {
+        testClaims = claimRepository.findByCompanyIdOrderByClaimDateDesc(2L);
+        testPolicies = policyRepository.findByCompanyIdOrderByPolicyDateDesc(2L);
+        testVehicles = vehicleRepository.findByInsuranceIdOrderByRegistrationDateDesc(2L);
     }
 
     @Test

@@ -1,8 +1,10 @@
 package com.vcv.backend.enums;
 
-public enum PolicyType {
-    COMPREHENSIVE (2, "COM"),
-    THIRD_PARTY   (1, "3PY");
+import java.io.Serializable;
+
+public enum PolicyType implements Serializable {
+    Comprehensive (2, "COM"),
+    Third_Party   (1, "3PY");
 
     int w;
     String a;
@@ -22,10 +24,10 @@ public enum PolicyType {
     @Override
     public String toString() {
         switch(this) {
-            case COMPREHENSIVE:
+            case Comprehensive:
                 return "Comprehensive";
 
-            case THIRD_PARTY:
+            case Third_Party:
                 return "Third Party";
 
             default:

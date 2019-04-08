@@ -189,7 +189,7 @@ public class Insurance {
         try {
             Long validId = Utils.isValidLong(id);
             String validNumber = Utils.isValidString(number);
-            String validCompany = Utils.isValidSubscribingCompany(company, CompanyType.INSURANCE.toString());
+            String validCompany = Utils.isValidSubscribingCompany(company, CompanyType.Insurance.toString());
             if(validId != null) {
                 return claimService.linkJobToClaim(validId, validNumber, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");

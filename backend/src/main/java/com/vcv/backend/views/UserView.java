@@ -4,12 +4,13 @@ import com.vcv.backend.entities.User;
 import com.vcv.backend.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserView {
+public class UserView implements Serializable {
     @Autowired
     private CompanyRepository companyRepository;
 

@@ -9,6 +9,7 @@ import com.vcv.backend.repositories.UserRepository;
 import com.vcv.backend.views.CompanyView;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,14 @@ public class StaffTest {
     String clientString = "T_man@hotmail.com";
     String companyString = "CourtesyGarage";
     String newPasswordString = "ThisIsANewPasswordTest";
+    String nonAdminEmailString = "JaneDoe@trident.com";
+    String vcvStaffEmailString = "RSJMorris@gmail.com";
+
+    User vcvStaff;
+    User testClient;
+    User nonAdminEmployee;
+    Company testCompany;
+    List<User> testUsers;
 
     User newEmployee = new User.Builder()
             .setEmail("TestEmail@email.com")
@@ -64,7 +73,7 @@ public class StaffTest {
     Company newCompany = new Company.Builder()
             .setId(7L)
             .setCompanyName("TestNameCompany")
-            .setCompanyType(CompanyType.DEALERSHIP)
+            .setCompanyType(CompanyType.Dealership)
             .setSubscriptionStartDate(Timestamp.valueOf(LocalDateTime.now()))
             .setSubscriptionEndDate(Timestamp.valueOf(LocalDateTime.now().plusYears(1)))
             .setWebsite("http://stuff.com")
@@ -72,14 +81,6 @@ public class StaffTest {
             .setBlacklisted(false)
             .setValid(true)
             .build();
-
-    User vcvStaff = userRepository.findByEmailAndCompanyId("RSJMorris@gmail.com", 1L);
-    User testClient = userRepository.findById(clientString).get();
-    User nonAdminEmployee = userRepository.findByEmailAndCompanyId("JaneDoe@trident.com", 2L);
-
-    List<User> testUsers = (List<User>) userRepository.findAll();
-
-    Company testCompany = companyRepository.findById(3L).get();
 
     public static class UserViewList {
         List<UserView> userViews;
@@ -90,6 +91,15 @@ public class StaffTest {
         public List<UserView> getUserViews() {
             return userViews;
         }
+    }
+
+    @Before
+    public void setup() {
+        vcvStaff = userRepository.findByEmailAndCompanyId(vcvStaffEmailString, 1L);
+        testClient = userRepository.findById(clientString).get();
+        nonAdminEmployee = userRepository.findByEmailAndCompanyId(nonAdminEmailString, 2L);
+        testCompany = companyRepository.findById(3L).get();
+        testUsers = (List<User>) userRepository.findAll();
     }
 
     @Test

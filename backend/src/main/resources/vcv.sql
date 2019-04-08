@@ -15,6 +15,7 @@ CREATE TABLE `User`(
 
 CREATE TABLE `Role`(
     `id` BIGINT NOT NULL,
+    `name` VARCHAR(32) NOT NULL,
     `user` TINYINT(1) DEFAULT 0,
     `admin` TINYINT(1) DEFAULT 0,
     `staff` TINYINT(1) DEFAULT 0,
@@ -124,24 +125,21 @@ CREATE TABLE `Vehicle`(
     PRIMARY KEY(vin)
 ) ENGINE = InnoDB;
 
-ALTER TABLE `Job`     ADD CONSTRAINT `job_claim_fk`      FOREIGN KEY(insurance_id, claim_number)  REFERENCES `Claim`(company_id, claim_number);
 ALTER TABLE `Job`     ADD CONSTRAINT `job_vehicle_fk`    FOREIGN KEY(vin)                         REFERENCES `Vehicle`(vin);
 ALTER TABLE `User`    ADD CONSTRAINT `user_role_fk`      FOREIGN KEY(role_id)                     REFERENCES `Role`(id);
 ALTER TABLE `User`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `Company`(id);
-ALTER TABLE `Claim`   ADD CONSTRAINT `claim_job_fk`      FOREIGN KEY(job_id)                      REFERENCES `Job`(id);
 ALTER TABLE `Claim`   ADD CONSTRAINT `claim_policy_fk`   FOREIGN KEY(company_id, policy_number)   REFERENCES `Policy`(company_id, policy_number);
 ALTER TABLE `Claim`   ADD CONSTRAINT `claim_vehicle_fk`  FOREIGN KEY(vin)                         REFERENCES `Vehicle`(vin);
 ALTER TABLE `Policy`  ADD CONSTRAINT `policy_vehicle_fk` FOREIGN KEY(vin)                         REFERENCES `Vehicle`(vin);
-ALTER TABLE `Vehicle` ADD CONSTRAINT `vehicle_policy_fk` FOREIGN KEY(insurance_id, policy_number) REFERENCES `Policy`(company_id, policy_number);
 
 # ==============================================================
 # = Adding in Roles
 # ==============================================================
-INSERT INTO `Role` VALUES (1, 1, 0, 0);               # = User
-INSERT INTO `Role` VALUES (2, 0, 1, 0);               # = Admin
-INSERT INTO `Role` VALUES (3, 0, 0, 1);               # = Staff
+INSERT INTO `Role` VALUES (1, 'User',  1, 0, 0);       # = User
+INSERT INTO `Role` VALUES (2, 'Admin', 1, 1, 0);       # = Admin
+INSERT INTO `Role` VALUES (3, 'Staff', 1, 1, 1);       # = Staff
 
 # ==============================================================
 # = Adding VCV as a Company
 # ==============================================================
-INSERT INTO `Company` VALUES (1, 'VCV', 'VCV Staff', 2019-04-01 00:00:00, 3019-04-01 00:00:00, 5, 'https://vcv.com', 'RSJMorris@gmail.com', 0, 1);
+INSERT INTO `Company` VALUES (1, 'VCV', 'VCV Staff', '2019-04-01 00:00:00', '2020-04-01 00:00:00', 5, 'https://vcv.com', 'RSJMorris@gmail.com', 0, 1);

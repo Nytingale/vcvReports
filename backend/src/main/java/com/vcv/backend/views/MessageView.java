@@ -5,10 +5,11 @@ import com.vcv.backend.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
-public class MessageView {
+public class MessageView implements Serializable {
     private String message;
 
     public MessageView() {}

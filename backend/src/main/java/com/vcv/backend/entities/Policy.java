@@ -2,10 +2,7 @@ package com.vcv.backend.entities;
 
 import com.vcv.backend.enums.PolicyType;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -20,6 +17,8 @@ public class Policy {
 
     private String policyOwner;
     private Timestamp policyDate;
+
+    @Enumerated(EnumType.STRING)
     private PolicyType policyType;
     private String financer;
     private Boolean valid;

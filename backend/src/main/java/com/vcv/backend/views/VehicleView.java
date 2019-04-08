@@ -6,12 +6,13 @@ import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VehicleView {
+public class VehicleView implements Serializable {
     @Autowired
     private CompanyRepository companyRepository;
 
@@ -28,7 +29,7 @@ public class VehicleView {
     private String transmission;
     private String fuelType;
     private String steering;
-    private String mileage;
+    private Integer mileage;
     private String engine;
     private String drive;
     private String body;

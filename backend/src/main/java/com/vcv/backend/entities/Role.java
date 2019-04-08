@@ -10,12 +10,16 @@ import java.util.Objects;
 public class Role {
     @Id
     private Long id;
+    private String name;
     private Boolean user;
     private Boolean admin;
     private Boolean staff;
 
     public Long getId() {
         return id;
+    }
+    public String getName() {
+        return name;
     }
     public Boolean isUser() {
         return user;
@@ -29,6 +33,9 @@ public class Role {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
     public void setUser(Boolean user) {
         this.user = user;
@@ -51,6 +58,7 @@ public class Role {
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
         return id.equals(role.id) &&
+                name.equals(role.name) &&
                 user.equals(role.user) &&
                 admin.equals(role.admin) &&
                 staff.equals(role.staff);
@@ -58,12 +66,17 @@ public class Role {
 
     public static class Builder {
         private Long id;
+        private String name;
         private Boolean user;
         private Boolean admin;
         private Boolean staff;
 
         public Builder setId(Long id) {
             this.id = id;
+            return this;
+        }
+        public Builder setName(String name) {
+            this.name = name;
             return this;
         }
         public Builder setUser(Boolean user) {
@@ -83,6 +96,7 @@ public class Role {
             Role role = new Role();
 
             role.setId(this.id);
+            role.setName(this.name);
             role.setUser(this.user);
             role.setAdmin(this.admin);
             role.setStaff(this.staff);

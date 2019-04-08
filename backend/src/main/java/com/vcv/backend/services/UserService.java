@@ -10,17 +10,20 @@ import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired private UserRepository userRepository;
     @Autowired private RoleRepository roleRepository;
     @Autowired private CompanyRepository companyRepository;
@@ -200,5 +203,20 @@ public class UserService {
             e.printStackTrace();
             throw new UserServiceException("Error 415: changePassword(user, newPassword) has failed to change the User's Password");
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findById(email);
+        if (user.isEmpty()){
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        return new org.springframework.security.core.userdetails.User(user.get().getEmail(),
+                user.get().getPassword(),
+                (Collection<? extends GrantedAuthority>) mapRoleToAuthority(user.get().getRoleId()));
+    }
+
+    private GrantedAuthority mapRoleToAuthority(Long roleID){
+        return new SimpleGrantedAuthority(roleRepository.findById(roleID).get().getName());
     }
 }

@@ -27,7 +27,7 @@ public class JobService {
     /* Portal (Mechanics/Garages) */
     public List<JobView> getMechanicJobs(String garage) throws JobServiceException {
         Company company = companyRepository.findByCompanyName(garage);
-        List<Job> jobs = jobRepository.findByCompanyIdOrderByJobIdDesc(company.getId());
+        List<Job> jobs = jobRepository.findByCompanyIdOrderByIdDesc(company.getId());
         if(jobs.isEmpty()) return new JobView().build(jobs);
         else throw new JobServiceException("Error 200: getMechanicJobs(garage) returned null");
     }
@@ -81,7 +81,7 @@ public class JobService {
 
     /* Per Vehicle */
     public List<Job> getJobs(String vin) throws JobServiceException {
-        List<Job> jobs = jobRepository.findByVinOrderByJobDateDesc(vin);
+        List<Job> jobs = jobRepository.findByVinOrderByIdDesc(vin);
         if(jobs.isEmpty()) return jobs;
         else throw new JobServiceException("Error 200: getJobs(vin) returned null");
     }

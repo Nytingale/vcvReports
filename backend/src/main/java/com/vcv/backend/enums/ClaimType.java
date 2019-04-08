@@ -1,10 +1,12 @@
 package com.vcv.backend.enums;
 
-public enum ClaimType {
-    PERSONAL_INJURY (4, "INJ"),
-    TOTAL_LOSS      (3, "TTL"),
-    LIABILITY       (2, "LIA"),
-    ACCIDENT        (1, "ACC");
+import java.io.Serializable;
+
+public enum ClaimType implements Serializable {
+    Peronsal_Injury (4, "INJ"),
+    Total_Loss      (3, "TTL"),
+    Liability       (2, "LIA"),
+    Accident        (1, "ACC");
 
     int w;
     String a;
@@ -24,13 +26,13 @@ public enum ClaimType {
     @Override
     public String toString() {
         switch(this) {
-            case PERSONAL_INJURY:
+            case Peronsal_Injury:
                 return "Personal Injury";
-            case TOTAL_LOSS:
+            case Total_Loss:
                 return "Total Loss";
-            case LIABILITY:
+            case Liability:
                 return "Liability";
-            case ACCIDENT:
+            case Accident:
                 return "Accident";
             default:
                 return "";

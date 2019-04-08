@@ -8,7 +8,7 @@ import com.vcv.backend.repositories.UserRepository;
 import com.vcv.backend.repositories.VehicleRepository;
 import com.vcv.backend.views.JobView;
 import com.vcv.backend.views.MessageView;
-import com.vcv.backend.views.UserView;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +37,11 @@ public class MechanicTest {
 
     String garageString = "CourtesyGarage";
 
+    List<Job> testJobs;
+
     Job newJob = new Job.Builder()
             .setId(5L)
-            .setJobType(JobType.ACCIDENT)
+            .setJobType(JobType.Accident)
             .setJobDate(Timestamp.valueOf(LocalDateTime.now()))
             .setJobCost(500)
             .setJobDetails("Broken windshield")
@@ -49,7 +51,7 @@ public class MechanicTest {
 
     Job updatedJob = new Job.Builder()
             .setId(5L)
-            .setJobType(JobType.ACCIDENT)
+            .setJobType(JobType.Accident)
             .setJobDate(Timestamp.valueOf(LocalDateTime.now().plusDays(5)))
             .setJobCost(700)
             .setJobDetails("Broken windshield and replaced a rim")
@@ -76,8 +78,6 @@ public class MechanicTest {
             .setInsuranceId(2L)
             .build();
 
-    List<Job> testJobs = jobRepository.findByCompanyIdOrderByJobIdDesc(3L);
-
     public static class JobViewList {
         List<JobView> jobViews;
 
@@ -88,6 +88,11 @@ public class MechanicTest {
         public List<JobView> getJobViews() {
             return jobViews;
         }
+    }
+
+    @Before
+    public void setup() {
+        testJobs = jobRepository.findByCompanyIdOrderByIdDesc(3L);
     }
 
     @Test

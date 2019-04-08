@@ -2,9 +2,7 @@ package com.vcv.backend.entities;
 
 import com.vcv.backend.enums.JobType;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -14,6 +12,8 @@ public class Job {
     @Id
     private Long id;
     private Integer jobCost;
+
+    @Enumerated(EnumType.STRING)
     private JobType jobType;
     private Timestamp jobDate;
     private String jobDetails;
@@ -164,3 +164,4 @@ public class Job {
         }
     }
 }
+

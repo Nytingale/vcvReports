@@ -5,6 +5,7 @@ import com.vcv.backend.repositories.UserRepository;
 import com.vcv.backend.repositories.VehicleRepository;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.VehicleView;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,9 @@ public class DealershipTest {
     @Autowired private UserRepository userRepository;
     @Autowired private VehicleRepository vehicleRepository;
 
-    List<Vehicle> testVehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc("MQI");
-
     String dealershipString = "MQI";
+
+    List<Vehicle> testVehicles;
 
     Vehicle newVehicle = new Vehicle.Builder()
             .setVin("JMYSTC3A4U000993 ")
@@ -63,6 +64,11 @@ public class DealershipTest {
         public List<VehicleView> getVehicleViews() {
             return vehicleViews;
         }
+    }
+
+    @Before
+    public void setup() {
+        testVehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc(dealershipString);
     }
 
     @Test

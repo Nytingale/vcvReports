@@ -1,12 +1,14 @@
 package com.vcv.backend.enums;
 
-public enum CompanyType {
-    VCV_STAFF  (3, "VCV"),
-    DEALERSHIP (2, "DEA"),
-    INSURANCE  (2, "INS"),
-    GARAGE     (2, "GAR"),
-    MECHANIC   (1, "MEC"),
-    CASUAL     (0, "CAS");
+import java.io.Serializable;
+
+public enum CompanyType implements Serializable {
+    VCV_Staff  (3, "VCV"),
+    Dealership (2, "DEA"),
+    Insurance  (2, "INS"),
+    Garage     (2, "GAR"),
+    Mechanic   (1, "MEC"),
+    Casual     (0, "CAS");
 
     int l;
     String a;
@@ -26,17 +28,17 @@ public enum CompanyType {
     @Override
     public String toString() {
         switch(this) {
-            case VCV_STAFF:
+            case VCV_Staff:
                 return "Staff";
-            case DEALERSHIP:
+            case Dealership:
                 return "Dealership";
-            case INSURANCE:
+            case Insurance:
                 return "Insurance";
-            case GARAGE:
+            case Garage:
                 return "Garage";
-            case MECHANIC:
+            case Mechanic:
                 return "Mechanic";
-            case CASUAL:
+            case Casual:
                 return "Casual";
             default:
                 return "";

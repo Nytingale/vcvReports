@@ -2,10 +2,7 @@ package com.vcv.backend.entities;
 
 import com.vcv.backend.enums.ClaimType;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Entity;
-import javax.persistence.IdClass;
+import javax.persistence.*;
 
 import java.util.Objects;
 
@@ -20,6 +17,7 @@ public class Claim {
     @Id private Long companyId;
     @Id private String claimNumber;
 
+    @Enumerated(EnumType.STRING)
     private ClaimType claimType;
     private Timestamp claimDate;
     private String claimDetails;

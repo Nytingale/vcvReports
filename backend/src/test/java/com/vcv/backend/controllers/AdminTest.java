@@ -6,6 +6,7 @@ import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.UserRepository;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,11 @@ public class AdminTest {
     Map<String, Object> stringObjectMap = Collections.emptyMap();
 
     String emailString = "JaneDoe@trident.com";
+    String adminEmailString = "GeorgeOrwell@trident.com";
 
-    User admin = userRepository.findById("GeorgeOrwell@trident.com").get();
-    Company company = companyRepository.findById(2L).get();
-
-    List<User> testUsers = userRepository.findByCompanyId(2L);
+    User admin;
+    Company company;
+    List<User> testUsers;
 
     public static class UserViewList {
         List<UserView> userViews;
@@ -53,6 +54,13 @@ public class AdminTest {
         public List<UserView> getUserViews() {
             return userViews;
         }
+    }
+
+    @Before
+    public void setup() {
+        admin = userRepository.findById(adminEmailString).get();
+        company = companyRepository.findById(2L).get();
+        testUsers = userRepository.findByCompanyId(2L);
     }
 
     @Test

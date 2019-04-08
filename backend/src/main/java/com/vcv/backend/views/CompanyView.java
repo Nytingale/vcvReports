@@ -2,6 +2,7 @@ package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Company;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -9,7 +10,7 @@ import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompanyView {
+public class CompanyView implements Serializable {
     private String name;
     private String type;
     private String subscriptionStartDate;

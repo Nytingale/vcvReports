@@ -2,9 +2,7 @@ package com.vcv.backend.entities;
 
 import com.vcv.backend.enums.CompanyType;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -14,6 +12,8 @@ public class Company {
     @Id
     private Long id;
     private String companyName;
+
+    @Enumerated(EnumType.STRING)
     private CompanyType companyType;
     private Timestamp subscriptionStartDate;
     private Timestamp subscriptionEndDate;

@@ -1,9 +1,11 @@
 package com.vcv.backend.enums;
 
-public enum JobType {
-    ACCIDENT (3, "ACC"),
-    SERVICE  (2, "SRV"),
-    REPAIR   (1, "REP");
+import java.io.Serializable;
+
+public enum JobType implements Serializable {
+    Accident (3, "ACC"),
+    Service  (2, "SRV"),
+    Repair   (1, "REP");
 
     int w;
     String a;
@@ -23,13 +25,13 @@ public enum JobType {
     @Override
     public String toString() {
         switch (this) {
-            case ACCIDENT:
+            case Accident:
                 return "Accident";
 
-            case SERVICE:
+            case Service:
                 return "Service";
 
-            case REPAIR:
+            case Repair:
                 return "Repair";
 
             default:
