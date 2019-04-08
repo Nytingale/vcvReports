@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -29,29 +28,30 @@ public class DecoderService {
                 vehicle.getColour() == null ||
                 vehicle.getEngine() == null ||
                 vehicle.getDrive() == null ||
-                vehicle.getSeats() == null ||
+                vehicle.getNumSeats() == null ||
                 vehicle.getBody() == null ||
-                vehicle.getDoors() == null) {
+                vehicle.getNumDoors() == null) {
             JSONArray labels = check(vehicle.getVin());
             if(!labels.isEmpty()) {
                 JSONArray values = decode(vehicle.getVin());
                 if(labels.length() == values.length()) {
                     for(int x = 0; x < values.length(); x++) {
-                       String label = labels.getString(x);
-                       Object value = values.getJSONObject(x).get(label);
 
-                       switch(label) {
-                           case "Transmission (full)":       vehicle.setTransmission(String.valueOf(value).replaceAll(" ", ""));
-                           case "Manufacturer":              vehicle.setManufacturer(String.valueOf(value).replaceAll(" ", ""));
-                           case "Fuel Type - Primary":       vehicle.setFuelType(String.valueOf(value).replaceAll(" ", ""));
-                           case "Steering":                  vehicle.setSteering(String.valueOf(value).replaceAll(" ", ""));
-                           case "Engine Displacement (ccm)": vehicle.setEngine(String.valueOf(value).replaceAll(" ", ""));
-                           case "Drive":                     vehicle.setDrive(String.valueOf(value).replaceAll(" ", ""));
-                           case "Body":                      vehicle.setBody(String.valueOf(value).replaceAll(" ", ""));
-                           case "Number of Seats":           vehicle.setSeats(Integer.valueOf(String.valueOf(value).replaceAll(" ", "")));
-                           case "Number of Doors":           vehicle.setDoors(Integer.valueOf(String.valueOf(value).replaceAll(" ", "")));
+                        JSONObject jsonObject = values.getJSONObject(x);
+                        String label = jsonObject.getString("label");
+
+                        switch(label) {
+                           case "Transmission (full)":       vehicle.setTransmission(String.valueOf(jsonObject.get("value")));
+                           case "Manufacturer":              vehicle.setManufacturer(String.valueOf(jsonObject.get("value")));
+                           case "Fuel Type - Primary":       vehicle.setFuelType(String.valueOf(jsonObject.get("value")));
+                           case "Steering":                  vehicle.setSteering(String.valueOf(jsonObject.get("value")));
+                           case "Engine Displacement (ccm)": vehicle.setEngine(String.valueOf(jsonObject.get("value")));
+                           case "Drive":                     vehicle.setDrive(String.valueOf(jsonObject.get("value")));
+                           case "Body":                      vehicle.setBody(String.valueOf(jsonObject.get("value")));
+                           case "Number of Seats":           vehicle.setNumSeats(Integer.valueOf(String.valueOf(jsonObject.get("value"))));
+                           case "Number of Doors":           vehicle.setNumDoors(Integer.valueOf(String.valueOf(jsonObject.get("value"))));
                            default:                          break;
-                       }
+                        }
                     }
 
                     return vehicle;
@@ -86,9 +86,10 @@ public class DecoderService {
     private JSONArray check(String vin) throws DecoderServiceException {
         String uri = vinDecoderConfig.info(vin);
         if(!uri.isEmpty()) {
-            JSONObject response = restTemplate.getForObject(uri, JSONObject.class);
+            String response = restTemplate.getForObject(uri, String.class);
             if(response != null) {
-                return response.getJSONArray("decode");
+                JSONObject jsonObject = new JSONObject(response);
+                return jsonObject.getJSONArray("decode");
             } else throw new DecoderServiceException("Error 700: check(vin) returned null");
         } else throw new DecoderServiceException("Error 705: check(vin) failed to build a URI from the VIN");
     }
@@ -96,9 +97,10 @@ public class DecoderService {
     private JSONArray decode(String vin) throws DecoderServiceException {
         String uri = vinDecoderConfig.decode(vin);
         if (!uri.isEmpty()) {
-            JSONObject response = restTemplate.getForObject(uri, JSONObject.class);
+            String response = restTemplate.getForObject(uri, String.class);
             if (response != null) {
-                return response.getJSONArray("decpde");
+                JSONObject jsonObject = new JSONObject(response);
+                return jsonObject.getJSONArray("decode");
             } else throw new DecoderServiceException("Error 700: decode(vin) returned null");
         } else throw new DecoderServiceException("Error 705: decode(vin) failed to build a URI from the VIN");
     }

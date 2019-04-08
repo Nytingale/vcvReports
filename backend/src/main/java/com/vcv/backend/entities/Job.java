@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Job")
+@Table(name = "job")
 public class Job {
     @Id
     private Long id;

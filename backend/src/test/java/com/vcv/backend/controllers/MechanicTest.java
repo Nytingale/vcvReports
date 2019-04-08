@@ -15,8 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,6 +39,8 @@ public class MechanicTest {
     @Autowired private VehicleRepository vehicleRepository;
 
     String garageString = "CourtesyGarage";
+
+    String baseURL;
 
     List<Job> testJobs;
 
@@ -78,13 +83,12 @@ public class MechanicTest {
             .setInsuranceId(2L)
             .build();
 
-    public static class JobViewList {
+    public  class JobViewList {
         List<JobView> jobViews;
 
         public JobViewList() {
             jobViews = new ArrayList<>();
         }
-
         public List<JobView> getJobViews() {
             return jobViews;
         }
@@ -93,25 +97,30 @@ public class MechanicTest {
     @Before
     public void setup() {
         testJobs = jobRepository.findByCompanyIdOrderByIdDesc(3L);
+
+        baseURL = "http://localhost:" + port + "/vcv/mechanic";
     }
 
     @Test
-    public void canGetMechanicJobs() {
-        JobViewList response = restTemplate.getForObject("http://localhost:" + port + "/getMechanicJobs?garage=" + garageString, JobViewList.class);
-        assertThat(response.getJobViews()).isEqualTo(new JobView().build(testJobs));
+    public void canGetMechanicJobs() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/getMechanicJobs?garage=" + garageString);
+        ResponseEntity<JobViewList> response = restTemplate.getForEntity(uri, JobViewList.class);
+        assertThat(response.getBody().getJobViews()).isEqualTo(new JobView().build(testJobs));
     }
 
     @Test
-    public void canAddJob() {
+    public void canAddJob() throws URISyntaxException {
         vehicleRepository.save(newVehicle);
-        MessageView.JobReport response = restTemplate.postForObject("http://localhost:" + port + "/addJob", newJob, MessageView.JobReport.class);
-        assertThat(response).isEqualTo(new MessageView.JobReport().build(newJob, "Successfully Saved the Mechanic Job"));
+        URI uri = new URI(baseURL + "/addJob");
+        ResponseEntity<MessageView.JobReport> response = restTemplate.postForEntity(uri, newJob, MessageView.JobReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.JobReport().build(newJob, "Successfully Saved the Mechanic Job"));
     }
 
     @Test
-    public void canUpdateJob() {
-        MessageView.JobReport response = restTemplate.postForObject("http://localhost:" + port + "/updateJob", updatedJob, MessageView.JobReport.class);
-        assertThat(response).isEqualTo(new MessageView.JobReport().build(updatedJob, "Successfully Updated the Mechanic Job"));
+    public void canUpdateJob() throws URISyntaxException  {
+        URI uri = new URI(baseURL + "/updateJob");
+        ResponseEntity<MessageView.JobReport> response = restTemplate.postForEntity(uri, updatedJob, MessageView.JobReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.JobReport().build(updatedJob, "Successfully Updated the Mechanic Job"));
         vehicleRepository.delete(newVehicle);
     }
 }

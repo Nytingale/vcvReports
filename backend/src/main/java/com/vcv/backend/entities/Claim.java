@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Claim")
+@Table(name = "claim")
 @IdClass(Claim.CompositeKey.class)
 public class Claim {
     @Id private Long companyId;

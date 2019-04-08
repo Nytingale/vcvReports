@@ -13,10 +13,18 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
 
-        <org.springboot.version>2.1.3.RELEASE</org.springboot.version>
-        <org.springsecurity.version>5.1.4.RELEASE</org.springsecurity.version>
-        <org.springframework.version>5.1.5.RELEASE</org.springframework.version>
+        <org.springfox.version>2.9.2</org.springfox.version>
+        <org.springboot.version>2.1.4.RELEASE</org.springboot.version>
+        <org.springsecurity.version>5.1.5.RELEASE</org.springsecurity.version>
+        <org.springframework.version>5.1.6.RELEASE</org.springframework.version>
     </properties>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.4.RELEASE</version>
+        <relativePath />
+    </parent>
 
     <build>
         <plugins>
@@ -41,9 +49,15 @@
     <dependencies>
         <!--Spring-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <version>${org.springboot.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -52,10 +66,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${org.springframework.version}</version>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${org.springboot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -83,6 +96,13 @@
             <version>${org.springsecurity.version}</version>
         </dependency>
 
+        <!--Hibernate-->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.2.Final</version>
+        </dependency>
+
         <!--MariaDB-->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
@@ -94,12 +114,12 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
+            <version>${org.springfox.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
+            <version>${org.springfox.version}</version>
         </dependency>
 
         <!--Miscellaneous-->

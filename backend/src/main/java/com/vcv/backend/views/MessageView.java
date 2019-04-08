@@ -6,11 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
 public class MessageView implements Serializable {
     private String message;
+
+    public String getMessage() {
+        return message;
+    }
 
     public MessageView() {}
     public MessageView build(String message) {
@@ -21,12 +27,28 @@ public class MessageView implements Serializable {
         return view;
     }
 
-    public static class FileUpload {
+    public static class FileUpload implements Serializable {
         private MessageView message;
         private String company;
         private String name;
         private String type;
         private Long size;
+
+        public MessageView getMessage() {
+            return message;
+        }
+        public String getCompany() {
+            return company;
+        }
+        public String getName() {
+            return name;
+        }
+        public String getType() {
+            return type;
+        }
+        public Long getSize() {
+            return size;
+        }
 
         public FileUpload() {}
         public FileUpload build(MultipartFile file, String company, String message) {
@@ -42,25 +64,16 @@ public class MessageView implements Serializable {
         }
     }
 
-    public static class WriteOffReport {
-        private String vin;
-        private Boolean writtenOff;
-        private MessageView message;
-
-        public WriteOffReport() {}
-        public WriteOffReport build(Vehicle vehicle, String message) {
-            WriteOffReport view = new WriteOffReport();
-
-            view.vin = vehicle.getVin();
-            view.writtenOff = vehicle.isWrittenOff();
-            view.message = new MessageView().build(message);
-
-            return view;
-        }
-    }
-    public static class JobReport {
+    public static class JobReport implements Serializable {
         private Long id;
         private MessageView message;
+
+        public Long getId() {
+            return id;
+        }
+        public MessageView getMessage() {
+            return message;
+        }
 
         public JobReport() {}
         public JobReport build(Job job, String message) {
@@ -72,13 +85,22 @@ public class MessageView implements Serializable {
             return view;
         }
     }
-    public static class UserReport {
-        @Autowired
-        private CompanyRepository companyRepository;
+    public static class UserReport implements Serializable {
+        @Autowired private CompanyRepository companyRepository;
 
         private String email;
         private String company;
         private MessageView message;
+
+        public String getEmail() {
+            return email;
+        }
+        public String getCompany() {
+            return company;
+        }
+        public MessageView getMessage() {
+            return message;
+        }
 
         public UserReport() {}
         public UserReport build(User user, String message) {
@@ -91,12 +113,22 @@ public class MessageView implements Serializable {
             return view;
         }
     }
-    public static class StolenReport {
+    public static class StolenReport implements Serializable {
         private String vin;
         private Boolean stolen;
         private MessageView message;
-        public StolenReport() {}
 
+        public String getVin() {
+            return vin;
+        }
+        public Boolean getStolen() {
+            return stolen;
+        }
+        public MessageView getMessage() {
+            return message;
+        }
+
+        public StolenReport() {}
         public StolenReport build(Vehicle vehicle, String message) {
             StolenReport view = new StolenReport();
 
@@ -107,11 +139,18 @@ public class MessageView implements Serializable {
             return view;
         }
     }
-    public static class Registration {
+    public static class Registration implements Serializable {
         private String vin;
         private MessageView message;
-        public Registration() {}
 
+        public String getVin() {
+            return vin;
+        }
+        public MessageView getMessage() {
+            return message;
+        }
+
+        public Registration() {}
         public Registration build(Vehicle vehicle, String message) {
             Registration view = new Registration();
 
@@ -121,10 +160,20 @@ public class MessageView implements Serializable {
             return view;
         }
     }
-    public static class SalvageReport {
+    public static class SalvageReport implements Serializable {
         private String vin;
         private Integer amount;
         private MessageView message;
+
+        public String getVin() {
+            return vin;
+        }
+        public Integer getAmount() {
+            return amount;
+        }
+        public MessageView getMessage() {
+            return message;
+        }
 
         public SalvageReport() {}
         public SalvageReport build(Vehicle vehicle, String message) {
@@ -136,15 +185,33 @@ public class MessageView implements Serializable {
 
             return view;
         }
-
     }
-    public static class CompanyReport {
+    public static class CompanyReport implements Serializable {
         private String name;
         private String type;
         private String website;
         private String subscriptionStartDate;
         private String subscriptionEndDate;
         private MessageView message;
+
+        public String getName() {
+            return name;
+        }
+        public String getType() {
+            return type;
+        }
+        public String getWebsite() {
+            return website;
+        }
+        public String getSubscriptionStartDate() {
+            return subscriptionStartDate;
+        }
+        public String getSubscriptionEndDate() {
+            return subscriptionEndDate;
+        }
+        public MessageView getMessage() {
+            return message;
+        }
 
         public CompanyReport() {}
         public CompanyReport build(Company company, String message) {
@@ -154,19 +221,29 @@ public class MessageView implements Serializable {
             view.name = company.getCompanyName();
             view.type = company.getCompanyType().toString();
             view.website = company.getWebsite();
-            view.subscriptionStartDate = dateFormatter.format(company.getSubscriptionStartDate().toInstant());
-            view.subscriptionEndDate = dateFormatter.format(company.getSubscriptionEndDate().toInstant());
+            view.subscriptionStartDate = LocalDate.ofInstant(company.getSubscriptionStartDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+            view.subscriptionEndDate = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
             view.message = new MessageView().build(message);
 
             return view;
         }
     }
-    public static class AccidentReport {
+    public static class AccidentReport implements Serializable {
         private String vin;
         private Boolean stolen;
         private MessageView message;
-        public AccidentReport() {}
 
+        public String getVin() {
+            return vin;
+        }
+        public Boolean getStolen() {
+            return stolen;
+        }
+        public MessageView getMessage() {
+            return message;
+        }
+
+        public AccidentReport() {}
         public AccidentReport build(Vehicle vehicle, String message) {
             AccidentReport view = new AccidentReport();
 
@@ -177,13 +254,22 @@ public class MessageView implements Serializable {
             return view;
         }
     }
-    public static class InsuranceReport {
-        @Autowired
-        private CompanyRepository companyRepository;
+    public static class InsuranceReport implements Serializable {
+        @Autowired private CompanyRepository companyRepository;
 
         private String number;
         private String company;
         private MessageView message;
+
+        public String getNumber() {
+            return number;
+        }
+        public String getCompany() {
+            return company;
+        }
+        public MessageView getMessage() {
+            return message;
+        }
 
         public InsuranceReport() {}
         public InsuranceReport build(Claim claim, String message) {
@@ -200,6 +286,32 @@ public class MessageView implements Serializable {
 
             view.number = policy.getPolicyNumber();
             view.company = companyRepository.findById(policy.getCompanyId()).get().getCompanyName();
+            view.message = new MessageView().build(message);
+
+            return view;
+        }
+    }
+    public static class WriteOffReport implements Serializable {
+        private String vin;
+        private Boolean writtenOff;
+        private MessageView message;
+
+        public String getVin() {
+            return vin;
+        }
+        public Boolean getWrittenOff() {
+            return writtenOff;
+        }
+        public MessageView getMessage() {
+            return message;
+        }
+
+        public WriteOffReport() {}
+        public WriteOffReport build(Vehicle vehicle, String message) {
+            WriteOffReport view = new WriteOffReport();
+
+            view.vin = vehicle.getVin();
+            view.writtenOff = vehicle.isWrittenOff();
             view.message = new MessageView().build(message);
 
             return view;

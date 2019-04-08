@@ -11,13 +11,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserView implements Serializable {
-    @Autowired
-    private CompanyRepository companyRepository;
+    @Autowired private CompanyRepository companyRepository;
 
     private String email;
     private String company;
     private String password;
     private String role;
+
+    public String getEmail() {
+        return email;
+    }
+    public String getCompany() {
+        return company;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public String getRole() {
+        return role;
+    }
 
     public UserView() {}
     public UserView build(User user) {

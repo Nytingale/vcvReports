@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Policy")
+@Table(name = "policy")
 @IdClass(Policy.CompositeKey.class)
 public class Policy {
     @Id private Long companyId;

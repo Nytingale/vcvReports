@@ -82,7 +82,7 @@ public class JobService {
     /* Per Vehicle */
     public List<Job> getJobs(String vin) throws JobServiceException {
         List<Job> jobs = jobRepository.findByVinOrderByIdDesc(vin);
-        if(jobs.isEmpty()) return jobs;
+        if(!jobs.isEmpty()) return jobs;
         else throw new JobServiceException("Error 200: getJobs(vin) returned null");
     }
 

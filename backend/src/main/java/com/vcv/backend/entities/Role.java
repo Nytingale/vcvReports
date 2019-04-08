@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@Table(name = "RoleRepository")
+@Table(name = "role")
 public class Role {
     @Id
     private Long id;

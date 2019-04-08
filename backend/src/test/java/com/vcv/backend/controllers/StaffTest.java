@@ -18,8 +18,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,6 +50,8 @@ public class StaffTest {
     String newPasswordString = "ThisIsANewPasswordTest";
     String nonAdminEmailString = "JaneDoe@trident.com";
     String vcvStaffEmailString = "RSJMorris@gmail.com";
+
+    String baseURL;
 
     User vcvStaff;
     User testClient;
@@ -82,7 +87,7 @@ public class StaffTest {
             .setValid(true)
             .build();
 
-    public static class UserViewList {
+    public class UserViewList {
         List<UserView> userViews;
 
         public UserViewList() {
@@ -100,84 +105,87 @@ public class StaffTest {
         nonAdminEmployee = userRepository.findByEmailAndCompanyId(nonAdminEmailString, 2L);
         testCompany = companyRepository.findById(3L).get();
         testUsers = (List<User>) userRepository.findAll();
+
+        baseURL = "http://localhost:" + port + "/vcv/staff";
     }
 
     @Test
-    public void canGetUsers() {
-        UserViewList response = restTemplate.postForObject("http://localhost:" + port + "/getUsers", vcvStaff, UserViewList.class);
-        assertThat(response.getUserViews()).isEqualTo(new UserView().build(testUsers));
+    public void canGetUsers() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/getUsers");
+        ResponseEntity<UserViewList> response = restTemplate.postForEntity(uri, vcvStaff, UserViewList.class);
+        assertThat(response.getBody().getUserViews()).isEqualTo(new UserView().build(testUsers));
     }
 
     @Test
-    public void canChangeAdmin() {
+    public void canChangeAdmin() throws URISyntaxException {
         stringUserMap.put("VCV", vcvStaff);
         stringUserMap.put("Employee", nonAdminEmployee);
-
-        MessageView.UserReport response = restTemplate.postForObject("http://localhost:" + port + "/changeAdmin", stringUserMap, MessageView.UserReport.class);
-        assertThat(response).isEqualTo(new MessageView.UserReport().build(nonAdminEmployee,"Successfully Changed Company Admins"));
+        URI uri = new URI(baseURL + "/changeAdmin");
+        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringUserMap, MessageView.UserReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.UserReport().build(nonAdminEmployee,"Successfully Changed Company Admins"));
     }
 
     @Test
-    public void canSearchForUser() {
+    public void canSearchForUser() throws URISyntaxException {
         stringObjectMap.put("VCV", vcvStaff);
         stringObjectMap.put("Client", clientString);
-
-        UserView response = restTemplate.postForObject("http://localhost:" + port + "/searchForUser", stringObjectMap, UserView.class);
-        assertThat(response).isEqualTo(new UserView().build(testClient));
+        URI uri = new URI(baseURL + "/searchForUser");
+        ResponseEntity<UserView> response = restTemplate.postForEntity(uri, stringObjectMap, UserView.class);
+        assertThat(response.getBody()).isEqualTo(new UserView().build(testClient));
     }
 
     @Test
-    public void canSearchForCompany() {
+    public void canSearchForCompany() throws URISyntaxException {
         stringObjectMap.put("VCV", vcvStaff);
         stringObjectMap.put("Company", companyString);
-
-        CompanyView response = restTemplate.postForObject("http://localhost:" + port + "/searchForCompany", stringObjectMap, CompanyView.class);
-        assertThat(response).isEqualTo(new CompanyView().build(testCompany));
+        URI uri = new URI(baseURL + "/searchForCompany");
+        ResponseEntity<CompanyView> response = restTemplate.postForEntity(uri, stringObjectMap, CompanyView.class);
+        assertThat(response.getBody()).isEqualTo(new CompanyView().build(testCompany));
     }
 
     @Test
-    public void canAddEmployee() {
+    public void canAddEmployee() throws URISyntaxException {
         stringUserMap.put("VCV", vcvStaff);
         stringUserMap.put("Employee", newEmployee);
-
-        MessageView.UserReport response = restTemplate.postForObject("http://localhost:" + port + "/addEmployee", stringUserMap, MessageView.UserReport.class);
-        assertThat(response).isEqualTo(new MessageView.UserReport().build(newEmployee, "Successfully Added new Employee to the Company"));
+        URI uri = new URI(baseURL + "/addEmployee");
+        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringUserMap, MessageView.UserReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.UserReport().build(newEmployee, "Successfully Added new Employee to the Company"));
     }
 
     @Test
-    public void canRegisterCompany() {
+    public void canRegisterCompany() throws URISyntaxException {
         stringObjectMap.put("VCV", vcvStaff);
         stringObjectMap.put("Admin", newAdmin);
         stringObjectMap.put("Company", newCompany);
-
-        MessageView.CompanyReport response = restTemplate.postForObject("http://localhost:" + port + "/registerCompany", stringObjectMap, MessageView.CompanyReport.class);
-        assertThat(response).isEqualTo(new MessageView.CompanyReport().build(newCompany, "Successfully Created Company"));
+        URI uri = new URI(baseURL + "/registerCompany");
+        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.CompanyReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(newCompany, "Successfully Created Company"));
     }
 
     @Test
-    public void canBlacklistCompany() {
+    public void canBlacklistCompany() throws URISyntaxException {
         stringObjectMap.put("VCV", vcvStaff);
         stringObjectMap.put("Company", companyString);
-
-        MessageView.CompanyReport response = restTemplate.postForObject("http://localhost:" + port + "/blacklistCompany", stringObjectMap, MessageView.CompanyReport.class);
-        assertThat(response).isEqualTo(new MessageView.CompanyReport().build(testCompany, "Successfully Blacklisted Company"));
+        URI uri = new URI(baseURL + "/blacklistCompany");
+        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.CompanyReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(testCompany, "Successfully Blacklisted Company"));
     }
 
     @Test
-    public void canApproveCompany() {
+    public void canApproveCompany() throws URISyntaxException {
         stringObjectMap.put("VCV", vcvStaff);
         stringObjectMap.put("Company", companyString);
-
-        MessageView.CompanyReport response = restTemplate.postForObject("http://localhost:" + port + "/approveCompany", stringObjectMap, MessageView.CompanyReport.class);
-        assertThat(response).isEqualTo(new MessageView.CompanyReport().build(testCompany, "Successfully Approved Company"));
+        URI uri = new URI(baseURL + "/approveCompany");
+        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.CompanyReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(testCompany, "Successfully Approved Company"));
     }
 
     @Test
-    public void canChangePassword() {
+    public void canChangePassword() throws URISyntaxException {
         stringObjectMap.put("User", vcvStaff);
         stringObjectMap.put("New Password", newPasswordString);
-
-        MessageView.UserReport response = restTemplate.postForObject("http://localhost:" + port + "/changePassword", stringObjectMap, MessageView.UserReport.class);
-        assertThat(response).isEqualTo(new MessageView.UserReport().build(vcvStaff, "Successfully Approved Company"));
+        URI uri = new URI(baseURL + "/changePassword");
+        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.UserReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.UserReport().build(vcvStaff, "Successfully Changed Password"));
     }
 }

@@ -1,16 +1,13 @@
 package com.vcv.backend.controllers;
 
 import com.vcv.backend.entities.*;
-import com.vcv.backend.enums.CompanyType;
 import com.vcv.backend.exceptions.ControllerException;
 import com.vcv.backend.views.*;
 import com.vcv.backend.services.*;
 import com.vcv.backend.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -22,13 +19,10 @@ public class Website {
     @Autowired private VehicleService vehicleService;
 
     /* Casual Users */
-    @GetMapping("/getWebsite")
-    public CompanyView getWebsite(@RequestParam(value = "company", required = false) String company) {
+    @GetMapping("/getCompanies")
+    public List<CompanyView> getCompanies() {
         try {
-            String validCompany = Utils.isValidString(company);
-            if(validCompany != null) {
-                return companyService.getWebsite(validCompany);
-            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+            return companyService.getCompanies();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

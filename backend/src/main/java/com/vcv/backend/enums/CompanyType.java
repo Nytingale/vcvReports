@@ -3,7 +3,7 @@ package com.vcv.backend.enums;
 import java.io.Serializable;
 
 public enum CompanyType implements Serializable {
-    VCV_Staff  (3, "VCV"),
+    VCVStaff   (3, "VCV"),
     Dealership (2, "DEA"),
     Insurance  (2, "INS"),
     Garage     (2, "GAR"),
@@ -28,8 +28,8 @@ public enum CompanyType implements Serializable {
     @Override
     public String toString() {
         switch(this) {
-            case VCV_Staff:
-                return "Staff";
+            case VCVStaff:
+                return "VCV Staff";
             case Dealership:
                 return "Dealership";
             case Insurance:

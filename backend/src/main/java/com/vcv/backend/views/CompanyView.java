@@ -20,6 +20,31 @@ public class CompanyView implements Serializable {
     private String website;
     private Boolean valid;
 
+    public String getName() {
+        return name;
+    }
+    public String getType() {
+        return type;
+    }
+    public String getSubscriptionStartDate() {
+        return subscriptionStartDate;
+    }
+    public String getSubscriptionEndDate() {
+        return subscriptionEndDate;
+    }
+    public Boolean getBlacklisted() {
+        return blacklisted;
+    }
+    public Boolean getWarning() {
+        return warning;
+    }
+    public String getWebsite() {
+        return website;
+    }
+    public Boolean getValid() {
+        return valid;
+    }
+
     public CompanyView() {}
     public CompanyView build(Company company) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
@@ -27,8 +52,8 @@ public class CompanyView implements Serializable {
 
         view.name = company.getCompanyName();
         view.type = company.getCompanyType().toString();
-        view.subscriptionStartDate = dateFormatter.format(company.getSubscriptionStartDate().toInstant());
-        view.subscriptionEndDate = dateFormatter.format(company.getSubscriptionEndDate().toInstant());
+        view.subscriptionStartDate = LocalDate.ofInstant(company.getSubscriptionStartDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+        view.subscriptionEndDate = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
         view.blacklisted = company.getBlacklisted();
         view.warning = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).getDayOfYear() - LocalDate.now().getDayOfYear() <= 7;
         view.website = company.getWebsite();

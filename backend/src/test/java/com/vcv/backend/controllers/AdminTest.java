@@ -13,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,11 +44,13 @@ public class AdminTest {
     String emailString = "JaneDoe@trident.com";
     String adminEmailString = "GeorgeOrwell@trident.com";
 
+    String baseURL;
+
     User admin;
     Company company;
     List<User> testUsers;
 
-    public static class UserViewList {
+    public class UserViewList {
         List<UserView> userViews;
 
         public UserViewList() {
@@ -61,38 +66,43 @@ public class AdminTest {
         admin = userRepository.findById(adminEmailString).get();
         company = companyRepository.findById(2L).get();
         testUsers = userRepository.findByCompanyId(2L);
+
+        baseURL = "http://localhost:" + port + "/vcv/admin";
     }
 
     @Test
-    public void canGetEmployees() {
-        UserViewList response = restTemplate.postForObject("http://localhost:" + port + "/getEmployees", admin, UserViewList.class);
-        assertThat(response.getUserViews()).isEqualTo(new UserView().build(testUsers));
+    public void canGetEmployees() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/getEmployees");
+        ResponseEntity<UserViewList> response = restTemplate.postForEntity(uri, admin, UserViewList.class);
+        assertThat(response.getBody().getUserViews()).isEqualTo(new UserView().build(testUsers));
     }
 
     @Test
-    public void canCancelSubscription() {
-        MessageView.CompanyReport response = restTemplate.postForObject("http://localhost:" + port + "/cancelSubscription", admin, MessageView.CompanyReport.class);
-        assertThat(response).isEqualTo(new MessageView.CompanyReport().build(company, "Successfully Cancelled Subscription"));
+    public void canCancelSubscription() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/cancelSubscription");
+        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, admin, MessageView.CompanyReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(company, "Successfully Cancelled Subscription"));
     }
 
     @Test
-    public void canRenewSubscription() {
-        MessageView.CompanyReport response = restTemplate.postForObject("http://localhost:" + port + "/renewSubscription", admin, MessageView.CompanyReport.class);
-        assertThat(response).isEqualTo(new MessageView.CompanyReport().build(company, "Successfully Renewed Subscription"));
+    public void canRenewSubscription() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/renewSubscription");
+        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, admin, MessageView.CompanyReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(company, "Successfully Renewed Subscription"));
     }
 
     @Test
-    public void canResetPassword() {
+    public void canResetPassword() throws URISyntaxException {
         stringObjectMap.put("Admin", admin);
         stringObjectMap.put("Email", emailString);
-
-        MessageView response = restTemplate.postForObject("http://localhost:" + port + "/resetPassword", stringObjectMap, MessageView.class);
-        assertThat(response).isEqualTo(new MessageView().build(emailString + "'s Password has been Successfully Reset. The next time they attempt " +
+        URI uri = new URI(baseURL + "/resetPassword");
+        ResponseEntity<MessageView> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView().build(emailString + "'s Password has been Successfully Reset. The next time they attempt " +
                 "to login, they will be prompted to Enter a new Password"));
     }
 
     @Test
-    public void canUploadImage() {
+    public void canUploadImage() throws URISyntaxException {
         try {
             ClassLoader classLoader = getClass().getClassLoader();
             File file = new File(classLoader.getResource("test.jpg").getFile());
@@ -100,9 +110,9 @@ public class AdminTest {
 
             stringObjectMap.put("Admin", admin);
             stringObjectMap.put("Image", image);
-
-            MessageView.FileUpload response = restTemplate.postForObject("http://localhost:" + port + "/uploadImage", stringObjectMap, MessageView.FileUpload.class);
-            assertThat(response).isEqualTo(new MessageView.FileUpload().build(image, company.getCompanyName(), "Successfully Uploaded Image"));
+            URI uri = new URI(baseURL + "/uploadImage");
+            ResponseEntity<MessageView.FileUpload> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.FileUpload.class);
+            assertThat(response.getBody()).isEqualTo(new MessageView.FileUpload().build(image, company.getCompanyName(), "Successfully Uploaded Image"));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +35,8 @@ public class DealershipTest {
     @Autowired private VehicleRepository vehicleRepository;
 
     String dealershipString = "MQI";
+
+    String baseURL;
 
     List<Vehicle> testVehicles;
 
@@ -54,13 +59,12 @@ public class DealershipTest {
             .setInsuranceId(2L)
             .build();
 
-    public static class VehicleViewList {
+    public class VehicleViewList {
         List<VehicleView> vehicleViews;
 
         public VehicleViewList() {
             vehicleViews = new ArrayList<>();
         }
-
         public List<VehicleView> getVehicleViews() {
             return vehicleViews;
         }
@@ -69,17 +73,21 @@ public class DealershipTest {
     @Before
     public void setup() {
         testVehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc(dealershipString);
+
+        baseURL = "http://localhost:" + port + "/vcv/dealership";
     }
 
     @Test
-    public void canGetRegisteredVehicles() {
-        VehicleViewList response = restTemplate.getForObject("http://localhost:" + port + "/getRegisteredVehicles?dealership=" + dealershipString, VehicleViewList.class);
-        assertThat(response.getVehicleViews()).isEqualTo(new VehicleView().build(testVehicles));
+    public void canGetRegisteredVehicles() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/getRegisteredVehicles?dealership=" + dealershipString);
+        ResponseEntity<VehicleViewList> response = restTemplate.getForEntity(uri, VehicleViewList.class);
+        assertThat(response.getBody().getVehicleViews()).isEqualTo(new VehicleView().build(testVehicles));
     }
 
     @Test
-    public void canRegisterVehicle() {
-        MessageView.Registration response = restTemplate.postForObject("http://localhost:" + port + "/registerVehicle", newVehicle, MessageView.Registration.class);
-        assertThat(response).isEqualTo(new MessageView.Registration().build(newVehicle, "Successfully Registered Vehicle"));
+    public void canRegisterVehicle() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/registerVehicle");
+        ResponseEntity<MessageView.Registration> response = restTemplate.postForEntity(uri, newVehicle, MessageView.Registration.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.Registration().build(newVehicle, "Successfully Registered Vehicle"));
     }
 }

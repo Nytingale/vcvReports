@@ -1,13 +1,14 @@
 package com.vcv.backend.repositories;
 
 import com.vcv.backend.entities.Job;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public interface JobRepository extends PagingAndSortingRepository<Job, Long> {
+public interface JobRepository extends CrudRepository<Job, Long> {
     List<Job> findByVinOrderByIdDesc(String vin);
     List<Job> findByCompanyIdOrderByIdDesc(Long companyId);
 }

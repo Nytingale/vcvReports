@@ -167,7 +167,6 @@ public class UserService implements UserDetailsService {
 
 
     /* Company Admin */
-
     public List<UserView> getEmployees(User admin) throws UserServiceException {
         // First, Confirm that the User is the Admin and they are Not Blacklisted
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
@@ -183,7 +182,7 @@ public class UserService implements UserDetailsService {
         } else throw new UserServiceException("Error 400: getEmployees(admin) has returned null");
 
         List<User> employees = userRepository.findByCompanyId(admin.getCompanyId());
-        if(employees.isEmpty()) return new UserView().build(employees);
+        if(!employees.isEmpty()) return new UserView().build(employees);
         else throw new UserServiceException("Error 400: findByEmail(email, company) returned null");
     }
 

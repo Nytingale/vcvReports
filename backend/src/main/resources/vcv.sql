@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS vcv;
 CREATE DATABASE vcv;
 USE vcv;
 
-CREATE TABLE `User`(
+CREATE TABLE `user`(
     `email` VARCHAR(32) NOT NULL,
     `password` VARCHAR(64) NOT NULL,
     `password_reset` TINYINT(1) DEFAULT 0,
@@ -13,7 +13,7 @@ CREATE TABLE `User`(
     PRIMARY KEY(email)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `Role`(
+CREATE TABLE `role`(
     `id` BIGINT NOT NULL,
     `name` VARCHAR(32) NOT NULL,
     `user` TINYINT(1) DEFAULT 0,
@@ -22,10 +22,10 @@ CREATE TABLE `Role`(
     PRIMARY KEY(id)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `Company`(
+CREATE TABLE `company`(
     `id` BIGINT AUTO_INCREMENT NOT NULL,
     `company_name` VARCHAR(64) NOT NULL,
-    `company_type` ENUM('VCV Staff', 'Dealership', 'Insurance', 'Garage', 'Mechanic', 'Casual') DEFAULT 'Casual',
+    `company_type` ENUM('VCVStaff', 'Dealership', 'Insurance', 'Garage', 'Mechanic', 'Casual') DEFAULT 'Casual',
     `subscription_start_date` TIMESTAMP NOT NULL,
     `subscription_end_date` TIMESTAMP NOT NULL,
     `rating` INT DEFAULT 0,
@@ -40,11 +40,11 @@ CREATE TABLE `Company`(
     PRIMARY KEY(id)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `Policy`(
+CREATE TABLE `policy`(
     `company_id` BIGINT NOT NULL,
     `policy_number` VARCHAR(64) NOT NULL,
     `policy_owner` VARCHAR(64) NOT NULL,
-    `policy_type` ENUM('Third Party', 'Comprehensive') DEFAULT 'Comprehensive',
+    `policy_type` ENUM('ThirdParty', 'Comprehensive') DEFAULT 'Comprehensive',
     `policy_date` TIMESTAMP NOT NULL,
     `financer` VARCHAR(64) DEFAULT '',
     `valid` TINYINT(1) DEFAULT 1,
@@ -55,10 +55,10 @@ CREATE TABLE `Policy`(
     PRIMARY KEY(company_id, policy_number)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `Claim`(
+CREATE TABLE `claim`(
     `company_id` BIGINT NOT NULL,
     `claim_number` VARCHAR(64) NOT NULL,
-    `claim_type` ENUM('Personal Injury', 'Total Loss', 'Liability', 'Accident') DEFAULT 'Accident',
+    `claim_type` ENUM('PersonalInjury', 'TotalLoss', 'Liability', 'Accident') DEFAULT 'Accident',
     `claim_date` TIMESTAMP NOT NULL,
     `claim_details` TEXT DEFAULT '',
     `value` BIGINT NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE `Claim`(
     PRIMARY KEY(company_id, claim_number)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `Job`(
+CREATE TABLE `job`(
     `id` BIGINT AUTO_INCREMENT NOT NULL,
     `job_type` ENUM('Accident', 'Service', 'Upgrade', 'Repair') DEFAULT 'Repair',
     `job_date` TIMESTAMP NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE `Job`(
     PRIMARY KEY(id)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `Vehicle`(
+CREATE TABLE `vehicle`(
     `vin` VARCHAR(17) NOT NULL,
     `year` INT NOT NULL,
     `make` VARCHAR(64) NOT NULL,
@@ -125,21 +125,21 @@ CREATE TABLE `Vehicle`(
     PRIMARY KEY(vin)
 ) ENGINE = InnoDB;
 
-ALTER TABLE `Job`     ADD CONSTRAINT `job_vehicle_fk`    FOREIGN KEY(vin)                         REFERENCES `Vehicle`(vin);
-ALTER TABLE `User`    ADD CONSTRAINT `user_role_fk`      FOREIGN KEY(role_id)                     REFERENCES `Role`(id);
-ALTER TABLE `User`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `Company`(id);
-ALTER TABLE `Claim`   ADD CONSTRAINT `claim_policy_fk`   FOREIGN KEY(company_id, policy_number)   REFERENCES `Policy`(company_id, policy_number);
-ALTER TABLE `Claim`   ADD CONSTRAINT `claim_vehicle_fk`  FOREIGN KEY(vin)                         REFERENCES `Vehicle`(vin);
-ALTER TABLE `Policy`  ADD CONSTRAINT `policy_vehicle_fk` FOREIGN KEY(vin)                         REFERENCES `Vehicle`(vin);
+ALTER TABLE `job`     ADD CONSTRAINT `job_vehicle_fk`    FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
+ALTER TABLE `user`    ADD CONSTRAINT `user_role_fk`      FOREIGN KEY(role_id)                     REFERENCES `role`(id);
+ALTER TABLE `user`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `company`(id);
+ALTER TABLE `claim`   ADD CONSTRAINT `claim_policy_fk`   FOREIGN KEY(company_id, policy_number)   REFERENCES `policy`(company_id, policy_number);
+ALTER TABLE `claim`   ADD CONSTRAINT `claim_vehicle_fk`  FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
+ALTER TABLE `policy`  ADD CONSTRAINT `policy_vehicle_fk` FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
 
 # ==============================================================
-# = Adding in Roles
+# = Adding in roles
 # ==============================================================
-INSERT INTO `Role` VALUES (1, 'User',  1, 0, 0);       # = User
-INSERT INTO `Role` VALUES (2, 'Admin', 1, 1, 0);       # = Admin
-INSERT INTO `Role` VALUES (3, 'Staff', 1, 1, 1);       # = Staff
+INSERT INTO `role` VALUES (1, 'user',  1, 0, 0);       # = user
+INSERT INTO `role` VALUES (2, 'Admin', 1, 1, 0);       # = Admin
+INSERT INTO `role` VALUES (3, 'Staff', 1, 1, 1);       # = Staff
 
 # ==============================================================
-# = Adding VCV as a Company
+# = Adding VCV as a company
 # ==============================================================
-INSERT INTO `Company` VALUES (1, 'VCV', 'VCV Staff', '2019-04-01 00:00:00', '2020-04-01 00:00:00', 5, 'https://vcv.com', 'RSJMorris@gmail.com', 0, 1);
+INSERT INTO `company` VALUES (1, 'VCV', 'VCVStaff', '2019-04-01 00:00:00', '2020-04-01 00:00:00', 5, 'https://vcv.com', 'RSJMorris@gmail.com', 0, 1);

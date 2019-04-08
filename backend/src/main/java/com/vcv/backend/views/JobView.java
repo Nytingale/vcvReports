@@ -5,23 +5,49 @@ import com.vcv.backend.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JobView implements Serializable {
-    @Autowired
-    private CompanyRepository companyRepository;
+    @Autowired private CompanyRepository companyRepository;
 
     private Integer cost;
     private String type;
     private String date;
-    private String details;
     private String garage;
-    private String insurance;
+    private String details;
+    private String insuranceName;
     private String claim;
     private String vin;
+
+    public Integer getCost() {
+        return cost;
+    }
+    public String getType() {
+        return type;
+    }
+    public String getDate() {
+        return date;
+    }
+    public String getGarage() {
+        return garage;
+    }
+    public String getDetails() {
+        return details;
+    }
+    public String getInsuranceName() {
+        return insuranceName;
+    }
+    public String getClaim() {
+        return claim;
+    }
+    public String getVin() {
+        return vin;
+    }
 
     public JobView() {}
     public JobView build(Job job) {
@@ -30,10 +56,10 @@ public class JobView implements Serializable {
 
         view.cost = job.getJobCost();
         view.type = job.getJobType().toString();
-        view.date = dateFormatter.format(job.getJobDate().toInstant());
+        view.date = LocalDate.ofInstant(job.getJobDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
         view.details = job.getJobDetails();
         view.garage = companyRepository.findById(job.getCompanyId()).get().getCompanyName();
-        view.insurance = companyRepository.findById(job.getInsuranceId()).get().getCompanyName();
+        view.insuranceName = companyRepository.findById(job.getInsuranceId()).get().getCompanyName();
         view.claim = job.getClaimNumber();
         view.vin = job.getVin();
 

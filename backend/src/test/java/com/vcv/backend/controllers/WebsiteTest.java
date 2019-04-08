@@ -1,5 +1,6 @@
 package com.vcv.backend.controllers;
 
+import com.vcv.backend.Main;
 import com.vcv.backend.entities.*;
 import com.vcv.backend.repositories.*;
 
@@ -15,8 +16,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,46 +42,64 @@ public class WebsiteTest {
     @Autowired private CompanyRepository companyRepository;
     @Autowired private VehicleRepository vehicleRepository;
 
-    String vinString = "JSZYA215195102215";
-    String yearString = "2009";
-    String makeString = "Isuzu";
-    String modelString = "SX4";
-    String companyString = "TridentInsurance";
+    String vinString = "JSAFTD02V00200457";
+    String yearString = "2004";
+    String makeString = "Suzuki";
+    String modelString = "Grand Vitara";
+
+    String baseURL;
 
     List<Job> testJobs;
     List<Claim> testClaims;
-    Company testCompany;
+    List<Company> testCompanies;
     Vehicle testVehicle;
+
+    public class CompanyViewList {
+        List<CompanyView> companyViews;
+
+        public CompanyViewList() {
+            companyViews = new ArrayList<>();
+        }
+        public List<CompanyView> getCompanyViews() {
+            return companyViews;
+        }
+    }
 
     @Before
     public void setup() {
         testJobs = jobRepository.findByVinOrderByIdDesc(vinString);
         testClaims = claimRepository.findByVinOrderByClaimDateDesc(vinString);
-        testCompany = companyRepository.findByCompanyName(companyString);
+        testCompanies = (List<Company>) companyRepository.findAll();
         testVehicle = vehicleRepository.findByVin(vinString);
+
+        baseURL = "http://localhost:" + port + "/vcv";
     }
 
     @Test
-    public void canGetWebsite() {
-        CompanyView response = restTemplate.getForObject("http://localhost:" + port + "/getWebsite?company=" + companyString, CompanyView.class);
-        assertThat(response).isEqualTo(new CompanyView().build(testCompany));
+    public void canGetCompanies() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/getCompanies");
+        ResponseEntity<CompanyViewList> response = restTemplate.getForEntity(uri, CompanyViewList.class);
+        assertThat(response.getBody().getCompanyViews()).isEqualTo(new CompanyView().build(testCompanies));
     }
 
     @Test
-    public void canSearchVehicleByVin() {
-        VehicleView.BasicReport response = restTemplate.getForObject("http://localhost:" + port + "/searchForVehicle?vin=" + vinString, VehicleView.BasicReport.class);
-        assertThat(response).isEqualTo(new VehicleView.BasicReport().build(testVehicle));
+    public void canSearchVehicleByVin() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/searchForVehicle?vin=" + vinString);
+        ResponseEntity<VehicleView.BasicReport> response = restTemplate.getForEntity(uri, VehicleView.BasicReport.class);
+        assertThat(response.getBody()).isEqualTo(new VehicleView.BasicReport().build(testVehicle));
     }
 
     @Test
-    public void canSearchVehicleByYearMakeModel() {
-        VehicleView.BasicReport response = restTemplate.getForObject("http://localhost:" + port + "/searchForVehicle?year=" + yearString + "&make=" + makeString + "&model=" + modelString, VehicleView.BasicReport.class);
-        assertThat(response).isEqualTo(new VehicleView.BasicReport().build(testVehicle));
+    public void canSearchVehicleByYearMakeModel() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/searchForVehicle?year=" + yearString + "&make=" + makeString + "&model=" + modelString);
+        ResponseEntity<VehicleView.BasicReport> response = restTemplate.getForEntity(uri, VehicleView.BasicReport.class);
+        assertThat(response.getBody()).isEqualTo(new VehicleView.BasicReport().build(testVehicle));
     }
 
     @Test
-    public void canGeneerateReport() {
-        VehicleView.FullReport response = restTemplate.getForObject("http://localhost:" + port + "/generateReport?vin=" + vinString, VehicleView.FullReport.class);
-        assertThat(response).isEqualTo(new VehicleView.FullReport().build(testVehicle, testClaims, testJobs));
+    public void canGeneerateReport() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/generateReport?vin=" + vinString);
+        ResponseEntity<VehicleView.FullReport> response = restTemplate.getForEntity(uri, VehicleView.FullReport.class);
+        assertThat(response.getBody()).isEqualTo(new VehicleView.FullReport().build(testVehicle, testClaims, testJobs));
     }
 }

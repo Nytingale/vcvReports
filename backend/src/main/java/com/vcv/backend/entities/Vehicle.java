@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Vehicle")
+@Table(name = "vehicle")
 public class Vehicle {
     @Id
     private String vin;
@@ -27,8 +27,8 @@ public class Vehicle {
     private String steering;
     private String drive;
     private String body;
-    private Integer seats;
-    private Integer doors;
+    private Integer numSeats;
+    private Integer numDoors;
     private Boolean writtenOff;
     private Boolean stolen;
     private Integer numAccidents;
@@ -81,11 +81,11 @@ public class Vehicle {
     public String getBody() {
         return body;
     }
-    public Integer getDoors() {
-        return doors;
+    public Integer getNumDoors() {
+        return numDoors;
     }
-    public Integer getSeats() {
-        return seats;
+    public Integer getNumSeats() {
+        return numSeats;
     }
     public Integer getValue() {
         return value;
@@ -163,11 +163,11 @@ public class Vehicle {
     public void setBody(String body) {
         this.body = body;
     }
-    public void setSeats(Integer seats) {
-        this.seats = seats;
+    public void setNumSeats(Integer numSeats) {
+        this.numSeats = numSeats;
     }
-    public void setDoors(Integer doors) {
-        this.doors = doors;
+    public void setNumDoors(Integer numDoors) {
+        this.numDoors = numDoors;
     }
     public void setDealership(String dealership) {
         this.dealership = dealership;
@@ -229,8 +229,8 @@ public class Vehicle {
                 steering,
                 drive,
                 body,
-                seats,
-                doors,
+                numSeats,
+                numDoors,
                 writtenOff,
                 stolen,
                 numAccidents,
@@ -267,8 +267,8 @@ public class Vehicle {
                 steering.equals(vehicle.steering) &&
                 drive.equals(vehicle.drive) &&
                 body.equals(vehicle.body) &&
-                seats.equals(vehicle.seats) &&
-                doors.equals(vehicle.doors) &&
+                numSeats.equals(vehicle.numSeats) &&
+                numDoors.equals(vehicle.numDoors) &&
                 transmission.equals(vehicle.transmission) &&
                 dealership.equals(vehicle.dealership) &&
                 evaluationDate.equals(vehicle.evaluationDate) &&
@@ -440,8 +440,8 @@ public class Vehicle {
             vehicle.setSteering(this.steering);
             vehicle.setDrive(this.drive);
             vehicle.setBody(this.body);
-            vehicle.setSeats(this.seats);
-            vehicle.setDoors(this.doors);
+            vehicle.setNumSeats(this.seats);
+            vehicle.setNumDoors(this.doors);
             vehicle.setWrittenOff(this.writtenOff);
             vehicle.setStolen(this.stolen);
             vehicle.setNumAccidents(this.numAccidents);

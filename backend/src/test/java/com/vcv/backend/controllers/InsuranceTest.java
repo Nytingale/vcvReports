@@ -17,8 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +46,8 @@ public class InsuranceTest {
     String claimString = "ISDFKG899RWEFAS";
     String companyString = "TridentInsurance";
 
+    String baseURL;
+
     Policy testPolicy = policyRepository.findByVin(vinString);
     Vehicle testVehicle = vehicleRepository.findById(vinString).get();
 
@@ -55,7 +60,7 @@ public class InsuranceTest {
             .setPolicyNumber("D78FDG785563")
             .setPolicyOwner("Bobby Reynolds")
             .setPolicyDate(Timestamp.valueOf(LocalDateTime.now()))
-            .setPolicyType(PolicyType.Third_Party)
+            .setPolicyType(PolicyType.ThirdParty)
             .setFinancer("")
             .setValid(true)
             .setVin("JMYSTC3A4U000993 ")
@@ -102,37 +107,34 @@ public class InsuranceTest {
             .setVin("JMYSTC3A4U000993")
             .build();
 
-    public static class ClaimViewList {
+    public class ClaimViewList {
         List<ClaimView> claimViews;
 
         public ClaimViewList() {
             claimViews = new ArrayList<>();
         }
-
         public List<ClaimView> getClaimViews() {
             return claimViews;
         }
     }
 
-    public static class PolicyViewList {
+    public class PolicyViewList {
         List<PolicyView> policyViews;
 
         public PolicyViewList() {
             policyViews = new ArrayList<>();
         }
-
         public List<PolicyView> getPolicyViews() {
             return policyViews;
         }
     }
 
-    public static class VehicleViewList {
+    public class VehicleViewList {
         List<VehicleView> vehicleViews;
 
         public VehicleViewList() {
             vehicleViews = new ArrayList<>();
         }
-
         public List<VehicleView> getVehicleViews() {
             return vehicleViews;
         }
@@ -143,85 +145,100 @@ public class InsuranceTest {
         testClaims = claimRepository.findByCompanyIdOrderByClaimDateDesc(2L);
         testPolicies = policyRepository.findByCompanyIdOrderByPolicyDateDesc(2L);
         testVehicles = vehicleRepository.findByInsuranceIdOrderByRegistrationDateDesc(2L);
+
+        baseURL = "http://localhost:" + port + "/vcv/insurance";
     }
 
     @Test
-    public void canGetPolicy() {
-        PolicyView response = restTemplate.getForObject("http://localhost:" + port + "/getPolicy?vin=" + vinString, PolicyView.class);
-        assertThat(response).isEqualTo(new PolicyView().build(testPolicy));
+    public void canGetPolicy() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/getPolicy?vin=" + vinString);
+        ResponseEntity<PolicyView> response = restTemplate.getForEntity(uri, PolicyView.class);
+        assertThat(response.getBody()).isEqualTo(new PolicyView().build(testPolicy));
     }
 
     @Test
-    public void canGetInsurancePolices() {
-        PolicyViewList response = restTemplate.getForObject("http://localhost:" + port + "/getInsurancePolicies?insurance=" + companyString, PolicyViewList.class);
-        assertThat(response.getPolicyViews()).isEqualTo(new PolicyView().build(testPolicies));
+    public void canGetInsurancePolices() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/getInsurancePolicies?insurance=" + companyString);
+        ResponseEntity<PolicyViewList> response = restTemplate.getForEntity(uri, PolicyViewList.class);
+        assertThat(response.getBody().getPolicyViews()).isEqualTo(new PolicyView().build(testPolicies));
     }
 
     @Test
-    public void canGetInsuredVehicles() {
-        VehicleViewList response = restTemplate.getForObject("http://localhost:" + port + "/getInsuredVehicles?insurance=" + companyString, VehicleViewList.class);
-        assertThat(response.getVehicleViews()).isEqualTo(new VehicleView().build(testVehicles));
+    public void canGetInsuredVehicles() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/getInsuredVehicles?insurance=" + companyString);
+        ResponseEntity<VehicleViewList> response = restTemplate.getForEntity(uri, VehicleViewList.class);
+        assertThat(response.getBody().getVehicleViews()).isEqualTo(new VehicleView().build(testVehicles));
     }
 
     @Test
-    public void canGetInsuranceClaims() {
-        ClaimViewList response = restTemplate.getForObject("http://localhost:" + port + "/getInsuranceClaims?insurance=" + companyString, ClaimViewList.class);
-        assertThat(response.getClaimViews()).isEqualTo(new ClaimView().build(testClaims));
+    public void canGetInsuranceClaims() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/getInsuranceClaims?insurance=" + companyString);
+        ResponseEntity<ClaimViewList> response = restTemplate.getForEntity(uri, ClaimViewList.class);
+        assertThat(response.getBody().getClaimViews()).isEqualTo(new ClaimView().build(testClaims));
     }
 
     @Test
-    public void canAddPolicy() {
+    public void canAddPolicy() throws URISyntaxException {
         vehicleRepository.save(newVehicle);
-        MessageView.InsuranceReport response = restTemplate.postForObject("http://localhost:" + port + "/addPolicy", newPolicy, MessageView.InsuranceReport.class);
-        assertThat(response).isEqualTo(new MessageView.InsuranceReport().build(newPolicy, "Successfully Added Policy"));
+        URI uri = new URI(baseURL + "/addPolicy");
+        ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, newPolicy, MessageView.InsuranceReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.InsuranceReport().build(newPolicy, "Successfully Added Policy"));
     }
 
     @Test
-    public void canAddClaim() {
-        MessageView.InsuranceReport response = restTemplate.postForObject("http://localhost:" + port + "/addClaim", newClaim, MessageView.InsuranceReport.class);
-        assertThat(response).isEqualTo(new MessageView.InsuranceReport().build(newClaim, "Successfully Added Claim"));
+    public void canAddClaim() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/addClaim");
+        ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, newClaim, MessageView.InsuranceReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.InsuranceReport().build(newClaim, "Successfully Added Claim"));
     }
 
     @Test
-    public void canUpdateClaim() {
-        MessageView.InsuranceReport response = restTemplate.postForObject("http://localhost:" + port + "/updateClaim", updatedClaim, MessageView.InsuranceReport.class);
-        assertThat(response).isEqualTo(new MessageView.InsuranceReport().build(updatedClaim, "Successfully Updated Claim"));
+    public void canUpdateClaim() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/updateClaim");
+        ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, updatedClaim, MessageView.InsuranceReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.InsuranceReport().build(updatedClaim, "Successfully Updated Claim"));
         vehicleRepository.delete(newVehicle);
     }
 
     @Test
-    public void canReportStolen() {
-        MessageView.StolenReport response = restTemplate.getForObject("http://localhost:" + port + "/reportStolen?vin=" + vinString, MessageView.StolenReport.class);
-        assertThat(response).isEqualTo(new MessageView.StolenReport().build(testVehicle, "Successfully Reported Vehicle Stolen"));
+    public void canReportStolen() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/reportStolen?vin=" + vinString);
+        ResponseEntity<MessageView.StolenReport>  response = restTemplate.getForEntity(uri, MessageView.StolenReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.StolenReport().build(testVehicle, "Successfully Reported Vehicle Stolen"));
     }
 
     @Test
-    public void canReportAccident() {
-        MessageView.AccidentReport response = restTemplate.getForObject("http://localhost:" + port + "/reportAccident?vin=" + vinString, MessageView.AccidentReport.class);
-        assertThat(response).isEqualTo(new MessageView.AccidentReport().build(testVehicle, "Successfully Reported Vehicle Accident"));
+    public void canReportAccident() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/reportAccident?vin=" + vinString);
+        ResponseEntity<MessageView.AccidentReport> response = restTemplate.getForEntity(uri, MessageView.AccidentReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.AccidentReport().build(testVehicle, "Successfully Reported Vehicle Accident"));
     }
 
     @Test
-    public void canReportRecovered() {
-        MessageView.StolenReport response = restTemplate.getForObject("http://localhost:" + port + "/reportRecovered?vin=" + vinString, MessageView.StolenReport.class);
-        assertThat(response).isEqualTo(new MessageView.StolenReport().build(testVehicle, "Successfully Reported Vehicle Recovered"));
+    public void canReportRecovered() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/reportRecovered?vin=" + vinString);
+        ResponseEntity<MessageView.StolenReport>  response = restTemplate.getForEntity(uri, MessageView.StolenReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.StolenReport().build(testVehicle, "Successfully Reported Vehicle Recovered"));
     }
 
     @Test
-    public void canReportWrittenOff() {
-        MessageView.WriteOffReport response = restTemplate.getForObject("http://localhost:" + port + "/reportWrittenOff?vin=" + vinString, MessageView.WriteOffReport.class);
-        assertThat(response).isEqualTo(new MessageView.WriteOffReport().build(testVehicle, "Successfully Reported Vehicle Recovered"));
+    public void canReportWrittenOff() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/reportWrittenOff?vin=" + vinString);
+        ResponseEntity<MessageView.WriteOffReport> response = restTemplate.getForEntity(uri, MessageView.WriteOffReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.WriteOffReport().build(testVehicle, "Successfully Reported Vehicle Recovered"));
     }
 
     @Test
-    public void canReportSalvaged() {
-        MessageView.SalvageReport response = restTemplate.getForObject("http://localhost:" + port + "/reportSalvaged?vin=" + vinString, MessageView.SalvageReport.class);
-        assertThat(response).isEqualTo(new MessageView.SalvageReport().build(testVehicle, "Successfully Reported Vehicle Salvaged"));
+    public void canReportSalvaged() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/reportSalvaged?vin=" + vinString);
+        ResponseEntity<MessageView.SalvageReport> response = restTemplate.getForEntity(uri, MessageView.SalvageReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.SalvageReport().build(testVehicle, "Successfully Reported Vehicle Salvaged"));
     }
 
     @Test
-    public void canLinkJobToClaim() {
-        MessageView.InsuranceReport response = restTemplate.getForObject("http://localhost:" + port + "/linkJobToClaim?id=" + jobId + "&number=" + claimString + "&company=" + companyString, MessageView.InsuranceReport.class);
-        assertThat(response).isEqualTo(new MessageView.InsuranceReport().build(newClaim, "Successfully Linked Job to Claim"));
+    public void canLinkJobToClaim() throws URISyntaxException {
+        URI uri = new URI(baseURL + "/linkJobToClaim?id=" + jobId + "&number=" + claimString + "&company=" + companyString);
+        ResponseEntity<MessageView.InsuranceReport> response = restTemplate.getForEntity(uri, MessageView.InsuranceReport.class);
+        assertThat(response.getBody()).isEqualTo(new MessageView.InsuranceReport().build(newClaim, "Successfully Linked Job to Claim"));
     }
 }

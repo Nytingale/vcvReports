@@ -60,7 +60,7 @@ public class Utils {
 
     public static String isValidString(String string) {
         if(string == null || string.trim().isEmpty()) return null;
-        else return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, string).replaceAll(" ", "");
+        else return string.replaceAll("_", " ");
     }
 
     public static Integer isValidYear(String year) {
