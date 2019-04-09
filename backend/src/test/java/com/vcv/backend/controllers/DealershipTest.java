@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,17 +65,6 @@ public class DealershipTest {
             .setInsuranceId(2L)
             .build();
 
-    public class VehicleViewList {
-        List<VehicleView> vehicleViews;
-
-        public VehicleViewList() {
-            vehicleViews = new ArrayList<>();
-        }
-        public List<VehicleView> getVehicleViews() {
-            return vehicleViews;
-        }
-    }
-
     @Before
     public void setup() {
         testVehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc(dealershipString);
@@ -87,8 +77,8 @@ public class DealershipTest {
     @Test
     public void canGetRegisteredVehicles() throws URISyntaxException {
         URI uri = new URI(baseURL + "/getRegisteredVehicles?dealership=" + dealershipString);
-        ResponseEntity<VehicleViewList> response = restTemplate.getForEntity(uri, VehicleViewList.class);
-        assertThat(response.getBody().getVehicleViews().equals(new VehicleView().build(testVehicles, testInsuranceCompany))).isTrue();
+        ResponseEntity<VehicleView[]> response = restTemplate.getForEntity(uri, VehicleView[].class);
+        assertThat(Arrays.equals(response.getBody(), new VehicleView().build(testVehicles, testInsuranceCompany).toArray())).isTrue();
     }
 
     @Test

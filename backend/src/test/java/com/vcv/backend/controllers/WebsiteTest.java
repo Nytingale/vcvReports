@@ -1,5 +1,7 @@
 package com.vcv.backend.controllers;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.vcv.backend.Main;
 import com.vcv.backend.entities.*;
 import com.vcv.backend.exceptions.VehicleServiceException;
@@ -25,6 +27,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,17 +61,6 @@ public class WebsiteTest {
     Vehicle testVehicle;
     Company testInsuranceCompany;
 
-    public class CompanyViewList {
-        List<CompanyView> companyViews;
-
-        public CompanyViewList() {
-            companyViews = new ArrayList<>();
-        }
-        public List<CompanyView> getCompanyViews() {
-            return companyViews;
-        }
-    }
-
     @Before
     public void setup() {
         testJobs = jobRepository.findByVinOrderByIdDesc(vinString);
@@ -90,8 +82,8 @@ public class WebsiteTest {
     @Test
     public void canGetCompanies() throws URISyntaxException {
         URI uri = new URI(baseURL + "/getCompanies");
-        ResponseEntity<CompanyViewList> response = restTemplate.getForEntity(uri, CompanyViewList.class);
-        assertThat(response.getBody().getCompanyViews().equals(new CompanyView().build(testCompanies))).isTrue();
+        ResponseEntity<CompanyView[]> response = restTemplate.getForEntity(uri, CompanyView[].class);
+        assertThat(Arrays.equals(response.getBody(), new CompanyView().build(testCompanies).toArray())).isTrue();
     }
 
     @Test

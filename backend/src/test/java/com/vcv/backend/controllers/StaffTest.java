@@ -26,10 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -90,17 +87,6 @@ public class StaffTest {
             .setValid(true)
             .build();
 
-    public class UserViewList {
-        List<UserView> userViews;
-
-        public UserViewList() {
-            userViews = new ArrayList<>();
-        }
-        public List<UserView> getUserViews() {
-            return userViews;
-        }
-    }
-
     @Before
     public void setup() {
         vcvStaff = userRepository.findByEmailAndCompanyId(vcvStaffEmailString, 1L);
@@ -121,8 +107,8 @@ public class StaffTest {
     @Test
     public void canGetUsers() throws URISyntaxException, UserServiceException {
         URI uri = new URI(baseURL + "/getUsers");
-        ResponseEntity<UserViewList> response = restTemplate.postForEntity(uri, vcvStaff, UserViewList.class);
-        assertThat(response.getBody().getUserViews().equals(new UserView().build(testUsers, testCompanies))).isTrue();
+        ResponseEntity<UserView[]> response = restTemplate.postForEntity(uri, vcvStaff, UserView[].class);
+        assertThat(Arrays.equals(response.getBody(), new UserView().build(testUsers, testCompanies).toArray())).isTrue();
     }
 
     @Test

@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,16 +88,6 @@ public class MechanicTest {
             .setInsuranceId(2L)
             .build();
 
-    public  class JobViewList {
-        List<JobView> jobViews;
-
-        public JobViewList() {
-            jobViews = new ArrayList<>();
-        }
-        public List<JobView> getJobViews() {
-            return jobViews;
-        }
-    }
 
     @Before
     public void setup() {
@@ -110,8 +101,8 @@ public class MechanicTest {
     @Test
     public void canGetMechanicJobs() throws URISyntaxException {
         URI uri = new URI(baseURL + "/getMechanicJobs?garage=" + garageString);
-        ResponseEntity<JobViewList> response = restTemplate.getForEntity(uri, JobViewList.class);
-        assertThat(response.getBody().getJobViews().equals(new JobView().build(testJobs, testGarage, null))).isTrue();
+        ResponseEntity<JobView[]> response = restTemplate.getForEntity(uri, JobView[].class);
+        assertThat(Arrays.equals(response.getBody(), new JobView().build(testJobs, testGarage, null).toArray())).isTrue();
     }
 
     @Test

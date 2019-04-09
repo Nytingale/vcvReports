@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -110,39 +111,6 @@ public class InsuranceTest {
             .setVin("JMYSTC3A4U000993")
             .build();
 
-    public class ClaimViewList {
-        List<ClaimView> claimViews;
-
-        public ClaimViewList() {
-            claimViews = new ArrayList<>();
-        }
-        public List<ClaimView> getClaimViews() {
-            return claimViews;
-        }
-    }
-
-    public class PolicyViewList {
-        List<PolicyView> policyViews;
-
-        public PolicyViewList() {
-            policyViews = new ArrayList<>();
-        }
-        public List<PolicyView> getPolicyViews() {
-            return policyViews;
-        }
-    }
-
-    public class VehicleViewList {
-        List<VehicleView> vehicleViews;
-
-        public VehicleViewList() {
-            vehicleViews = new ArrayList<>();
-        }
-        public List<VehicleView> getVehicleViews() {
-            return vehicleViews;
-        }
-    }
-
     @Before
     public void setup() {
         testPolicy = policyRepository.findByVin(vinString);
@@ -167,22 +135,22 @@ public class InsuranceTest {
     @Test
     public void canGetInsurancePolices() throws URISyntaxException {
         URI uri = new URI(baseURL + "/getInsurancePolicies?insurance=" + companyString);
-        ResponseEntity<PolicyViewList> response = restTemplate.getForEntity(uri, PolicyViewList.class);
-        assertThat(response.getBody().getPolicyViews().equals(new PolicyView().build(testPolicies, testInsuranceCompany))).isTrue();
+        ResponseEntity<PolicyView[]> response = restTemplate.getForEntity(uri, PolicyView[].class);
+        assertThat(Arrays.equals(response.getBody(), new PolicyView().build(testPolicies, testInsuranceCompany).toArray())).isTrue();
     }
 
     @Test
     public void canGetInsuredVehicles() throws URISyntaxException {
         URI uri = new URI(baseURL + "/getInsuredVehicles?insurance=" + companyString);
-        ResponseEntity<VehicleViewList> response = restTemplate.getForEntity(uri, VehicleViewList.class);
-        assertThat(response.getBody().getVehicleViews().equals(new VehicleView().build(testVehicles, testInsuranceCompany))).isTrue();
+        ResponseEntity<VehicleView[]> response = restTemplate.getForEntity(uri, VehicleView[].class);
+        assertThat(Arrays.equals(response.getBody(), new VehicleView().build(testVehicles, testInsuranceCompany).toArray())).isTrue();
     }
 
     @Test
     public void canGetInsuranceClaims() throws URISyntaxException {
         URI uri = new URI(baseURL + "/getInsuranceClaims?insurance=" + companyString);
-        ResponseEntity<ClaimViewList> response = restTemplate.getForEntity(uri, ClaimViewList.class);
-        assertThat(response.getBody().getClaimViews().equals(new ClaimView().build(testClaims, testInsuranceCompany))).isTrue();
+        ResponseEntity<ClaimView[]> response = restTemplate.getForEntity(uri, ClaimView[].class);
+        assertThat(Arrays.equals(response.getBody(), new ClaimView().build(testClaims, testInsuranceCompany).toArray())).isTrue();
     }
 
     @Test
