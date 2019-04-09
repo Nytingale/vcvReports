@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS vcv;
 CREATE DATABASE vcv;
 USE vcv;
 
-CREATE TABLE `user`(
+CREATE TABLE `admin`(
     `email` VARCHAR(32) NOT NULL,
     `password` VARCHAR(64) NOT NULL,
     `password_reset` TINYINT(1) DEFAULT 0,
@@ -16,7 +16,7 @@ CREATE TABLE `user`(
 CREATE TABLE `role`(
     `id` BIGINT NOT NULL,
     `name` VARCHAR(32) NOT NULL,
-    `user` TINYINT(1) DEFAULT 0,
+    `admin` TINYINT(1) DEFAULT 0,
     `admin` TINYINT(1) DEFAULT 0,
     `staff` TINYINT(1) DEFAULT 0,
     PRIMARY KEY(id)
@@ -126,8 +126,8 @@ CREATE TABLE `vehicle`(
 ) ENGINE = InnoDB;
 
 ALTER TABLE `job`     ADD CONSTRAINT `job_vehicle_fk`    FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
-ALTER TABLE `user`    ADD CONSTRAINT `user_role_fk`      FOREIGN KEY(role_id)                     REFERENCES `role`(id);
-ALTER TABLE `user`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `company`(id);
+ALTER TABLE `admin`    ADD CONSTRAINT `user_role_fk`      FOREIGN KEY(role_id)                     REFERENCES `role`(id);
+ALTER TABLE `admin`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `company`(id);
 ALTER TABLE `claim`   ADD CONSTRAINT `claim_policy_fk`   FOREIGN KEY(company_id, policy_number)   REFERENCES `policy`(company_id, policy_number);
 ALTER TABLE `claim`   ADD CONSTRAINT `claim_vehicle_fk`  FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
 ALTER TABLE `policy`  ADD CONSTRAINT `policy_vehicle_fk` FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
@@ -135,7 +135,7 @@ ALTER TABLE `policy`  ADD CONSTRAINT `policy_vehicle_fk` FOREIGN KEY(vin)       
 # ==============================================================
 # = Adding in roles
 # ==============================================================
-INSERT INTO `role` VALUES (1, 'user',  1, 0, 0);       # = user
+INSERT INTO `role` VALUES (1, 'admin',  1, 0, 0);       # = admin
 INSERT INTO `role` VALUES (2, 'Admin', 1, 1, 0);       # = Admin
 INSERT INTO `role` VALUES (3, 'Staff', 1, 1, 1);       # = Staff
 

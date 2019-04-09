@@ -158,21 +158,21 @@ public class InsuranceTest {
         vehicleRepository.save(newVehicle);
         URI uri = new URI(baseURL + "/addPolicy");
         ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, newPolicy, MessageView.InsuranceReport.class);
-        assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(newPolicy, "Successfully Added Policy"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(newPolicy, testInsuranceCompany, "Successfully Added Policy"))).isTrue();
     }
 
     @Test
     public void canAddClaim() throws URISyntaxException {
         URI uri = new URI(baseURL + "/addClaim");
         ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, newClaim, MessageView.InsuranceReport.class);
-        assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(newClaim, "Successfully Added Claim"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(newClaim, testInsuranceCompany, "Successfully Added Claim"))).isTrue();
     }
 
     @Test
     public void canUpdateClaim() throws URISyntaxException {
         URI uri = new URI(baseURL + "/updateClaim");
         ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, updatedClaim, MessageView.InsuranceReport.class);
-        assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(updatedClaim, "Successfully Updated Claim"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(updatedClaim, testInsuranceCompany, "Successfully Updated Claim"))).isTrue();
         vehicleRepository.delete(newVehicle);
     }
 
@@ -215,6 +215,6 @@ public class InsuranceTest {
     public void canLinkJobToClaim() throws URISyntaxException {
         URI uri = new URI(baseURL + "/linkJobToClaim?id=" + jobId + "&number=" + claimString + "&company=" + companyString);
         ResponseEntity<MessageView.InsuranceReport> response = restTemplate.getForEntity(uri, MessageView.InsuranceReport.class);
-        assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(newClaim, "Successfully Linked Job to Claim"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(newClaim, testInsuranceCompany, "Successfully Linked Job to Claim"))).isTrue();
     }
 }

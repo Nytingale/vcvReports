@@ -46,13 +46,15 @@ public class PolicyService {
         }
 
         try {
+            Company company = companyRepository.findById(policy.getCompanyId()).get();
+
             // Fourth, Save the new Policy and Update the Vehicle Record
             vehicle.get().setInsuranceId(policy.getCompanyId());
             vehicle.get().setPolicyNumber(policy.getPolicyNumber());
             vehicle.get().setNumOwners(vehicle.get().getNumOwners() + 1);
             vehicleRepository.save(vehicle.get());
             policyRepository.save(policy);
-            return new MessageView.InsuranceReport().build(policy, "Successfully Added Policy");
+            return new MessageView.InsuranceReport().build(policy, company, "Successfully Added Policy");
         } catch (Exception e) {
             e.printStackTrace();
             throw new PolicyServiceException("Error 315: addPolicy(policy) failed to add the Policy");

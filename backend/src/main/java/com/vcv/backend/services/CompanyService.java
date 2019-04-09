@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class CompanyService {
 
     public CompanyView searchForCompany(User vcv,
                                         String company) throws CompanyServiceException {
-        // First, Confirm that the User is VCV Staff
+        // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: searchForCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Find the Company to Return
@@ -43,7 +44,7 @@ public class CompanyService {
     public MessageView.CompanyReport registerCompany(User vcv,
                                                      User admin,
                                                      Company company) throws CompanyServiceException {
-        // First, Confirm that the User is VCV Staff
+        // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: registerCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that no Company with this Name
@@ -51,7 +52,7 @@ public class CompanyService {
         if(companyDB != null) throw new CompanyServiceException("Error 805: registerCompany(vcv, company) has found an already-existing Company with this Name");
 
         try {
-            // Third, Add the User and Company to the Database, with the User setup as an Admin
+            // Third, Add the Admin and Company to the Database, with the Admin setup as an Admin
             admin.setRoleId(2L);
             company.setAdmin(admin.getEmail());
             companyRepository.save(company);
@@ -66,7 +67,7 @@ public class CompanyService {
 
     public MessageView.CompanyReport approveCompany(User vcv,
                                                     String company) throws CompanyServiceException {
-        // First, Confirm that the User is VCV Staff
+        // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: approveCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that the Company Exists
@@ -88,7 +89,7 @@ public class CompanyService {
 
     public MessageView.CompanyReport blacklistCompany(User vcv,
                                                       String company) throws CompanyServiceException {
-        // First, Confirm that the User is VCV Staff
+        // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: blacklistCompany(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that the Company Exists
@@ -110,9 +111,9 @@ public class CompanyService {
 
     public MessageView.CompanyReport updateWebsite(User admin,
                                                    String website) throws CompanyServiceException {
-        // First, Confirm that the User is an Admin or VCV Staff
+        // First, Confirm that the Admin is an Admin or VCV Staff
         if(!Utils.isValidStaffOrAdmin(admin)) {
-            throw new CompanyServiceException("Error 805: updateWebsite(admin, website) has failed to identify the User as a Company Admin or VCV Staff");
+            throw new CompanyServiceException("Error 805: updateWebsite(admin, website) has failed to identify the Admin as a Company Admin or VCV Staff");
         }
 
         try {
@@ -128,11 +129,11 @@ public class CompanyService {
     }
 
     public MessageView.CompanyReport renewSubscription(User admin) throws CompanyServiceException {
-        // First, Confirm that the User is the Admin and they are Not Blacklisted
+        // First, Confirm that the Admin is the Admin and they are Not Blacklisted
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
         if(company.isPresent()) {
-            if (Utils.isValidStaffOrAdmin(admin)) {
-                throw new CompanyServiceException("Error 805: renewSubscription(admin) has failed to identify the User as a Company Admin or VCV Staff");
+            if (!Utils.isValidStaffOrAdmin(admin)) {
+                throw new CompanyServiceException("Error 805: renewSubscription(admin) has failed to identify the Admin as a Company Admin or VCV Staff");
             }
 
             // Second, Confirm that the Company is not Blacklisted
@@ -142,8 +143,8 @@ public class CompanyService {
         } else throw new CompanyServiceException("Error 800: renewSubscription(admin) has returned null");
 
         // Third, Renew the Company's Subscription Start and End Date based on the Current Date
-        Timestamp start = new Timestamp(LocalDate.now().toEpochDay());
-        Timestamp end = new Timestamp(LocalDate.now().withYear(1).toEpochDay());
+        Timestamp start = new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().toEpochDay());
+        Timestamp end = new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().plusYears(1).toEpochDay());
 
         // Fourth, Update the Company Subscription
         company.get().setSubscriptionStartDate(start);
@@ -164,8 +165,8 @@ public class CompanyService {
     public MessageView.CompanyReport cancelSubscription(User admin) throws CompanyServiceException {
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
         if(company.isPresent()) {
-            if (Utils.isValidStaffOrAdmin(admin)) {
-                throw new CompanyServiceException("Error 805: cancelSubscription(admin) has failed to identify the User as a Company Admin or VCV Staff");
+            if (!Utils.isValidStaffOrAdmin(admin)) {
+                throw new CompanyServiceException("Error 805: cancelSubscription(admin) has failed to identify the Admin as a Company Admin or VCV Staff");
             }
 
             // Second, Confirm that the Company is not Blacklisted

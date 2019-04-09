@@ -40,7 +40,7 @@ public class UserView implements Serializable {
         view.company = userCompany.getCompanyName();
         view.password = user.getPassword();
 
-        if(user.getRoleId() == 1L) view.role = "User";
+        if(user.getRoleId() == 1L) view.role = "Admin";
         else if(user.getRoleId() == 2L) view.role = "Admin";
         else if(user.getRoleId() == 3L) view.role = "Staff";
         else view.role = "Creator";
@@ -61,7 +61,7 @@ public class UserView implements Serializable {
         List<UserView> views = new ArrayList<>();
 
         if(users.size() != companies.size()) {
-            throw new UserServiceException("build(List<User>, List<Company>) does not have equal Lists");
+            throw new UserServiceException("build(List<Admin>, List<Company>) does not have equal Lists");
         }
 
         for(int x=0; x<users.size(); x++) {

@@ -54,6 +54,7 @@ public class StaffTest {
     User vcvStaff;
     User testClient;
     User nonAdminEmployee;
+    Company vcvCompany;
     Company testCompany;
 
     List<User> testUsers;
@@ -63,8 +64,8 @@ public class StaffTest {
             .setEmail("TestEmail@email.com")
             .setPassword("newEmailTest123")
             .setPasswordReset(false)
-            .setCompanyId(1L)
-            .setRoleId(3L)
+            .setCompanyId(3L)
+            .setRoleId(2L)
             .build();
 
     User newAdmin = new User.Builder()
@@ -92,6 +93,7 @@ public class StaffTest {
         vcvStaff = userRepository.findByEmailAndCompanyId(vcvStaffEmailString, 1L);
         testClient = userRepository.findById(clientString).get();
         nonAdminEmployee = userRepository.findByEmailAndCompanyId(nonAdminEmailString, 2L);
+        vcvCompany = companyRepository.findById(1L).get();
         testCompany = companyRepository.findById(3L).get();
 
         testUsers = (List<User>) userRepository.findAll();
@@ -117,7 +119,7 @@ public class StaffTest {
         stringUserMap.put("Employee", nonAdminEmployee);
         URI uri = new URI(baseURL + "/changeAdmin");
         ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringUserMap, MessageView.UserReport.class);
-        assertThat(response.getBody().equals(new MessageView.UserReport().build(nonAdminEmployee,"Successfully Changed Company Admins"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(nonAdminEmployee, testCompany, "Successfully Changed Company Admins"))).isTrue();
     }
 
     @Test
@@ -144,7 +146,7 @@ public class StaffTest {
         stringUserMap.put("Employee", newEmployee);
         URI uri = new URI(baseURL + "/addEmployee");
         ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringUserMap, MessageView.UserReport.class);
-        assertThat(response.getBody().equals(new MessageView.UserReport().build(newEmployee, "Successfully Added new Employee to the Company"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(newEmployee, testCompany, "Successfully Added new Employee to the Company"))).isTrue();
     }
 
     @Test
@@ -177,10 +179,10 @@ public class StaffTest {
 
     @Test
     public void canChangePassword() throws URISyntaxException {
-        stringObjectMap.put("User", vcvStaff);
+        stringObjectMap.put("Admin", vcvStaff);
         stringObjectMap.put("New Password", newPasswordString);
         URI uri = new URI(baseURL + "/changePassword");
         ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.UserReport.class);
-        assertThat(response.getBody().equals(new MessageView.UserReport().build(vcvStaff, "Successfully Changed Password"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(vcvStaff, vcvCompany, "Successfully Changed Password"))).isTrue();
     }
 }

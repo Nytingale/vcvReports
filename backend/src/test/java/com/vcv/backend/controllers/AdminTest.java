@@ -5,8 +5,10 @@ import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.UserRepository;
+import com.vcv.backend.utilities.RequestWrapper;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +25,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,8 +42,6 @@ public class AdminTest {
     @Autowired private UserRepository userRepository;
     @Autowired private CompanyRepository companyRepository;
 
-    Map<String, Object> stringObjectMap = Collections.emptyMap();
-
     String emailString = "JaneDoe@trident.com";
     String adminEmailString = "GeorgeOrwell@trident.com";
 
@@ -49,6 +49,8 @@ public class AdminTest {
 
     User admin;
     Company company;
+    Company renewedCompany;
+    Company cancelledCompany;
 
     List<User> testUsers;
     List<Company> testCompanies;
@@ -70,6 +72,15 @@ public class AdminTest {
         company = companyRepository.findById(2L).get();
         testUsers = userRepository.findByCompanyId(2L);
 
+        renewedCompany = company;
+        renewedCompany.setSubscriptionStartDate(new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().toEpochDay()));
+        renewedCompany.setSubscriptionEndDate(new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().plusYears(1).toEpochDay()));
+
+        cancelledCompany = company;
+        cancelledCompany.setSubscriptionEndDate(new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().toEpochDay()));
+        cancelledCompany.setValid(false);
+
+        testCompanies = new ArrayList<>();
         for(User testUser: testUsers) {
             companyRepository.findById(testUser.getCompanyId()).ifPresent(testCompanies::add);
         }
@@ -88,37 +99,39 @@ public class AdminTest {
     public void canCancelSubscription() throws URISyntaxException {
         URI uri = new URI(baseURL + "/cancelSubscription");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, admin, MessageView.CompanyReport.class);
-        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(company, "Successfully Cancelled Subscription"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(cancelledCompany, "Successfully Cancelled Subscription"))).isTrue();
     }
 
     @Test
     public void canRenewSubscription() throws URISyntaxException {
         URI uri = new URI(baseURL + "/renewSubscription");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, admin, MessageView.CompanyReport.class);
-        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(company, "Successfully Renewed Subscription"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(renewedCompany, "Successfully Renewed Subscription"))).isTrue();
     }
 
     @Test
     public void canResetPassword() throws URISyntaxException {
-        stringObjectMap.put("Admin", admin);
-        stringObjectMap.put("Email", emailString);
+        RequestWrapper.Admin map = new RequestWrapper.Admin();
+        map.setAdmin(admin);
+        map.setDetails(emailString);
         URI uri = new URI(baseURL + "/resetPassword");
-        ResponseEntity<MessageView> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.class);
+        ResponseEntity<MessageView> response = restTemplate.postForEntity(uri, map, MessageView.class);
         assertThat(response.getBody().equals(new MessageView().build(emailString + "'s Password has been Successfully Reset. The next time they attempt " +
                 "to login, they will be prompted to Enter a new Password"))).isTrue();
     }
 
     @Test
-    public void canUploadImage() throws URISyntaxException {
+    public void canUploadImage() {
         try {
             ClassLoader classLoader = getClass().getClassLoader();
             File file = new File(classLoader.getResource("test.jpg").getFile());
             MultipartFile image = new MockMultipartFile("Owl.jpg", new FileInputStream(file));
 
-            stringObjectMap.put("Admin", admin);
-            stringObjectMap.put("Image", image);
+            JSONObject map = new JSONObject();
+            map.put("Admin", admin);
+            map.put("Image", image);
             URI uri = new URI(baseURL + "/uploadImage");
-            ResponseEntity<MessageView.FileUpload> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.FileUpload.class);
+            ResponseEntity<MessageView.FileUpload> response = restTemplate.postForEntity(uri, map, MessageView.FileUpload.class);
             assertThat(response.getBody().equals(new MessageView.FileUpload().build(image, company.getCompanyName(), "Successfully Uploaded Image"))).isTrue();
         } catch (Exception e) {
             e.printStackTrace();

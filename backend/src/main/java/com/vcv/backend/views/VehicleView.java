@@ -16,34 +16,34 @@ import java.util.List;
 import java.util.Objects;
 
 public class VehicleView implements Serializable {
-    private String vin;
-    private Integer year;
-    private String make;
-    private String model;
-    private String colour;
-    private Integer value;
-    private String dealership;
-    private String evaluationDate;
-    private String registrationDate;
-    private String manufacturer;
-    private String transmission;
-    private String fuelType;
-    private String steering;
-    private Integer mileage;
-    private String engine;
-    private String drive;
-    private String body;
-    private Integer numDoors;
-    private Integer numSeats;
-    private Boolean writtenOff;
-    private Boolean stolen;
-    private Integer numAccidents;
-    private Integer numRobberies;
-    private Integer numSalvages;
-    private Integer numServices;
-    private Integer numOwners;
-    private String insurance;
-    private String policyNumber;
+    protected String vin;
+    protected Integer year;
+    protected String make;
+    protected String model;
+    protected String colour;
+    protected Integer value;
+    protected String dealership;
+    protected String evaluationDate;
+    protected String registrationDate;
+    protected String manufacturer;
+    protected String transmission;
+    protected String fuelType;
+    protected String steering;
+    protected Integer mileage;
+    protected String engine;
+    protected String drive;
+    protected String body;
+    protected Integer numDoors;
+    protected Integer numSeats;
+    protected Boolean writtenOff;
+    protected Boolean stolen;
+    protected Integer numAccidents;
+    protected Integer numRobberies;
+    protected Integer numSalvages;
+    protected Integer numServices;
+    protected Integer numOwners;
+    protected String insurance;
+    protected String policyNumber;
 
     public String getVin() {
         return vin;
@@ -229,33 +229,7 @@ public class VehicleView implements Serializable {
         return Objects.hash(vin, year, make, model, colour, value, dealership, evaluationDate, registrationDate, manufacturer, transmission, fuelType, steering, mileage, engine, drive, body, numDoors, numSeats, writtenOff, stolen, numAccidents, numRobberies, numSalvages, numServices, numOwners, insurance, policyNumber);
     }
 
-    public static class BasicReport implements Serializable {
-        private String vin;
-        private Integer year;
-        private String make;
-        private String model;
-        private String colour;
-        private String manufacturer;
-
-        public String getVin() {
-            return vin;
-        }
-        public Integer getYear() {
-            return year;
-        }
-        public String getMake() {
-            return make;
-        }
-        public String getModel() {
-            return model;
-        }
-        public String getColour() {
-            return colour;
-        }
-        public String getManufacturer() {
-            return manufacturer;
-        }
-
+    public static class BasicReport extends VehicleView {
         public BasicReport() {}
         public BasicReport build(Vehicle vehicle) {
             BasicReport view = new BasicReport();

@@ -38,8 +38,10 @@ public class ClaimService {
         if(vehicle.isEmpty()) throw new ClaimServiceException("Error 105: addClaim(claim) failed to find a matching VIN that exists");
 
         try {
+            Company company = companyRepository.findById(claim.getCompanyId()).get();
+
             claimRepository.save(claim);
-            return new MessageView.InsuranceReport().build(claim, "Successfully Added Claim");
+            return new MessageView.InsuranceReport().build(claim, company, "Successfully Added Claim");
         } catch (Exception e) {
             e.printStackTrace();
             throw new ClaimServiceException("Error 115: addClaim(claim) failed to add the Claim");
@@ -66,9 +68,11 @@ public class ClaimService {
         claim.setClaimDetails(claim.getClaimDetails());
 
         try {
+            Company company = companyRepository.findById(claim.getCompanyId()).get();
+
             // Third, Save the Updates
             claimRepository.save(claim);
-            return new MessageView.InsuranceReport().build(claim, "Successfully Updated Claim");
+            return new MessageView.InsuranceReport().build(claim, company, "Successfully Updated Claim");
         } catch (Exception e) {
             e.printStackTrace();
             throw new ClaimServiceException("Error 115: updateClaim(claim) failed to update the Claim");
@@ -98,7 +102,7 @@ public class ClaimService {
             // Fifth, Save the Changes to Both the Claim and the Job
             jobRepository.save(job.get());
             claimRepository.save(claim.get());
-            return new MessageView.InsuranceReport().build(claim.get(), "Successfully Linked Job to Claim");
+            return new MessageView.InsuranceReport().build(claim.get(), company, "Successfully Linked Job to Claim");
         } catch(Exception e) {
             e.printStackTrace();
             throw new ClaimServiceException("Error 120: linkJobToClaim(id, number, insurance) failed to save the Updates to the Job and Claim");

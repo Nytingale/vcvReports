@@ -6,6 +6,7 @@ import com.vcv.backend.entities.User;
 import com.vcv.backend.enums.CompanyType;
 import com.vcv.backend.exceptions.ControllerException;
 import com.vcv.backend.services.*;
+import com.vcv.backend.utilities.RequestWrapper;
 import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.ClaimView;
 import com.vcv.backend.views.MessageView;
@@ -200,10 +201,10 @@ public class Insurance {
     }
 
     @PostMapping("/changePassword")
-    public MessageView.UserReport changePassword(@RequestBody Map<String, Object> map) {
+    public MessageView.UserReport changePassword(@RequestBody RequestWrapper.Admin map) {
         try {
-            User validUser = (User) Utils.isValidEntity(map.get("User"));
-            String validNewPassword = Utils.isValidPassword((String) map.get("New Password"));
+            User validUser = (User) Utils.isValidEntity(map.getAdmin());
+            String validNewPassword = Utils.isValidPassword(map.getDetails());
             if(validUser != null && validNewPassword != null) {
                 return userService.changePassword(validUser, validNewPassword);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");

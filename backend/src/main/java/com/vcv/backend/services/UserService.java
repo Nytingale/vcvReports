@@ -32,7 +32,7 @@ public class UserService implements UserDetailsService {
     /* VCV Staff */
     public UserView searchForUser(User vcv,
                                   String email) throws UserServiceException {
-        // First, Confirm that the User is VCV Staff
+        // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: searchForUser(vcv, email) has failed you for VCV Staff Authentication");
 
         Optional<User> user = userRepository.findById(email);
@@ -44,7 +44,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<UserView> getUsers(User vcv) throws UserServiceException {
-        // First, Confirm that the User is VCV Staff
+        // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: getUsers(vcv) has failed you for VCV Staff Authentication");
 
         // Second, Find the Clients to Return
@@ -64,9 +64,9 @@ public class UserService implements UserDetailsService {
     /* Company Admin / VCV Staff */
     public MessageView resetPassword(User admin,
                                      String email) throws UserServiceException {
-        // First, Confirm that the User is an Admin or VCV Staff
-        if (Utils.isValidStaffOrAdmin(admin)) {
-            throw new UserServiceException("Error 420: resetPassword(admin, email) has failed to identify the User as a Company Admin or VCV Staff");
+        // First, Confirm that the Admin is an Admin or VCV Staff
+        if (!Utils.isValidStaffOrAdmin(admin)) {
+            throw new UserServiceException("Error 420: resetPassword(admin, email) has failed to identify the Admin as a Company Admin or VCV Staff");
         }
 
         // Second, Find the Employee to Reset Password
@@ -89,8 +89,8 @@ public class UserService implements UserDetailsService {
 
     public MessageView.UserReport changeAdmin(User admin,
                                               User employee) throws UserServiceException {
-        // First, Confirm that the User is an Admin or VCV Staff
-        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: changeAdmin(admin, employee) has failed to identify the User as a Company Admin or VCV Staff");
+        // First, Confirm that the Admin is an Admin or VCV Staff
+        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: changeAdmin(admin, employee) has failed to identify the Admin as a Company Admin or VCV Staff");
 
         // Second, Find the Company of the Employee
         Company company = companyRepository.findById(employee.getCompanyId()).get();
@@ -110,7 +110,7 @@ public class UserService implements UserDetailsService {
                 // Fifth, Update the new records of the Employee and the Admin
                 userRepository.save(admin);
                 userRepository.save(employee);
-                return new MessageView.UserReport().build(employee,"Successfully Changed Company Admins");
+                return new MessageView.UserReport().build(employee, company, "Successfully Changed Company Admins");
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new UserServiceException("Error 415: changeAdmin(admin, employee) failed to change the Company Admin");
@@ -120,8 +120,8 @@ public class UserService implements UserDetailsService {
 
     public MessageView.UserReport addEmployee(User admin,
                                               User employee) throws UserServiceException {
-        // First, Confirm that the User is an Admin or VCV Staff
-        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: addEmployee(admin, employee) has failed to identify the User as a Company Admin or VCV Staff");
+        // First, Confirm that the Admin is an Admin or VCV Staff
+        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: addEmployee(admin, employee) has failed to identify the Admin as a Company Admin or VCV Staff");
 
         // Third, Ensure the Email doesn't Already Exist
         Optional<User> employeeDB = userRepository.findById(employee.getEmail());
@@ -146,9 +146,11 @@ public class UserService implements UserDetailsService {
         }
 
         try {
+            Company company = companyRepository.findById(admin.getCompanyId()).get();
+
             // Seventh, Save the new Employee to the Database
             userRepository.save(employee);
-            return new MessageView.UserReport().build(employee,"Successfully Added new Employee to the Company");
+            return new MessageView.UserReport().build(employee, company, "Successfully Added new Employee to the Company");
         } catch(Exception e) {
             e.printStackTrace();
             throw new UserServiceException("Error 415: addEmployee(admin, employee) has failed to add the new Employee to the Database");
@@ -157,17 +159,19 @@ public class UserService implements UserDetailsService {
 
     public MessageView.UserReport removeEmployee(User admin,
                                                  String email) throws UserServiceException {
-        // First, Confirm that the User is an Admin or VCV Staff
-        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: removeEmployee(admin, employee) has failed to identify the User as a Company Admin or VCV Staff");
+        // First, Confirm that the Admin is an Admin or VCV Staff
+        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: removeEmployee(admin, employee) has failed to identify the Admin as a Company Admin or VCV Staff");
 
         // Second, Confirm that the Employee Exists
         Optional<User> employee = userRepository.findById(email);
         if(employee.isEmpty()) throw new UserServiceException("Error 410: removeEmployee(admin, email) has failed to find an Employee with the Email");
 
         try {
+            Company company = companyRepository.findById(admin.getCompanyId()).get();
+
             // Third, Remove the Employee from the Database
             userRepository.delete(employee.get());
-            return new MessageView.UserReport().build(employee.get(),"Successfully Removed the Employee from the Company");
+            return new MessageView.UserReport().build(employee.get(), company, "Successfully Removed the Employee from the Company");
         } catch(Exception e) {
             e.printStackTrace();
             throw new UserServiceException("Error 415: removeEmployee(admin, email) has failed to add the new Employee to the Database");
@@ -177,7 +181,7 @@ public class UserService implements UserDetailsService {
 
     /* Company Admin */
     public List<UserView> getEmployees(User admin) throws UserServiceException {
-        // First, Confirm that the User is the Admin and they are Not Blacklisted
+        // First, Confirm that the Admin is the Admin and they are Not Blacklisted
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
         if(company.isPresent()) {
             if (admin.getRoleId() != 2L) {
@@ -204,12 +208,14 @@ public class UserService implements UserDetailsService {
         user.setPassword(new BCryptPasswordEncoder(11).encode(newPassword));
 
         try {
-            // Second, Update the User Record to the Database
+            Company company = companyRepository.findById(user.getCompanyId()).get();
+
+            // Second, Update the Admin Record to the Database
             userRepository.save(user);
-            return new MessageView.UserReport().build(user, "Successfully Changed Password");
+            return new MessageView.UserReport().build(user, company, "Successfully Changed Password");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new UserServiceException("Error 415: changePassword(user, newPassword) has failed to change the User's Password");
+            throw new UserServiceException("Error 415: changePassword(user, newPassword) has failed to change the Admin's Password");
         }
     }
 

@@ -25,9 +25,9 @@ public class FileService {
     public MessageView.FileUpload uploadImage(User admin,
                                               MultipartFile image,
                                               HttpServletRequest request) throws FileServiceException {
-        // First, Confirm that the User is an Admin or VCV Staff
+        // First, Confirm that the Admin is an Admin or VCV Staff
         if(admin.getRoleId() > 1) {
-            throw new FileServiceException("Error 605: uploadImage(admin, image, request) has failed to identify the User as a Company Admin or VCV Staff");
+            throw new FileServiceException("Error 605: uploadImage(admin, image, request) has failed to identify the Admin as a Company Admin or VCV Staff");
         }
 
         // Second, Find the Admin's Company

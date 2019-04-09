@@ -10,7 +10,7 @@ INSERT INTO `company` VALUES
     (5, 'MQI',                   'Dealership', '2019-04-01 00:00:00', '2020-04-01 00:00:00', 0, 'https://mqi.com',        'YKlint@mqi.bb.com',        0, 1),
     (6, 'Sagicor Car Insurance', 'Insurance',  '2019-04-01 00:00:00', '2019-04-01 00:00:00', 0, 'https://sagicor.com',    'T_man@hotmail.com',        0, 1);
 
-INSERT INTO `user` VALUES
+INSERT INTO `admin` VALUES
     ('RSJMorris@gmail.com',      'abcxyz123',     0, 3, 1),
     ('JaneDoe@trident.com',      'tridentRUs',    0, 1, 2),
     ('GeorgeOrwell@trident.com', 'p@ssw0rd65',    0, 2, 2),

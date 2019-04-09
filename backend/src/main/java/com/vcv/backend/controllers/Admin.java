@@ -3,16 +3,17 @@ package com.vcv.backend.controllers;
 import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.ControllerException;
 import com.vcv.backend.services.*;
+import com.vcv.backend.utilities.RequestWrapper;
 import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/admin")
@@ -61,10 +62,10 @@ public class Admin {
     }
 
     @PostMapping("/resetPassword")
-    public MessageView resetPassword(@RequestBody Map<String, Object> map) {
+    public MessageView resetPassword(@RequestBody RequestWrapper.Admin map) {
         try {
-            User validAdmin = (User) Utils.isValidEntity(map.get("Admin"));
-            String validEmail = Utils.isValidEmail((String) map.get("Email"));
+            User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
+            String validEmail = Utils.isValidEmail(map.getDetails());
             if(validAdmin!= null && validEmail != null) {
                 return userService.resetPassword(validAdmin, validEmail);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -75,10 +76,10 @@ public class Admin {
     }
 
     @PostMapping("/changeAdmin")
-    public MessageView.UserReport changeAdmin(@RequestBody Map<String, User> map) {
+    public MessageView.UserReport changeAdmin(@RequestBody RequestWrapper.Employee map) {
         try {
-            User validAdmin = (User) Utils.isValidEntity(map.get("Admin"));
-            User validEmployee = (User) Utils.isValidEntity(map.get("Employee"));
+            User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
+            User validEmployee = (User) Utils.isValidEntity(map.getEmployee());
             if(validAdmin != null && validEmployee != null) {
                 return userService.changeAdmin(validAdmin, validEmployee);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -90,10 +91,10 @@ public class Admin {
 
     @PostMapping("/uploadImage")
     public MessageView.FileUpload uploadImage(HttpServletRequest request,
-                                              @RequestBody Map<String, Object> map) {
+                                              @RequestBody RequestWrapper.Image map) {
         try {
-            User validAdmin = (User) Utils.isValidEntity(map.get("Admin"));
-            MultipartFile validImage = Utils.isValidImage((MultipartFile) map.get("Image"));
+            User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
+            MultipartFile validImage = Utils.isValidImage(map.getImage());
             if(validAdmin!= null && validImage != null) {
                 return fileService.uploadImage(validAdmin, validImage, request);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -104,10 +105,10 @@ public class Admin {
     }
 
     @PostMapping("/addEmployee")
-    public MessageView.UserReport addEmployee(@RequestBody Map<String, User> map) {
+    public MessageView.UserReport addEmployee(@RequestBody RequestWrapper.Employee map) {
         try {
-            User validAdmin = (User) Utils.isValidEntity(map.get("Admin"));
-            User validEmployee = (User) Utils.isValidEntity(map.get("Employee"));
+            User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
+            User validEmployee = (User) Utils.isValidEntity(map.getEmployee());
             if(validAdmin != null && validEmployee != null) {
                 return userService.addEmployee(validAdmin, validEmployee);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -118,10 +119,10 @@ public class Admin {
     }
 
     @PostMapping("/removeEmployee")
-    public MessageView.UserReport removeEmployee(@RequestBody Map<String, Object> map) {
+    public MessageView.UserReport removeEmployee(@RequestBody RequestWrapper.Admin map) {
         try {
-            User validAdmin = (User) Utils.isValidEntity(map.get("Admin"));
-            String validEmail = Utils.isValidEmail((String) map.get("Email"));
+            User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
+            String validEmail = Utils.isValidEmail(map.getDetails());
             if(validAdmin!= null && validEmail != null) {
                 return userService.removeEmployee(validAdmin, validEmail);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -132,10 +133,10 @@ public class Admin {
     }
 
     @PostMapping("/updateWebsite")
-    public MessageView.CompanyReport updateWebsite(@RequestBody Map<String, Object> map) {
+    public MessageView.CompanyReport updateWebsite(@RequestBody RequestWrapper.Admin map) {
         try {
-            User validAdmin = (User) Utils.isValidEntity(map.get("User"));
-            String validWebsite = Utils.isValidString((String) map.get("Website"));
+            User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
+            String validWebsite = Utils.isValidString(map.getDetails());
             if(validAdmin!= null && validWebsite != null) {
                 return companyService.updateWebsite(validAdmin, validWebsite);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");

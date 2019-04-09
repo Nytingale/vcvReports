@@ -13,7 +13,7 @@ import java.time.format.FormatStyle;
 import java.util.Objects;
 
 public class MessageView implements Serializable {
-    private String message;
+    protected String message;
 
     public String getMessage() {
         return message;
@@ -41,16 +41,12 @@ public class MessageView implements Serializable {
         return Objects.hash(message);
     }
 
-    public static class FileUpload implements Serializable {
-        private MessageView message;
+    public static class FileUpload extends MessageView {
         private String company;
         private String name;
         private String type;
         private Long size;
-
-        public MessageView getMessage() {
-            return message;
-        }
+        
         public String getCompany() {
             return company;
         }
@@ -68,7 +64,7 @@ public class MessageView implements Serializable {
         public FileUpload build(MultipartFile file, String company, String message) {
             FileUpload view = new FileUpload();
 
-            view.message = new MessageView().build(message);
+            view.message = message;
             view.company = company;
             view.name = file.getName();
             view.type = file.getContentType();
@@ -95,15 +91,11 @@ public class MessageView implements Serializable {
         }
     }
 
-    public static class JobReport implements Serializable {
+    public static class JobReport extends MessageView {
         private Long id;
-        private MessageView message;
 
         public Long getId() {
             return id;
-        }
-        public MessageView getMessage() {
-            return message;
         }
 
         public JobReport() {}
@@ -111,7 +103,7 @@ public class MessageView implements Serializable {
             JobReport view = new JobReport();
 
             view.id = job.getId();
-            view.message = new MessageView().build(message);
+            view.message = message;
 
             return view;
         }
@@ -130,12 +122,9 @@ public class MessageView implements Serializable {
             return Objects.hash(id, message);
         }
     }
-    public static class UserReport implements Serializable {
-        @Autowired private CompanyRepository companyRepository;
-
+    public static class UserReport extends MessageView {
         private String email;
         private String company;
-        private MessageView message;
 
         public String getEmail() {
             return email;
@@ -143,17 +132,14 @@ public class MessageView implements Serializable {
         public String getCompany() {
             return company;
         }
-        public MessageView getMessage() {
-            return message;
-        }
 
         public UserReport() {}
-        public UserReport build(User user, String message) {
+        public UserReport build(User user, Company userCompany, String message) {
             UserReport view = new UserReport();
 
             view.email = user.getEmail();
-            view.company = companyRepository.findById(user.getCompanyId()).get().getCompanyName();
-            view.message = new MessageView().build(message);
+            view.company = userCompany.getCompanyName();
+            view.message = message;
 
             return view;
         }
@@ -163,30 +149,25 @@ public class MessageView implements Serializable {
             if (this == o) return true;
             if (!(o instanceof UserReport)) return false;
             UserReport that = (UserReport) o;
-            return companyRepository.equals(that.companyRepository) &&
-                    email.equals(that.email) &&
+            return email.equals(that.email) &&
                     company.equals(that.company) &&
                     message.equals(that.message);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(companyRepository, email, company, message);
+            return Objects.hash(email, company, message);
         }
     }
-    public static class StolenReport implements Serializable {
+    public static class StolenReport extends MessageView {
         private String vin;
         private Boolean stolen;
-        private MessageView message;
 
         public String getVin() {
             return vin;
         }
         public Boolean getStolen() {
             return stolen;
-        }
-        public MessageView getMessage() {
-            return message;
         }
 
         public StolenReport() {}
@@ -195,7 +176,7 @@ public class MessageView implements Serializable {
 
             view.vin = vehicle.getVin();
             view.stolen = vehicle.isStolen();
-            view.message = new MessageView().build(message);
+            view.message = message;
 
             return view;
         }
@@ -215,15 +196,11 @@ public class MessageView implements Serializable {
             return Objects.hash(vin, stolen, message);
         }
     }
-    public static class Registration implements Serializable {
+    public static class Registration extends MessageView {
         private String vin;
-        private MessageView message;
 
         public String getVin() {
             return vin;
-        }
-        public MessageView getMessage() {
-            return message;
         }
 
         public Registration() {}
@@ -231,7 +208,7 @@ public class MessageView implements Serializable {
             Registration view = new Registration();
 
             view.vin = vehicle.getVin();
-            view.message = new MessageView().build(message);
+            view.message = message;
 
             return view;
         }
@@ -250,19 +227,15 @@ public class MessageView implements Serializable {
             return Objects.hash(vin, message);
         }
     }
-    public static class SalvageReport implements Serializable {
+    public static class SalvageReport extends MessageView {
         private String vin;
         private Integer amount;
-        private MessageView message;
 
         public String getVin() {
             return vin;
         }
         public Integer getAmount() {
             return amount;
-        }
-        public MessageView getMessage() {
-            return message;
         }
 
         public SalvageReport() {}
@@ -271,7 +244,7 @@ public class MessageView implements Serializable {
 
             view.vin = vehicle.getVin();
             view.amount = vehicle.getNumSalvages();
-            view.message = new MessageView().build(message);
+            view.message = message;
 
             return view;
         }
@@ -291,13 +264,12 @@ public class MessageView implements Serializable {
             return Objects.hash(vin, amount, message);
         }
     }
-    public static class CompanyReport implements Serializable {
+    public static class CompanyReport extends MessageView {
         private String name;
         private String type;
         private String website;
         private String subscriptionStartDate;
         private String subscriptionEndDate;
-        private MessageView message;
 
         public String getName() {
             return name;
@@ -314,9 +286,6 @@ public class MessageView implements Serializable {
         public String getSubscriptionEndDate() {
             return subscriptionEndDate;
         }
-        public MessageView getMessage() {
-            return message;
-        }
 
         public CompanyReport() {}
         public CompanyReport build(Company company, String message) {
@@ -328,7 +297,7 @@ public class MessageView implements Serializable {
             view.website = company.getWebsite();
             view.subscriptionStartDate = LocalDate.ofInstant(company.getSubscriptionStartDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
             view.subscriptionEndDate = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-            view.message = new MessageView().build(message);
+            view.message = message;
 
             return view;
         }
@@ -351,19 +320,15 @@ public class MessageView implements Serializable {
             return Objects.hash(name, type, website, subscriptionStartDate, subscriptionEndDate, message);
         }
     }
-    public static class AccidentReport implements Serializable {
+    public static class AccidentReport extends MessageView {
         private String vin;
         private Boolean stolen;
-        private MessageView message;
 
         public String getVin() {
             return vin;
         }
         public Boolean getStolen() {
             return stolen;
-        }
-        public MessageView getMessage() {
-            return message;
         }
 
         public AccidentReport() {}
@@ -372,7 +337,7 @@ public class MessageView implements Serializable {
 
             view.vin = vehicle.getVin();
             view.stolen = vehicle.isStolen();
-            view.message = new MessageView().build(message);
+            view.message = message;
 
             return view;
         }
@@ -392,12 +357,9 @@ public class MessageView implements Serializable {
             return Objects.hash(vin, stolen, message);
         }
     }
-    public static class InsuranceReport implements Serializable {
-        @Autowired private CompanyRepository companyRepository;
-
+    public static class InsuranceReport extends MessageView {
         private String number;
         private String company;
-        private MessageView message;
 
         public String getNumber() {
             return number;
@@ -405,26 +367,23 @@ public class MessageView implements Serializable {
         public String getCompany() {
             return company;
         }
-        public MessageView getMessage() {
-            return message;
-        }
 
         public InsuranceReport() {}
-        public InsuranceReport build(Claim claim, String message) {
+        public InsuranceReport build(Claim claim, Company insuranceCompany, String message) {
             InsuranceReport view = new InsuranceReport();
 
             view.number = claim.getClaimNumber();
-            view.company = companyRepository.findById(claim.getCompanyId()).get().getCompanyName();
-            view.message = new MessageView().build(message);
+            view.company = insuranceCompany.getCompanyName();
+            view.message = message;
 
             return view;
         }
-        public InsuranceReport build(Policy policy, String message) {
+        public InsuranceReport build(Policy policy, Company insuranceCompany, String message) {
             InsuranceReport view = new InsuranceReport();
 
             view.number = policy.getPolicyNumber();
-            view.company = companyRepository.findById(policy.getCompanyId()).get().getCompanyName();
-            view.message = new MessageView().build(message);
+            view.company = insuranceCompany.getCompanyName();
+            view.message = message;
 
             return view;
         }
@@ -434,30 +393,25 @@ public class MessageView implements Serializable {
             if (this == o) return true;
             if (!(o instanceof InsuranceReport)) return false;
             InsuranceReport that = (InsuranceReport) o;
-            return companyRepository.equals(that.companyRepository) &&
-                    number.equals(that.number) &&
+            return number.equals(that.number) &&
                     company.equals(that.company) &&
                     message.equals(that.message);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(companyRepository, number, company, message);
+            return Objects.hash(number, company, message);
         }
     }
-    public static class WriteOffReport implements Serializable {
+    public static class WriteOffReport extends MessageView {
         private String vin;
         private Boolean writtenOff;
-        private MessageView message;
 
         public String getVin() {
             return vin;
         }
         public Boolean getWrittenOff() {
             return writtenOff;
-        }
-        public MessageView getMessage() {
-            return message;
         }
 
         public WriteOffReport() {}
@@ -466,7 +420,7 @@ public class MessageView implements Serializable {
 
             view.vin = vehicle.getVin();
             view.writtenOff = vehicle.isWrittenOff();
-            view.message = new MessageView().build(message);
+            view.message = message;
 
             return view;
         }
