@@ -1,5 +1,6 @@
 package com.vcv.backend.views;
 
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.Policy;
 import com.vcv.backend.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PolicyView implements Serializable {
-    @Autowired private CompanyRepository companyRepository;
-
     private String company;
     private String policyNumber;
     private String date;
@@ -42,11 +42,11 @@ public class PolicyView implements Serializable {
     }
 
     public PolicyView() {}
-    public PolicyView build(Policy policy) {
+    public PolicyView build(Policy policy, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
         PolicyView view = new PolicyView();
 
-        view.company = companyRepository.findById(policy.getCompanyId()).get().getCompanyName();
+        view.company = insuranceCompany.getCompanyName();
         view.policyNumber = policy.getPolicyNumber();
         view.date = LocalDate.ofInstant(policy.getPolicyDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
         view.financer = policy.getFinancer();
@@ -55,14 +55,32 @@ public class PolicyView implements Serializable {
 
         return view;
     }
-    public List<PolicyView> build(List<Policy> policies) {
+    public List<PolicyView> build(List<Policy> policies, Company insuranceCompany) {
         List<PolicyView> views = new ArrayList<>();
 
         for(Policy policy: policies) {
-            PolicyView view = new PolicyView().build(policy);
+            PolicyView view = new PolicyView().build(policy, insuranceCompany);
             views.add(view);
         }
 
         return views;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PolicyView)) return false;
+        PolicyView that = (PolicyView) o;
+        return company.equals(that.company) &&
+                policyNumber.equals(that.policyNumber) &&
+                date.equals(that.date) &&
+                financer.equals(that.financer) &&
+                valid.equals(that.valid) &&
+                vin.equals(that.vin);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(company, policyNumber, date, financer, valid, vin);
     }
 }

@@ -25,7 +25,7 @@ public class PolicyService {
     public List<PolicyView> getInsurancePolicies(String insurance) throws PolicyServiceException {
         Company company = companyRepository.findByCompanyName(insurance);
         List<Policy> policies = policyRepository.findByCompanyIdOrderByPolicyDateDesc(company.getId());
-        if(!policies.isEmpty()) return new PolicyView().build(policies);
+        if(!policies.isEmpty()) return new PolicyView().build(policies, company);
         else throw new PolicyServiceException("Error 300: getInsurancePolicies(insurance) returned null");
     }
 
@@ -62,7 +62,8 @@ public class PolicyService {
     /* Per Vehicle */
     public PolicyView getPolicy(String vin) throws PolicyServiceException {
         Policy policy = policyRepository.findByVin(vin);
-        if(policy != null) return new PolicyView().build(policy);
+        Optional<Company> company = companyRepository.findById(policy.getCompanyId());
+        if(policy != null && company.isPresent()) return new PolicyView().build(policy, company.get());
         else throw new PolicyServiceException("Error 300: getPolicy(vin) returned null");
     }
 }

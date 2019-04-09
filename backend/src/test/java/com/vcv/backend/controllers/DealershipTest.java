@@ -1,6 +1,8 @@
 package com.vcv.backend.controllers;
 
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.Vehicle;
+import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.UserRepository;
 import com.vcv.backend.repositories.VehicleRepository;
 import com.vcv.backend.views.MessageView;
@@ -32,11 +34,14 @@ public class DealershipTest {
     @Autowired private TestRestTemplate restTemplate;
 
     @Autowired private UserRepository userRepository;
+    @Autowired private CompanyRepository companyRepository;
     @Autowired private VehicleRepository vehicleRepository;
 
     String dealershipString = "MQI";
 
     String baseURL;
+
+    Company testInsuranceCompany;
 
     List<Vehicle> testVehicles;
 
@@ -74,6 +79,8 @@ public class DealershipTest {
     public void setup() {
         testVehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc(dealershipString);
 
+        testInsuranceCompany = companyRepository.findById(2L).get();
+
         baseURL = "http://localhost:" + port + "/vcv/dealership";
     }
 
@@ -81,13 +88,13 @@ public class DealershipTest {
     public void canGetRegisteredVehicles() throws URISyntaxException {
         URI uri = new URI(baseURL + "/getRegisteredVehicles?dealership=" + dealershipString);
         ResponseEntity<VehicleViewList> response = restTemplate.getForEntity(uri, VehicleViewList.class);
-        assertThat(response.getBody().getVehicleViews()).isEqualTo(new VehicleView().build(testVehicles));
+        assertThat(response.getBody().getVehicleViews().equals(new VehicleView().build(testVehicles, testInsuranceCompany))).isTrue();
     }
 
     @Test
     public void canRegisterVehicle() throws URISyntaxException {
         URI uri = new URI(baseURL + "/registerVehicle");
         ResponseEntity<MessageView.Registration> response = restTemplate.postForEntity(uri, newVehicle, MessageView.Registration.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView.Registration().build(newVehicle, "Successfully Registered Vehicle"));
+        assertThat(response.getBody().equals(new MessageView.Registration().build(newVehicle, "Successfully Registered Vehicle"))).isTrue();
     }
 }

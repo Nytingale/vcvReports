@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Objects;
 
 public class MessageView implements Serializable {
     private String message;
@@ -25,6 +26,19 @@ public class MessageView implements Serializable {
         view.message = message;
 
         return view;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MessageView)) return false;
+        MessageView that = (MessageView) o;
+        return message.equals(that.message);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(message);
     }
 
     public static class FileUpload implements Serializable {
@@ -62,6 +76,23 @@ public class MessageView implements Serializable {
 
             return view;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof FileUpload)) return false;
+            FileUpload that = (FileUpload) o;
+            return message.equals(that.message) &&
+                    company.equals(that.company) &&
+                    name.equals(that.name) &&
+                    type.equals(that.type) &&
+                    size.equals(that.size);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(message, company, name, type, size);
+        }
     }
 
     public static class JobReport implements Serializable {
@@ -83,6 +114,20 @@ public class MessageView implements Serializable {
             view.message = new MessageView().build(message);
 
             return view;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof JobReport)) return false;
+            JobReport jobReport = (JobReport) o;
+            return id.equals(jobReport.id) &&
+                    message.equals(jobReport.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, message);
         }
     }
     public static class UserReport implements Serializable {
@@ -112,6 +157,22 @@ public class MessageView implements Serializable {
 
             return view;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof UserReport)) return false;
+            UserReport that = (UserReport) o;
+            return companyRepository.equals(that.companyRepository) &&
+                    email.equals(that.email) &&
+                    company.equals(that.company) &&
+                    message.equals(that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(companyRepository, email, company, message);
+        }
     }
     public static class StolenReport implements Serializable {
         private String vin;
@@ -138,6 +199,21 @@ public class MessageView implements Serializable {
 
             return view;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof StolenReport)) return false;
+            StolenReport that = (StolenReport) o;
+            return vin.equals(that.vin) &&
+                    stolen.equals(that.stolen) &&
+                    message.equals(that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(vin, stolen, message);
+        }
     }
     public static class Registration implements Serializable {
         private String vin;
@@ -158,6 +234,20 @@ public class MessageView implements Serializable {
             view.message = new MessageView().build(message);
 
             return view;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Registration)) return false;
+            Registration that = (Registration) o;
+            return vin.equals(that.vin) &&
+                    message.equals(that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(vin, message);
         }
     }
     public static class SalvageReport implements Serializable {
@@ -184,6 +274,21 @@ public class MessageView implements Serializable {
             view.message = new MessageView().build(message);
 
             return view;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof SalvageReport)) return false;
+            SalvageReport that = (SalvageReport) o;
+            return vin.equals(that.vin) &&
+                    amount.equals(that.amount) &&
+                    message.equals(that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(vin, amount, message);
         }
     }
     public static class CompanyReport implements Serializable {
@@ -227,6 +332,24 @@ public class MessageView implements Serializable {
 
             return view;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof CompanyReport)) return false;
+            CompanyReport that = (CompanyReport) o;
+            return name.equals(that.name) &&
+                    type.equals(that.type) &&
+                    website.equals(that.website) &&
+                    subscriptionStartDate.equals(that.subscriptionStartDate) &&
+                    subscriptionEndDate.equals(that.subscriptionEndDate) &&
+                    message.equals(that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, type, website, subscriptionStartDate, subscriptionEndDate, message);
+        }
     }
     public static class AccidentReport implements Serializable {
         private String vin;
@@ -252,6 +375,21 @@ public class MessageView implements Serializable {
             view.message = new MessageView().build(message);
 
             return view;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof AccidentReport)) return false;
+            AccidentReport that = (AccidentReport) o;
+            return vin.equals(that.vin) &&
+                    stolen.equals(that.stolen) &&
+                    message.equals(that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(vin, stolen, message);
         }
     }
     public static class InsuranceReport implements Serializable {
@@ -290,6 +428,22 @@ public class MessageView implements Serializable {
 
             return view;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof InsuranceReport)) return false;
+            InsuranceReport that = (InsuranceReport) o;
+            return companyRepository.equals(that.companyRepository) &&
+                    number.equals(that.number) &&
+                    company.equals(that.company) &&
+                    message.equals(that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(companyRepository, number, company, message);
+        }
     }
     public static class WriteOffReport implements Serializable {
         private String vin;
@@ -315,6 +469,21 @@ public class MessageView implements Serializable {
             view.message = new MessageView().build(message);
 
             return view;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof WriteOffReport)) return false;
+            WriteOffReport that = (WriteOffReport) o;
+            return vin.equals(that.vin) &&
+                    writtenOff.equals(that.writtenOff) &&
+                    message.equals(that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(vin, writtenOff, message);
         }
     }
 }

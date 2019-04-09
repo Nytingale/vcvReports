@@ -1,6 +1,8 @@
 package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Claim;
+import com.vcv.backend.entities.Company;
+import com.vcv.backend.exceptions.ClaimServiceException;
 import com.vcv.backend.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,10 +13,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ClaimView implements Serializable {
-    @Autowired private CompanyRepository companyRepository;
-
     private String claimNumber;
     private String company;
     private String type;
@@ -46,12 +47,12 @@ public class ClaimView implements Serializable {
     }
 
     public ClaimView() {}
-    public ClaimView build(Claim claim) {
+    public ClaimView build(Claim claim, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
         ClaimView view = new ClaimView();
 
         view.claimNumber = claim.getClaimNumber();
-        view.company = companyRepository.findById(claim.getCompanyId()).get().getCompanyName();
+        view.company = insuranceCompany.getCompanyName();
         view.type = claim.getClaimType().toString();
         view.date = LocalDate.ofInstant(claim.getClaimDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
         view.details = claim.getClaimDetails();
@@ -60,14 +61,33 @@ public class ClaimView implements Serializable {
 
         return view;
     }
-    public List<ClaimView> build(List<Claim> claims) {
+    public List<ClaimView> build(List<Claim> claims, Company insuranceCompany) {
         List<ClaimView> views = new ArrayList<>();
 
         for(Claim claim: claims) {
-            ClaimView view = new ClaimView().build(claim);
+            ClaimView view = new ClaimView().build(claim, insuranceCompany);
             views.add(view);
         }
 
         return views;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ClaimView)) return false;
+        ClaimView claimView = (ClaimView) o;
+        return claimNumber.equals(claimView.claimNumber) &&
+                company.equals(claimView.company) &&
+                type.equals(claimView.type) &&
+                date.equals(claimView.date) &&
+                details.equals(claimView.details) &&
+                policyNumber.equals(claimView.policyNumber) &&
+                vin.equals(claimView.vin);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(claimNumber, company, type, date, details, policyNumber, vin);
     }
 }

@@ -1,10 +1,10 @@
 package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Claim;
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.Job;
 import com.vcv.backend.entities.Vehicle;
-import com.vcv.backend.repositories.CompanyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vcv.backend.exceptions.VehicleServiceException;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -13,10 +13,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class VehicleView implements Serializable {
-    @Autowired private CompanyRepository companyRepository;
-
     private String vin;
     private Integer year;
     private String make;
@@ -132,7 +131,7 @@ public class VehicleView implements Serializable {
     }
 
     public VehicleView() {}
-    public VehicleView build(Vehicle vehicle) {
+    public VehicleView build(Vehicle vehicle, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
         VehicleView view = new VehicleView();
 
@@ -162,20 +161,72 @@ public class VehicleView implements Serializable {
         view.numSalvages = vehicle.getNumSalvages();
         view.numServices = vehicle.getNumServices();
         view.numOwners = vehicle.getNumOwners();
-        view.insurance = companyRepository.findById(vehicle.getInsuranceId()).get().getCompanyName();
+        view.insurance = insuranceCompany != null ? insuranceCompany.getCompanyName(): null;
         view.policyNumber = vehicle.getPolicyNumber();
 
         return view;
     }
-    public List<VehicleView> build(List<Vehicle> vehicles) {
+    public List<VehicleView> build(List<Vehicle> vehicles, Company insuranceCompany) {
         List<VehicleView> views = new ArrayList<>();
 
         for(Vehicle vehicle: vehicles) {
-            VehicleView view = new VehicleView().build(vehicle);
+            VehicleView view = new VehicleView().build(vehicle, insuranceCompany);
             views.add(view);
         }
 
         return views;
+    }
+    public List<VehicleView> build(List<Vehicle> vehicles, List<Company> insuranceCompanies) {
+        List<VehicleView> views = new ArrayList<>();
+
+        for(int x=0; x<vehicles.size(); x++) {
+            Vehicle vehicle = vehicles.get(x);
+            Company insuranceCompany = insuranceCompanies.get(x);
+            VehicleView view = new VehicleView().build(vehicle, insuranceCompany);
+            views.add(view);
+        }
+
+        return views;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VehicleView)) return false;
+        VehicleView that = (VehicleView) o;
+        return vin.equals(that.vin) &&
+                year.equals(that.year) &&
+                make.equals(that.make) &&
+                model.equals(that.model) &&
+                Objects.equals(colour, that.colour) &&
+                value.equals(that.value) &&
+                dealership.equals(that.dealership) &&
+                evaluationDate.equals(that.evaluationDate) &&
+                registrationDate.equals(that.registrationDate) &&
+                Objects.equals(manufacturer, that.manufacturer) &&
+                Objects.equals(transmission, that.transmission) &&
+                Objects.equals(fuelType, that.fuelType) &&
+                Objects.equals(steering, that.steering) &&
+                Objects.equals(mileage, that.mileage) &&
+                Objects.equals(engine, that.engine) &&
+                Objects.equals(drive, that.drive) &&
+                Objects.equals(body, that.body) &&
+                Objects.equals(numDoors, that.numDoors) &&
+                Objects.equals(numSeats, that.numSeats) &&
+                writtenOff.equals(that.writtenOff) &&
+                stolen.equals(that.stolen) &&
+                numAccidents.equals(that.numAccidents) &&
+                numRobberies.equals(that.numRobberies) &&
+                numSalvages.equals(that.numSalvages) &&
+                numServices.equals(that.numServices) &&
+                numOwners.equals(that.numOwners) &&
+                Objects.equals(insurance, that.insurance) &&
+                Objects.equals(policyNumber, that.policyNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(vin, year, make, model, colour, value, dealership, evaluationDate, registrationDate, manufacturer, transmission, fuelType, steering, mileage, engine, drive, body, numDoors, numSeats, writtenOff, stolen, numAccidents, numRobberies, numSalvages, numServices, numOwners, insurance, policyNumber);
     }
 
     public static class BasicReport implements Serializable {
@@ -208,7 +259,7 @@ public class VehicleView implements Serializable {
         public BasicReport() {}
         public BasicReport build(Vehicle vehicle) {
             BasicReport view = new BasicReport();
-            VehicleView vehicleView = new VehicleView().build(vehicle);
+            VehicleView vehicleView = new VehicleView().build(vehicle, null);
 
             view.vin = vehicleView.vin;
             view.year = vehicleView.year;
@@ -218,6 +269,24 @@ public class VehicleView implements Serializable {
             view.manufacturer = vehicleView.manufacturer;
 
             return view;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof BasicReport)) return false;
+            BasicReport that = (BasicReport) o;
+            return vin.equals(that.vin) &&
+                    year.equals(that.year) &&
+                    make.equals(that.make) &&
+                    model.equals(that.model) &&
+                    Objects.equals(colour, that.colour) &&
+                    Objects.equals(manufacturer, that.manufacturer);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(vin, year, make, model, colour, manufacturer);
         }
     }
     public static class FullReport implements Serializable {
@@ -236,14 +305,29 @@ public class VehicleView implements Serializable {
         }
 
         public FullReport() {}
-        public FullReport build(Vehicle vehicle, List<Claim> claims, List<Job> jobs) {
+        public FullReport build(Vehicle vehicle, Company insuranceCompany, List<Job> jobs, List<Company> garageCompanies, List<Claim> claims) throws VehicleServiceException {
             FullReport view = new FullReport();
 
-            view.vehicle = new VehicleView().build(vehicle);
-            view.claims = new ClaimView().build(claims);
-            view.jobs = new JobView().build(jobs);
+            view.vehicle = new VehicleView().build(vehicle, insuranceCompany);
+            view.claims = new ClaimView().build(claims, insuranceCompany);
+            view.jobs = new JobView().build(jobs, garageCompanies, insuranceCompany);
 
             return view;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof FullReport)) return false;
+            FullReport that = (FullReport) o;
+            return vehicle.equals(that.vehicle) &&
+                    claims.equals(that.claims) &&
+                    jobs.equals(that.jobs);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(vehicle, claims, jobs);
         }
     }
 }

@@ -1,16 +1,13 @@
 package com.vcv.backend.utilities;
 
-import com.google.common.base.CaseFormat;
 import com.vcv.backend.entities.*;
 import com.vcv.backend.enums.CompanyType;
-
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Utils {
     private Utils() {

@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,9 @@ public class UserService implements UserDetailsService {
 
         Optional<User> user = userRepository.findById(email);
         if(user.isPresent()) {
-            return new UserView().build(user.get());
+            Optional<Company> company = companyRepository.findById(user.get().getCompanyId());
+            if(company.isPresent()) return new UserView().build(user.get(), company.get());
+            else throw new UserServiceException("Error 400: searchForUser(vcv, email) returned null");
         } else throw new UserServiceException("Error 400: searchForUser(vcv, email) returned null");
     }
 
@@ -46,8 +49,14 @@ public class UserService implements UserDetailsService {
 
         // Second, Find the Clients to Return
         List<User> users = (List<User>) userRepository.findAll();
-        if(users.isEmpty()) throw new UserServiceException("Error 400: getUsers(vcv) returned null");
-        return new UserView().build(users);
+        if(!users.isEmpty()) {
+            List<Company> companies = new ArrayList<>();
+            for(User user: users) {
+                companyRepository.findById(user.getCompanyId()).ifPresent(companies::add);
+            }
+
+            return new UserView().build(users, companies);
+        } else throw new UserServiceException("Error 400: getUsers(vcv) returned null");
     }
 
 
@@ -182,7 +191,7 @@ public class UserService implements UserDetailsService {
         } else throw new UserServiceException("Error 400: getEmployees(admin) has returned null");
 
         List<User> employees = userRepository.findByCompanyId(admin.getCompanyId());
-        if(!employees.isEmpty()) return new UserView().build(employees);
+        if(!employees.isEmpty()) return new UserView().build(employees, company.get());
         else throw new UserServiceException("Error 400: findByEmail(email, company) returned null");
     }
 

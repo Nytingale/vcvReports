@@ -26,9 +26,9 @@ public class JobService {
 
     /* Portal (Mechanics/Garages) */
     public List<JobView> getMechanicJobs(String garage) throws JobServiceException {
-        Company company = companyRepository.findByCompanyName(garage);
-        List<Job> jobs = jobRepository.findByCompanyIdOrderByIdDesc(company.getId());
-        if(jobs.isEmpty()) return new JobView().build(jobs);
+        Company garageCompany = companyRepository.findByCompanyName(garage);
+        List<Job> jobs = jobRepository.findByCompanyIdOrderByIdDesc(garageCompany.getId());
+        if(jobs.isEmpty()) return new JobView().build(jobs, garageCompany, null);
         else throw new JobServiceException("Error 200: getMechanicJobs(garage) returned null");
     }
 

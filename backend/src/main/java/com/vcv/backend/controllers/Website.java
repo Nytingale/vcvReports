@@ -12,9 +12,6 @@ import java.util.List;
 
 @RestController
 public class Website {
-    @Autowired private JobService         jobService;
-    @Autowired private UserService       userService;
-    @Autowired private ClaimService     claimService;
     @Autowired private CompanyService companyService;
     @Autowired private VehicleService vehicleService;
 
@@ -40,9 +37,9 @@ public class Website {
             String validMake = Utils.isValidString(make);
             String validModel = Utils.isValidString(model);
             if(validVin != null && validYear == null && validMake == null && validModel == null) {
-                return new VehicleView.BasicReport().build(vehicleService.getVehicle(validVin));
+                return vehicleService.getBasicVehicleReport(validVin);
             } else if(validVin == null && validYear != null && validMake != null && validModel != null) {
-                return new VehicleView.BasicReport().build(vehicleService.getVehicle(validYear, make, model));
+                return vehicleService.getBasicVehicleReport(validYear, make, model);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -55,12 +52,7 @@ public class Website {
         try {
             String validVin = Utils.isValidVin(vin);
             if(validVin != null) {
-                Vehicle vehicle = vehicleService.getVehicle(validVin);
-                List<Claim> claims = claimService.getClaims(validVin);
-                List<Job> jobs = jobService.getJobs(validVin);
-                return new VehicleView
-                        .FullReport()
-                        .build(vehicle, claims, jobs);
+                return vehicleService.getFullVehicleReport(validVin);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();

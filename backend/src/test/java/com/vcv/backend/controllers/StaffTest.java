@@ -3,6 +3,7 @@ package com.vcv.backend.controllers;
 import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.User;
 import com.vcv.backend.enums.CompanyType;
+import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.UserRepository;
 
@@ -57,7 +58,9 @@ public class StaffTest {
     User testClient;
     User nonAdminEmployee;
     Company testCompany;
+
     List<User> testUsers;
+    List<Company> testCompanies;
 
     User newEmployee = new User.Builder()
             .setEmail("TestEmail@email.com")
@@ -104,16 +107,22 @@ public class StaffTest {
         testClient = userRepository.findById(clientString).get();
         nonAdminEmployee = userRepository.findByEmailAndCompanyId(nonAdminEmailString, 2L);
         testCompany = companyRepository.findById(3L).get();
+
         testUsers = (List<User>) userRepository.findAll();
+
+        testCompanies = new ArrayList<>();
+        for(User testUser: testUsers) {
+            companyRepository.findById(testUser.getCompanyId()).ifPresent(testCompanies::add);
+        }
 
         baseURL = "http://localhost:" + port + "/vcv/staff";
     }
 
     @Test
-    public void canGetUsers() throws URISyntaxException {
+    public void canGetUsers() throws URISyntaxException, UserServiceException {
         URI uri = new URI(baseURL + "/getUsers");
         ResponseEntity<UserViewList> response = restTemplate.postForEntity(uri, vcvStaff, UserViewList.class);
-        assertThat(response.getBody().getUserViews()).isEqualTo(new UserView().build(testUsers));
+        assertThat(response.getBody().getUserViews().equals(new UserView().build(testUsers, testCompanies))).isTrue();
     }
 
     @Test
@@ -122,7 +131,7 @@ public class StaffTest {
         stringUserMap.put("Employee", nonAdminEmployee);
         URI uri = new URI(baseURL + "/changeAdmin");
         ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringUserMap, MessageView.UserReport.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView.UserReport().build(nonAdminEmployee,"Successfully Changed Company Admins"));
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(nonAdminEmployee,"Successfully Changed Company Admins"))).isTrue();
     }
 
     @Test
@@ -131,7 +140,7 @@ public class StaffTest {
         stringObjectMap.put("Client", clientString);
         URI uri = new URI(baseURL + "/searchForUser");
         ResponseEntity<UserView> response = restTemplate.postForEntity(uri, stringObjectMap, UserView.class);
-        assertThat(response.getBody()).isEqualTo(new UserView().build(testClient));
+        assertThat(response.getBody().equals(new UserView().build(testClient, testCompany))).isTrue();
     }
 
     @Test
@@ -140,7 +149,7 @@ public class StaffTest {
         stringObjectMap.put("Company", companyString);
         URI uri = new URI(baseURL + "/searchForCompany");
         ResponseEntity<CompanyView> response = restTemplate.postForEntity(uri, stringObjectMap, CompanyView.class);
-        assertThat(response.getBody()).isEqualTo(new CompanyView().build(testCompany));
+        assertThat(response.getBody().equals(new CompanyView().build(testCompany))).isTrue();
     }
 
     @Test
@@ -149,7 +158,7 @@ public class StaffTest {
         stringUserMap.put("Employee", newEmployee);
         URI uri = new URI(baseURL + "/addEmployee");
         ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringUserMap, MessageView.UserReport.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView.UserReport().build(newEmployee, "Successfully Added new Employee to the Company"));
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(newEmployee, "Successfully Added new Employee to the Company"))).isTrue();
     }
 
     @Test
@@ -159,7 +168,7 @@ public class StaffTest {
         stringObjectMap.put("Company", newCompany);
         URI uri = new URI(baseURL + "/registerCompany");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.CompanyReport.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(newCompany, "Successfully Created Company"));
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(newCompany, "Successfully Created Company"))).isTrue();
     }
 
     @Test
@@ -168,7 +177,7 @@ public class StaffTest {
         stringObjectMap.put("Company", companyString);
         URI uri = new URI(baseURL + "/blacklistCompany");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.CompanyReport.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(testCompany, "Successfully Blacklisted Company"));
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany, "Successfully Blacklisted Company"))).isTrue();
     }
 
     @Test
@@ -177,7 +186,7 @@ public class StaffTest {
         stringObjectMap.put("Company", companyString);
         URI uri = new URI(baseURL + "/approveCompany");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.CompanyReport.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(testCompany, "Successfully Approved Company"));
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany, "Successfully Approved Company"))).isTrue();
     }
 
     @Test
@@ -186,6 +195,6 @@ public class StaffTest {
         stringObjectMap.put("New Password", newPasswordString);
         URI uri = new URI(baseURL + "/changePassword");
         ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.UserReport.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView.UserReport().build(vcvStaff, "Successfully Changed Password"));
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(vcvStaff, "Successfully Changed Password"))).isTrue();
     }
 }

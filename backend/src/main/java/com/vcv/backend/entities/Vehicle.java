@@ -17,9 +17,9 @@ public class Vehicle {
     private String manufacturer;
     private String engine;
     private String colour;
-    private String dealership;
     private Integer mileage;
     private Integer value;
+    private String dealership;
     private Timestamp evaluationDate;
     private Timestamp registrationDate;
     private String transmission;
@@ -63,9 +63,6 @@ public class Vehicle {
     public Integer getMileage() {
         return mileage;
     }
-    public String getDealership() {
-        return dealership;
-    }
     public String getTransmission() {
         return transmission;
     }
@@ -89,6 +86,9 @@ public class Vehicle {
     }
     public Integer getValue() {
         return value;
+    }
+    public String getDealership() {
+        return dealership;
     }
     public Boolean isWrittenOff() {
         return writtenOff;
@@ -151,6 +151,9 @@ public class Vehicle {
     public void setTransmission(String transmission) {
         this.transmission = transmission;
     }
+    public void setDealership(String dealership) {
+        this.dealership = dealership;
+    }
     public void setFuelType(String fuelType) {
         this.fuelType = fuelType;
     }
@@ -168,9 +171,6 @@ public class Vehicle {
     }
     public void setNumDoors(Integer numDoors) {
         this.numDoors = numDoors;
-    }
-    public void setDealership(String dealership) {
-        this.dealership = dealership;
     }
     public void setValue(Integer value) {
         this.value = value;
@@ -220,7 +220,6 @@ public class Vehicle {
                 engine,
                 colour,
                 mileage,
-                dealership,
                 value,
                 evaluationDate,
                 registrationDate,
@@ -238,8 +237,9 @@ public class Vehicle {
                 numSalvages,
                 numServices,
                 numOwners,
-                insuranceId,
-                policyNumber);
+                policyNumber,
+                dealership,
+                insuranceId);
     }
 
     @Override
@@ -270,11 +270,11 @@ public class Vehicle {
                 numSeats.equals(vehicle.numSeats) &&
                 numDoors.equals(vehicle.numDoors) &&
                 transmission.equals(vehicle.transmission) &&
-                dealership.equals(vehicle.dealership) &&
                 evaluationDate.equals(vehicle.evaluationDate) &&
                 registrationDate.equals(vehicle.registrationDate) &&
-                insuranceId.equals(vehicle.insuranceId) &&
-                policyNumber.equals(vehicle.policyNumber);
+                policyNumber.equals(vehicle.policyNumber) &&
+                dealership.equals(vehicle.dealership) &&
+                insuranceId.equals(vehicle.insuranceId);
     }
 
     public static class Builder {

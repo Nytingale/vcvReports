@@ -97,7 +97,7 @@ CREATE TABLE `vehicle`(
     `colour` VARCHAR(64),
     `value` INT NOT NULL,
     `mileage` INT,
-    `dealership` VARCHAR(64) NOT NULL,
+    `dealership` BIGINT NOT NULL,
     `manufacturer` VARCHAR(64),
     `transmission` VARCHAR(64),
     `fuel_type` VARCHAR(64),

@@ -1,6 +1,8 @@
 package com.vcv.backend.views;
 
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.User;
+import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,10 +11,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserView implements Serializable {
-    @Autowired private CompanyRepository companyRepository;
-
     private String email;
     private String company;
     private String password;
@@ -32,12 +33,11 @@ public class UserView implements Serializable {
     }
 
     public UserView() {}
-    public UserView build(User user) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
+    public UserView build(User user, Company userCompany) {
         UserView view = new UserView();
 
         view.email = user.getEmail();
-        view.company = companyRepository.findById(user.getCompanyId()).get().getCompanyName();;
+        view.company = userCompany.getCompanyName();
         view.password = user.getPassword();
 
         if(user.getRoleId() == 1L) view.role = "User";
@@ -47,14 +47,46 @@ public class UserView implements Serializable {
 
         return view;
     }
-    public List<UserView> build(List<User> users) {
+    public List<UserView> build(List<User> users, Company company) {
         List<UserView> views = new ArrayList<>();
 
         for(User user: users) {
-            UserView view = new UserView().build(user);
+            UserView view = new UserView().build(user, company);
             views.add(view);
         }
 
         return views;
+    }
+    public List<UserView> build(List<User> users, List<Company> companies) throws UserServiceException {
+        List<UserView> views = new ArrayList<>();
+
+        if(users.size() != companies.size()) {
+            throw new UserServiceException("build(List<User>, List<Company>) does not have equal Lists");
+        }
+
+        for(int x=0; x<users.size(); x++) {
+            User user = users.get(x);
+            Company company = companies.get(x);
+            UserView view = new UserView().build(user, company);
+            views.add(view);
+        }
+
+        return views;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserView)) return false;
+        UserView userView = (UserView) o;
+        return email.equals(userView.email) &&
+                company.equals(userView.company) &&
+                password.equals(userView.password) &&
+                role.equals(userView.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, company, password, role);
     }
 }

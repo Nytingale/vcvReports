@@ -2,6 +2,7 @@ package com.vcv.backend.controllers;
 
 import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.User;
+import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.UserRepository;
 import com.vcv.backend.views.MessageView;
@@ -48,7 +49,9 @@ public class AdminTest {
 
     User admin;
     Company company;
+
     List<User> testUsers;
+    List<Company> testCompanies;
 
     public class UserViewList {
         List<UserView> userViews;
@@ -67,28 +70,32 @@ public class AdminTest {
         company = companyRepository.findById(2L).get();
         testUsers = userRepository.findByCompanyId(2L);
 
+        for(User testUser: testUsers) {
+            companyRepository.findById(testUser.getCompanyId()).ifPresent(testCompanies::add);
+        }
+
         baseURL = "http://localhost:" + port + "/vcv/admin";
     }
 
     @Test
-    public void canGetEmployees() throws URISyntaxException {
+    public void canGetEmployees() throws URISyntaxException, UserServiceException {
         URI uri = new URI(baseURL + "/getEmployees");
         ResponseEntity<UserViewList> response = restTemplate.postForEntity(uri, admin, UserViewList.class);
-        assertThat(response.getBody().getUserViews()).isEqualTo(new UserView().build(testUsers));
+        assertThat(response.getBody().getUserViews().equals(new UserView().build(testUsers, testCompanies))).isTrue();
     }
 
     @Test
     public void canCancelSubscription() throws URISyntaxException {
         URI uri = new URI(baseURL + "/cancelSubscription");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, admin, MessageView.CompanyReport.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(company, "Successfully Cancelled Subscription"));
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(company, "Successfully Cancelled Subscription"))).isTrue();
     }
 
     @Test
     public void canRenewSubscription() throws URISyntaxException {
         URI uri = new URI(baseURL + "/renewSubscription");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, admin, MessageView.CompanyReport.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView.CompanyReport().build(company, "Successfully Renewed Subscription"));
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(company, "Successfully Renewed Subscription"))).isTrue();
     }
 
     @Test
@@ -97,8 +104,8 @@ public class AdminTest {
         stringObjectMap.put("Email", emailString);
         URI uri = new URI(baseURL + "/resetPassword");
         ResponseEntity<MessageView> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.class);
-        assertThat(response.getBody()).isEqualTo(new MessageView().build(emailString + "'s Password has been Successfully Reset. The next time they attempt " +
-                "to login, they will be prompted to Enter a new Password"));
+        assertThat(response.getBody().equals(new MessageView().build(emailString + "'s Password has been Successfully Reset. The next time they attempt " +
+                "to login, they will be prompted to Enter a new Password"))).isTrue();
     }
 
     @Test
@@ -112,7 +119,7 @@ public class AdminTest {
             stringObjectMap.put("Image", image);
             URI uri = new URI(baseURL + "/uploadImage");
             ResponseEntity<MessageView.FileUpload> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.FileUpload.class);
-            assertThat(response.getBody()).isEqualTo(new MessageView.FileUpload().build(image, company.getCompanyName(), "Successfully Uploaded Image"));
+            assertThat(response.getBody().equals(new MessageView.FileUpload().build(image, company.getCompanyName(), "Successfully Uploaded Image"))).isTrue();
         } catch (Exception e) {
             e.printStackTrace();
         }

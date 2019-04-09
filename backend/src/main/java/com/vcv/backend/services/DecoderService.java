@@ -41,16 +41,35 @@ public class DecoderService {
                         String label = jsonObject.getString("label");
 
                         switch(label) {
-                           case "Transmission (full)":       vehicle.setTransmission(String.valueOf(jsonObject.get("value")));
-                           case "Manufacturer":              vehicle.setManufacturer(String.valueOf(jsonObject.get("value")));
-                           case "Fuel Type - Primary":       vehicle.setFuelType(String.valueOf(jsonObject.get("value")));
-                           case "Steering":                  vehicle.setSteering(String.valueOf(jsonObject.get("value")));
-                           case "Engine Displacement (ccm)": vehicle.setEngine(String.valueOf(jsonObject.get("value")));
-                           case "Drive":                     vehicle.setDrive(String.valueOf(jsonObject.get("value")));
-                           case "Body":                      vehicle.setBody(String.valueOf(jsonObject.get("value")));
-                           case "Number of Seats":           vehicle.setNumSeats(Integer.valueOf(String.valueOf(jsonObject.get("value"))));
-                           case "Number of Doors":           vehicle.setNumDoors(Integer.valueOf(String.valueOf(jsonObject.get("value"))));
-                           default:                          break;
+                           case "Transmission (full)":
+                               vehicle.setTransmission(String.valueOf(jsonObject.get("value")));
+                               break;
+                           case "Manufacturer":
+                               vehicle.setManufacturer(String.valueOf(jsonObject.get("value")));
+                               break;
+                           case "Fuel Type - Primary":
+                               vehicle.setFuelType(String.valueOf(jsonObject.get("value")));
+                               break;
+                           case "Steering":
+                               vehicle.setSteering(String.valueOf(jsonObject.get("value")));
+                               break;
+                           case "Engine Displacement (ccm)":
+                               vehicle.setEngine(String.valueOf(jsonObject.get("value")));
+                               break;
+                           case "Drive":
+                               vehicle.setDrive(String.valueOf(jsonObject.get("value")));
+                               break;
+                           case "Body":
+                               vehicle.setBody(String.valueOf(jsonObject.get("value")));
+                               break;
+                           case "Number of Seats":
+                               vehicle.setNumSeats(Integer.valueOf(String.valueOf(jsonObject.get("value"))));
+                               break;
+                           case "Number of Doors":
+                               vehicle.setNumDoors(Integer.valueOf(String.valueOf(jsonObject.get("value"))));
+                               break;
+                           default:
+                               break;
                         }
                     }
 

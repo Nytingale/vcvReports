@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CompanyView implements Serializable {
     private String name;
@@ -70,5 +71,25 @@ public class CompanyView implements Serializable {
         }
 
         return views;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CompanyView)) return false;
+        CompanyView that = (CompanyView) o;
+        return name.equals(that.name) &&
+                type.equals(that.type) &&
+                subscriptionStartDate.equals(that.subscriptionStartDate) &&
+                subscriptionEndDate.equals(that.subscriptionEndDate) &&
+                blacklisted.equals(that.blacklisted) &&
+                warning.equals(that.warning) &&
+                website.equals(that.website) &&
+                valid.equals(that.valid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type, subscriptionStartDate, subscriptionEndDate, blacklisted, warning, website, valid);
     }
 }

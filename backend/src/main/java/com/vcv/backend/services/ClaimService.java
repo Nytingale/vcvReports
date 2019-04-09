@@ -28,7 +28,7 @@ public class ClaimService {
     public List<ClaimView> getInsuranceClaims(String insurance) throws ClaimServiceException {
         Company company = companyRepository.findByCompanyName(insurance);
         List<Claim> claims = claimRepository.findByCompanyIdOrderByClaimDateDesc(company.getId());
-        if(!claims.isEmpty()) return new ClaimView().build(claims);
+        if(!claims.isEmpty()) return new ClaimView().build(claims, company);
         else throw new ClaimServiceException("Error 100: getInsuranceClaims(insurance) returned null");
     }
 
