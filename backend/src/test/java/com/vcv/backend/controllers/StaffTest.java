@@ -64,7 +64,13 @@ public class StaffTest {
         testCompany.setVcv(companyRepository.findById(1L).get());
         testCompany.setCompany(companyRepository.findById(3L).get());
         testCompany.setCompanyString("Trident_Insurance");
-        testCompany.setCompanies((List<Company>) companyRepository.findAllById(testUser.getUsers().stream().map(user -> user.getCompanyId()).collect(Collectors.toList())));
+        testCompany.setCompanies(
+                testUser.getUsers().stream()
+                .map(u -> companyRepository.findById(u.getCompanyId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList())
+        );
 
         baseURL += port + "/vcv/staff";
     }
@@ -78,11 +84,6 @@ public class StaffTest {
 
     @Test
     public void canChangeAdmin() throws URISyntaxException {
-        testUser.getAdmin().setRoleId(2L);
-        testUser.getStaff().setRoleId(1L);
-        userRepository.save(testUser.getAdmin());
-        userRepository.save(testUser.getStaff());
-
         RequestWrapper.Employee map = new RequestWrapper.Employee();
         map.setAdmin(testUser.getAdmin());
         map.setEmployee(testUser.getStaff());
@@ -144,9 +145,6 @@ public class StaffTest {
 
     @Test
     public void canBlacklistCompany() throws URISyntaxException {
-        testCompany.getCompany().setValid(false);
-        companyRepository.save(testCompany.getCompany());
-
         RequestWrapper.Admin map = new RequestWrapper.Admin();
         map.setAdmin(testUser.getVcv());
         map.setDetails(testCompany.getCompanyString());
@@ -160,9 +158,6 @@ public class StaffTest {
 
     @Test
     public void canApproveCompany() throws URISyntaxException {
-        testCompany.getCompany().setValid(true);
-        companyRepository.save(testCompany.getCompany());
-
         RequestWrapper.Admin map = new RequestWrapper.Admin();
         map.setAdmin(testUser.getVcv());
         map.setDetails(testCompany.getCompanyString());
@@ -176,9 +171,6 @@ public class StaffTest {
 
     @Test
     public void canChangePassword() throws URISyntaxException {
-        testUser.getVcv().setPassword(testUser.getOldPassword());
-        userRepository.save(testUser.getVcv());
-
         RequestWrapper.Admin map = new RequestWrapper.Admin();
         map.setAdmin(testUser.getVcv());
         map.setDetails(testUser.getNewPassword());
