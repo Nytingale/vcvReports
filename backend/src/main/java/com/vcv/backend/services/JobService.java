@@ -28,7 +28,7 @@ public class JobService {
     public List<JobView> getMechanicJobs(String garage) throws JobServiceException {
         Company garageCompany = companyRepository.findByCompanyName(garage);
         List<Job> jobs = jobRepository.findByCompanyIdOrderByIdDesc(garageCompany.getId());
-        if(jobs.isEmpty()) return new JobView().build(jobs, garageCompany, null);
+        if(!jobs.isEmpty()) return new JobView().build(jobs, garageCompany, null);
         else throw new JobServiceException("Error 200: getMechanicJobs(garage) returned null");
     }
 

@@ -40,7 +40,7 @@ public class PolicyService {
 
         // Third, Check whether this VIN Exists on Another Policy and if so, Update to the Latter Policy as Valid
         policyDB = policyRepository.findByVinAndValid(vehicle.get().getVin(), true);
-        if(policyDB.getVin().equals(vehicle.get().getVin())) {
+        if(policyDB != null && policyDB.getVin().equals(vehicle.get().getVin())) {
             policy.setValid(true);
             policyDB.setValid(false);
         }

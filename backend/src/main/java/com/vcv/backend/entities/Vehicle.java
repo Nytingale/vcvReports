@@ -29,6 +29,7 @@ public class Vehicle {
     private String body;
     private Integer numSeats;
     private Integer numDoors;
+    private Boolean decoded;
     private Boolean writtenOff;
     private Boolean stolen;
     private Integer numAccidents;
@@ -89,6 +90,9 @@ public class Vehicle {
     }
     public String getDealership() {
         return dealership;
+    }
+    public Boolean isDecoded() {
+        return decoded;
     }
     public Boolean isWrittenOff() {
         return writtenOff;
@@ -178,6 +182,9 @@ public class Vehicle {
     public void setWrittenOff(Boolean writtenOff) {
         this.writtenOff = writtenOff;
     }
+    public void setDecoded(Boolean decoded) {
+        this.decoded = decoded;
+    }
     public void setStolen(Boolean stolen) {
         this.stolen = stolen;
     }
@@ -231,6 +238,7 @@ public class Vehicle {
                 numSeats,
                 numDoors,
                 writtenOff,
+                decoded,
                 stolen,
                 numAccidents,
                 numRobberies,
@@ -250,6 +258,7 @@ public class Vehicle {
         return year.equals(vehicle.year) &&
                 value.equals(vehicle.value) &&
                 writtenOff == vehicle.writtenOff &&
+                decoded == vehicle.decoded &&
                 stolen == vehicle.stolen &&
                 numAccidents.equals(vehicle.numAccidents) &&
                 numRobberies.equals(vehicle.numRobberies) &&
@@ -297,6 +306,7 @@ public class Vehicle {
         private String body;
         private Integer seats;
         private Integer doors;
+        private Boolean decoded;
         private Boolean writtenOff;
         private Boolean stolen;
         private Integer numAccidents;
@@ -383,6 +393,10 @@ public class Vehicle {
             this.doors = doors;
             return this;
         }
+        public Builder setDecoded(Boolean decoded) {
+            this.decoded = decoded;
+            return this;
+        }
         public Builder setWrittenOff(Boolean writtenOff) {
             this.writtenOff = writtenOff;
             return this;
@@ -442,6 +456,7 @@ public class Vehicle {
             vehicle.setBody(this.body);
             vehicle.setNumSeats(this.seats);
             vehicle.setNumDoors(this.doors);
+            vehicle.setDecoded(this.decoded);
             vehicle.setWrittenOff(this.writtenOff);
             vehicle.setStolen(this.stolen);
             vehicle.setNumAccidents(this.numAccidents);

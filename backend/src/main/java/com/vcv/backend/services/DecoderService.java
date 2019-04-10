@@ -21,18 +21,20 @@ public class DecoderService {
     @Autowired private VinDecoderConfig vinDecoderConfig;
 
     Vehicle updateVehicle(Vehicle vehicle) throws DecoderServiceException {
-        if(vehicle.getManufacturer() == null ||
-                vehicle.getTransmission() == null ||
-                vehicle.getFuelType() == null ||
-                vehicle.getSteering() == null ||
-                vehicle.getColour() == null ||
-                vehicle.getEngine() == null ||
-                vehicle.getDrive() == null ||
-                vehicle.getNumSeats() == null ||
-                vehicle.getBody() == null ||
-                vehicle.getNumDoors() == null) {
+        if(vehicle.isDecoded() == false &&
+                (vehicle.getManufacturer() == null ||
+                        vehicle.getTransmission() == null ||
+                        vehicle.getFuelType() == null ||
+                        vehicle.getSteering() == null ||
+                        vehicle.getNumSeats() == null ||
+                        vehicle.getNumDoors() == null ||
+                        vehicle.getColour() == null ||
+                        vehicle.getEngine() == null ||
+                        vehicle.getDrive() == null ||
+                        vehicle.getBody() == null)) {
             JSONArray labels = check(vehicle.getVin());
             if(!labels.isEmpty()) {
+                vehicle.setDecoded(true);
                 JSONArray values = decode(vehicle.getVin());
                 if(labels.length() == values.length()) {
                     for(int x = 0; x < values.length(); x++) {
@@ -72,11 +74,11 @@ public class DecoderService {
                                break;
                         }
                     }
+                }
+            }
+        }
 
-                    return vehicle;
-                } else throw new DecoderServiceException("Error 710: updateVehicle(vehicle) has found a difference in length of VIN Information versus what is Available");
-            } else return vehicle;
-        } else return vehicle;
+        return vehicle;
     }
 
     List<Vehicle> updateVehicles(List<Vehicle> vehicles) throws DecoderServiceException {

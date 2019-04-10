@@ -1,5 +1,7 @@
 package com.vcv.backend.controllers;
 
+import com.vcv.backend.data.TestCompany;
+import com.vcv.backend.data.TestVehicle;
 import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.repositories.CompanyRepository;
@@ -37,55 +39,35 @@ public class DealershipTest {
     @Autowired private UserRepository userRepository;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private VehicleRepository vehicleRepository;
+    
+    private TestCompany testCompany = new TestCompany();
+    private TestVehicle testVehicle = new TestVehicle();
 
-    String dealershipString = "MQI";
-
-    String baseURL;
-
-    Company testInsuranceCompany;
-
-    List<Vehicle> testVehicles;
-
-    Vehicle newVehicle = new Vehicle.Builder()
-            .setVin("JMYSTC3A4U000993")
-            .setYear(2004)
-            .setMake("Mistubishi")
-            .setModel("Lancer")
-            .setValue(65000)
-            .setMileage(8500)
-            .setDealership("MQI")
-            .setEvaluationDate(Timestamp.valueOf(LocalDateTime.now()))
-            .setRegistrationDate(Timestamp.valueOf(LocalDateTime.now()))
-            .setNumAccidents(1)
-            .setNumRobberies(0)
-            .setNumSalvages(0)
-            .setNumServices(0)
-            .setNumOwners(1)
-            .setPolicyNumber("D78FDG785563")
-            .setInsuranceId(2L)
-            .build();
+    private String baseURL = "http://localhost:";
+    
 
     @Before
     public void setup() {
-        testVehicles = vehicleRepository.findByDealershipOrderByRegistrationDateDesc(dealershipString);
+        testVehicle.setVehicles(vehicleRepository.findByDealershipOrderByRegistrationDateDesc("MQI"));
+        testCompany.setInsurance(companyRepository.findById(2L).get());
+        testCompany.setInsuranceString("Trident_Insurance");
 
-        testInsuranceCompany = companyRepository.findById(2L).get();
-
-        baseURL = "http://localhost:" + port + "/vcv/dealership";
+        baseURL += port + "/vcv/dealership";
     }
 
     @Test
     public void canGetRegisteredVehicles() throws URISyntaxException {
-        URI uri = new URI(baseURL + "/getRegisteredVehicles?dealership=" + dealershipString);
+        URI uri = new URI(baseURL + "/getRegisteredVehicles?dealership=" + testVehicle.getNewVehicle().getDealership());
         ResponseEntity<VehicleView[]> response = restTemplate.getForEntity(uri, VehicleView[].class);
-        assertThat(Arrays.equals(response.getBody(), new VehicleView().build(testVehicles, testInsuranceCompany).toArray())).isTrue();
+        assertThat(Arrays.equals(response.getBody(), new VehicleView().build(testVehicle.getVehicles(), testCompany.getInsurance()).toArray())).isTrue();
     }
 
     @Test
     public void canRegisterVehicle() throws URISyntaxException {
         URI uri = new URI(baseURL + "/registerVehicle");
-        ResponseEntity<MessageView.Registration> response = restTemplate.postForEntity(uri, newVehicle, MessageView.Registration.class);
-        assertThat(response.getBody().equals(new MessageView.Registration().build(newVehicle, "Successfully Registered Vehicle"))).isTrue();
-        vehicleRepository.delete(newVehicle);
+        ResponseEntity<MessageView.Registration> response = restTemplate.postForEntity(uri, testVehicle.getNewVehicle(), MessageView.Registration.class);
+        assertThat(response.getBody().equals(new MessageView.Registration().build(testVehicle.getNewVehicle(), "Successfully Registered Vehicle"))).isTrue();
+
+        vehicleRepository.delete(testVehicle.getNewVehicle());
     }
 }

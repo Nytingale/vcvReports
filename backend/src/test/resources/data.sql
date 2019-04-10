@@ -22,12 +22,12 @@ INSERT INTO `user` VALUES
     ('Jane.Peralta@sagicor.com', 'e4rwg325qwsd',  0, 2, 6);
 
 INSERT INTO `vehicle` VALUES
-    ('MPATFS85HCT102885', 2012, 'Isuzu',  'D-Max',        null, 70000, 135000, 'MQI', null, null, null, null, null, null, null, 3, 2, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 1, 0, 3, 0, 1, 2, 'ABC123JKL789'),
-    ('JSZYA215195102215', 2009, 'Suzuki', 'SX4',          null, 12000, 110000, 'MQI', null, null, null, null, null, null, null, 3, 2, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 1, 0, 3, 0, 1, 2, 'ABC123JKL789'),
-    ('JN1CNUD22Z0003314', 2004, 'Nissan', 'Frontier',     null, 45500, 25000,  'MQI', null, null, null, null, null, null, null, 5, 5, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 2, 0, 3, 0, 4, 2, 'JUFOP48985K4'),
-    ('JF1SH9KT5AG032134', 2009, 'Subaru', 'Forrester',    null, 85000, 123550, 'MQI', null, null, null, null, null, null, null, 5, 5, 0, 1, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 0, 0, 6, 1, 1, 6, '4JMIYLE423SD'),
-    ('JSAFTD02V00200457', 2004, 'Suzuki', 'Grand Vitara', null, 12000, 234550, 'MQI', null, null, null, null, null, null, null, 5, 3, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 0, 1, 2, 0, 2, 2, 'DTGNKIGHG23S'),
-    ('JM0UFY0W500132109', 1998, 'Mazda',  'B2500',        null, 7000,  155625, 'MQI', null, null, null, null, null, null, null, 5, 5, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 1, 0, 0, 2, 1, 2, 'EDTHRT234BDF');
+    ('MPATFS85HCT102885', 2012, 'Isuzu',  'D-Max',        null, 70000, 135000, 'MQI', null, null, null, null, null, null, null, 3, 2, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 1, 0, 3, 0, 1, 2, 'ABC123JKL789', 0),
+    ('JSZYA215195102215', 2009, 'Suzuki', 'SX4',          null, 12000, 110000, 'MQI', null, null, null, null, null, null, null, 3, 2, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 1, 0, 3, 0, 1, 2, 'ABC123JKL789', 0),
+    ('JN1CNUD22Z0003314', 2004, 'Nissan', 'Frontier',     null, 45500, 25000,  'MQI', null, null, null, null, null, null, null, 5, 5, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 2, 0, 3, 0, 4, 2, 'JUFOP48985K4', 0),
+    ('JF1SH9KT5AG032134', 2009, 'Subaru', 'Forrester',    null, 85000, 123550, 'MQI', null, null, null, null, null, null, null, 5, 5, 0, 1, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 0, 0, 6, 1, 1, 6, '4JMIYLE423SD', 0),
+    ('JSAFTD02V00200457', 2004, 'Suzuki', 'Grand Vitara', null, 12000, 234550, 'MQI', null, null, null, null, null, null, null, 5, 3, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 0, 1, 2, 0, 2, 2, 'DTGNKIGHG23S', 0),
+    ('JM0UFY0W500132109', 1998, 'Mazda',  'B2500',        null, 7000,  155625, 'MQI', null, null, null, null, null, null, null, 5, 5, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 1, 0, 0, 2, 1, 2, 'EDTHRT234BDF', 0);
 
 INSERT INTO `policy` VALUES
     (2, 'ABC123JKL789', 'Frank Johnson',   'Third_Party',   '2015-06-25 00:00:00', 'Royal Bank of Canada',               1, 'MPATFS85HCT102885'),

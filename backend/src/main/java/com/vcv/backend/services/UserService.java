@@ -44,7 +44,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<UserView> getUsers(User vcv) throws UserServiceException {
-        // First, Confirm that the Admin is VCV Staff
+        // First, Confirm that the User is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new UserServiceException("Error 420: getUsers(vcv) has failed you for VCV Staff Authentication");
 
         // Second, Find the Clients to Return
@@ -96,19 +96,17 @@ public class UserService implements UserDetailsService {
         Company company = companyRepository.findById(employee.getCompanyId()).get();
         if(admin != null) {
 
-            // Third, Ensure the Admin and the Employee share the Same Company
-            if(!admin.getCompanyId().equals(employee.getCompanyId())) {
-                throw new UserServiceException("Error 425: changeAdmin(admin, employee) has identified the Admin and the Employee from two separate Companies");
-            }
+            // Third, Find the Admin and of the Employee's Company
+            User adminDB = userRepository.findByEmailAndCompanyId(company.getAdmin(), company.getId());
 
             // Fourth, Swap the Roles and Website Information of the Employee and Admin
             company.setAdmin(employee.getEmail());
             employee.setRoleId(2L);
-            admin.setRoleId(1L);
+            adminDB.setRoleId(1L);
 
             try {
                 // Fifth, Update the new records of the Employee and the Admin
-                userRepository.save(admin);
+                userRepository.save(adminDB);
                 userRepository.save(employee);
                 return new MessageView.UserReport().build(employee, company, "Successfully Changed Company Admins");
             } catch (Exception e) {

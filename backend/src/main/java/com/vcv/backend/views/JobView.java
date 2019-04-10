@@ -93,15 +93,15 @@ public class JobView implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof JobView)) return false;
-        JobView jobView = (JobView) o;
-        return cost.equals(jobView.cost) &&
-                type.equals(jobView.type) &&
-                date.equals(jobView.date) &&
-                garage.equals(jobView.garage) &&
-                details.equals(jobView.details) &&
-                insuranceName.equals(jobView.insuranceName) &&
-                claim.equals(jobView.claim) &&
-                vin.equals(jobView.vin);
+        JobView that = (JobView) o;
+        return cost.equals(that.cost) &&
+                type.equals(that.type) &&
+                date.equals(that.date) &&
+                garage.equals(that.garage) &&
+                details.equals(that.details) &&
+                Objects.equals(insuranceName, that.insuranceName) &&
+                claim.equals(that.claim) &&
+                vin.equals(that.vin);
     }
 
     @Override

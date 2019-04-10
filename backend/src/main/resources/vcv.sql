@@ -118,6 +118,7 @@ CREATE TABLE `vehicle`(
     `num_owners` INT DEFAULT 1,
     `insurance_id` BIGINT,
     `policy_number` VARCHAR(64),
+    `decoded` TINYINT(1) DEFAULT 0,
     INDEX(evaluation_date),
     INDEX(registration_date),
     INDEX(year, make, model),

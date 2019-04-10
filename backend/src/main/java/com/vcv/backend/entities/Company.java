@@ -118,7 +118,6 @@ public class Company {
         private Boolean blacklisted;
         private Boolean valid;
 
-
         public Builder setId(Long id) {
             this.id = id;
             return this;
