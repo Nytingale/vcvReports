@@ -66,11 +66,11 @@ public class InsuranceTest {
             .setPolicyType(PolicyType.Third_Party)
             .setFinancer("")
             .setValid(true)
-            .setVin("JMYSTC3A4U000993 ")
+            .setVin("JMYSTC3A4U0009936")
             .build();
 
     Vehicle newVehicle = new Vehicle.Builder()
-            .setVin("JMYSTC3A4U000993 ")
+            .setVin("JMYSTC3A4U0009936")
             .setYear(2004)
             .setMake("Mistubishi")
             .setModel("Lancer")
@@ -94,9 +94,9 @@ public class InsuranceTest {
             .setClaimType(ClaimType.Accident)
             .setClaimDate(Timestamp.valueOf(LocalDateTime.now()))
             .setClaimDetails("Some text here")
-            .setPolicyNumber("D78FDG785563")
+            .setPolicyNumber("DTGNKIGHG23S")
             .setValue(500)
-            .setVin("JMYSTC3A4U000993")
+            .setVin("JMYSTC3A4U0009936")
             .build();
 
     Claim updatedClaim = new Claim.Builder()
@@ -105,14 +105,14 @@ public class InsuranceTest {
             .setClaimType(ClaimType.Accident)
             .setClaimDate(Timestamp.valueOf(LocalDateTime.now()))
             .setClaimDetails("Right. The windshield goofed")
-            .setPolicyNumber("D78FDG785563")
+            .setPolicyNumber("DTGNKIGHG23S")
             .setValue(700)
-            .setVin("JMYSTC3A4U000993")
+            .setVin("JMYSTC3A4U0009936")
             .build();
 
     @Before
     public void setup() {
-        testPolicy = policyRepository.findByVin(vinString);
+        testPolicy = policyRepository.findByVinAndValid(vinString, true);
         testVehicle = vehicleRepository.findById(vinString).get();
 
         testInsuranceCompany = companyRepository.findById(2L).get();
@@ -158,23 +158,33 @@ public class InsuranceTest {
         URI uri = new URI(baseURL + "/addPolicy");
         ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, newPolicy, MessageView.InsuranceReport.class);
         assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(newPolicy, testInsuranceCompany, "Successfully Added Policy"))).isTrue();
+        vehicleRepository.delete(newVehicle);
+        policyRepository.delete(newPolicy);
     }
 
     @Test
     public void canAddClaim() throws URISyntaxException {
+        vehicleRepository.save(newVehicle);
+        policyRepository.save(newPolicy);
         URI uri = new URI(baseURL + "/addClaim");
         ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, newClaim, MessageView.InsuranceReport.class);
         assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(newClaim, testInsuranceCompany, "Successfully Added Claim"))).isTrue();
+        vehicleRepository.delete(newVehicle);
+        policyRepository.delete(newPolicy);
+        claimRepository.delete(newClaim);
     }
 
     @Test
     public void canUpdateClaim() throws URISyntaxException {
+        vehicleRepository.save(newVehicle);
+        policyRepository.save(newPolicy);
+        claimRepository.save(newClaim);
         URI uri = new URI(baseURL + "/updateClaim");
         ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, updatedClaim, MessageView.InsuranceReport.class);
         assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(updatedClaim, testInsuranceCompany, "Successfully Updated Claim"))).isTrue();
         vehicleRepository.delete(newVehicle);
-        claimRepository.delete(updatedClaim);
         policyRepository.delete(newPolicy);
+        claimRepository.delete(updatedClaim);
     }
 
     @Test

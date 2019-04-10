@@ -39,7 +39,7 @@ public class PolicyService {
         if(vehicle.isEmpty()) throw new PolicyServiceException("Error 310: addPolicy(policy) failed to find a matching VIN that exists");
 
         // Third, Check whether this VIN Exists on Another Policy and if so, Update to the Latter Policy as Valid
-        policyDB = policyRepository.findByVin(vehicle.get().getVin());
+        policyDB = policyRepository.findByVinAndValid(vehicle.get().getVin(), true);
         if(policyDB.getVin().equals(vehicle.get().getVin())) {
             policy.setValid(true);
             policyDB.setValid(false);
@@ -63,7 +63,7 @@ public class PolicyService {
 
     /* Per Vehicle */
     public PolicyView getPolicy(String vin) throws PolicyServiceException {
-        Policy policy = policyRepository.findByVin(vin);
+        Policy policy = policyRepository.findByVinAndValid(vin, true);
         Optional<Company> company = companyRepository.findById(policy.getCompanyId());
         if(policy != null && company.isPresent()) return new PolicyView().build(policy, company.get());
         else throw new PolicyServiceException("Error 300: getPolicy(vin) returned null");

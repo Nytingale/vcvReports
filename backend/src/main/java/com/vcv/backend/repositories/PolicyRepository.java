@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface PolicyRepository extends PagingAndSortingRepository<Policy, Policy.CompositeKey> {
-    Policy findByVin(String vin);
+    Policy findByVinAndValid(String vin, Boolean valid);
     Policy findByCompanyIdAndPolicyNumber(Long companyId, String policyNumber);
 
     List<Policy> findByCompanyIdOrderByPolicyDateDesc(Long companyId);
