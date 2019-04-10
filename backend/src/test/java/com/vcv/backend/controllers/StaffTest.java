@@ -7,6 +7,7 @@ import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.CompanyRepository;
 import com.vcv.backend.repositories.UserRepository;
 
+import com.vcv.backend.utilities.RequestWrapper;
 import com.vcv.backend.views.CompanyView;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
@@ -39,13 +40,11 @@ public class StaffTest {
 
     @Autowired private UserRepository userRepository;
     @Autowired private CompanyRepository companyRepository;
-
-    Map<String, User> stringUserMap = Collections.emptyMap();
-    Map<String, Object> stringObjectMap = Collections.emptyMap();
-
+    
     String clientString = "T_man@hotmail.com";
     String companyString = "CourtesyGarage";
     String newPasswordString = "ThisIsANewPasswordTest";
+    String adminEmailString = "GeorgeOrwell@trident.com";
     String nonAdminEmailString = "JaneDoe@trident.com";
     String vcvStaffEmailString = "RSJMorris@gmail.com";
 
@@ -53,6 +52,7 @@ public class StaffTest {
 
     User vcvStaff;
     User testClient;
+    User adminEmployee;
     User nonAdminEmployee;
     Company vcvCompany;
     Company testCompany;
@@ -92,6 +92,7 @@ public class StaffTest {
     public void setup() {
         vcvStaff = userRepository.findByEmailAndCompanyId(vcvStaffEmailString, 1L);
         testClient = userRepository.findById(clientString).get();
+        adminEmployee = userRepository.findByEmailAndCompanyId(adminEmailString, 2L);
         nonAdminEmployee = userRepository.findByEmailAndCompanyId(nonAdminEmailString, 2L);
         vcvCompany = companyRepository.findById(1L).get();
         testCompany = companyRepository.findById(3L).get();
@@ -115,74 +116,87 @@ public class StaffTest {
 
     @Test
     public void canChangeAdmin() throws URISyntaxException {
-        stringUserMap.put("VCV", vcvStaff);
-        stringUserMap.put("Employee", nonAdminEmployee);
+        RequestWrapper.Employee map = new RequestWrapper.Employee();
+        map.setAdmin(vcvStaff);
+        map.setEmployee(nonAdminEmployee);
         URI uri = new URI(baseURL + "/changeAdmin");
-        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringUserMap, MessageView.UserReport.class);
+        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, map, MessageView.UserReport.class);
         assertThat(response.getBody().equals(new MessageView.UserReport().build(nonAdminEmployee, testCompany, "Successfully Changed Company Admins"))).isTrue();
+        adminEmployee.setRoleId(2L);
+        nonAdminEmployee.setRoleId(1L);
+        userRepository.save(adminEmployee);
+        userRepository.save(nonAdminEmployee);
     }
 
     @Test
     public void canSearchForUser() throws URISyntaxException {
-        stringObjectMap.put("VCV", vcvStaff);
-        stringObjectMap.put("Client", clientString);
+        RequestWrapper.Admin map = new RequestWrapper.Employee();
+        map.setAdmin(vcvStaff);
+        map.setDetails(clientString);
         URI uri = new URI(baseURL + "/searchForUser");
-        ResponseEntity<UserView> response = restTemplate.postForEntity(uri, stringObjectMap, UserView.class);
+        ResponseEntity<UserView> response = restTemplate.postForEntity(uri, map, UserView.class);
         assertThat(response.getBody().equals(new UserView().build(testClient, testCompany))).isTrue();
     }
 
     @Test
     public void canSearchForCompany() throws URISyntaxException {
-        stringObjectMap.put("VCV", vcvStaff);
-        stringObjectMap.put("Company", companyString);
+        RequestWrapper.Admin map = new RequestWrapper.Employee();
+        map.setAdmin(vcvStaff);
+        map.setDetails(companyString);
         URI uri = new URI(baseURL + "/searchForCompany");
-        ResponseEntity<CompanyView> response = restTemplate.postForEntity(uri, stringObjectMap, CompanyView.class);
+        ResponseEntity<CompanyView> response = restTemplate.postForEntity(uri, map, CompanyView.class);
         assertThat(response.getBody().equals(new CompanyView().build(testCompany))).isTrue();
     }
 
     @Test
     public void canAddEmployee() throws URISyntaxException {
-        stringUserMap.put("VCV", vcvStaff);
-        stringUserMap.put("Employee", newEmployee);
+        RequestWrapper.Employee map = new RequestWrapper.Employee();
+        map.setAdmin(vcvStaff);
+        map.setEmployee(newEmployee);
         URI uri = new URI(baseURL + "/addEmployee");
-        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringUserMap, MessageView.UserReport.class);
+        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, map, MessageView.UserReport.class);
         assertThat(response.getBody().equals(new MessageView.UserReport().build(newEmployee, testCompany, "Successfully Added new Employee to the Company"))).isTrue();
+        userRepository.delete(newEmployee);
     }
 
     @Test
     public void canRegisterCompany() throws URISyntaxException {
-        stringObjectMap.put("VCV", vcvStaff);
-        stringObjectMap.put("Admin", newAdmin);
-        stringObjectMap.put("Company", newCompany);
+        RequestWrapper.Registration map = new RequestWrapper.Registration();
+        map.setVcv(vcvStaff);
+        map.setAdmin(newAdmin);
+        map.setCompany(newCompany);
         URI uri = new URI(baseURL + "/registerCompany");
-        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.CompanyReport.class);
+        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, map, MessageView.CompanyReport.class);
         assertThat(response.getBody().equals(new MessageView.CompanyReport().build(newCompany, "Successfully Created Company"))).isTrue();
     }
 
     @Test
     public void canBlacklistCompany() throws URISyntaxException {
-        stringObjectMap.put("VCV", vcvStaff);
-        stringObjectMap.put("Company", companyString);
+        RequestWrapper.Admin map = new RequestWrapper.Admin();
+        map.setAdmin(vcvStaff);
+        map.setDetails(companyString);
         URI uri = new URI(baseURL + "/blacklistCompany");
-        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.CompanyReport.class);
+        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, map, MessageView.CompanyReport.class);
         assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany, "Successfully Blacklisted Company"))).isTrue();
     }
 
     @Test
     public void canApproveCompany() throws URISyntaxException {
-        stringObjectMap.put("VCV", vcvStaff);
-        stringObjectMap.put("Company", companyString);
+        RequestWrapper.Admin map = new RequestWrapper.Admin();
+        map.setAdmin(vcvStaff);
+        map.setDetails(companyString);
         URI uri = new URI(baseURL + "/approveCompany");
-        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.CompanyReport.class);
+        ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, map, MessageView.CompanyReport.class);
         assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany, "Successfully Approved Company"))).isTrue();
     }
 
     @Test
     public void canChangePassword() throws URISyntaxException {
-        stringObjectMap.put("Admin", vcvStaff);
-        stringObjectMap.put("New Password", newPasswordString);
+        RequestWrapper.Admin map = new RequestWrapper.Admin();
+        map.setAdmin(vcvStaff);
+        map.setDetails(newPasswordString);
         URI uri = new URI(baseURL + "/changePassword");
-        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, stringObjectMap, MessageView.UserReport.class);
+        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, map, MessageView.UserReport.class);
         assertThat(response.getBody().equals(new MessageView.UserReport().build(vcvStaff, vcvCompany, "Successfully Changed Password"))).isTrue();
     }
 }

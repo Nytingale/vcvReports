@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS vcv;
 CREATE DATABASE vcv;
 USE vcv;
 
-CREATE TABLE `admin`(
+CREATE TABLE `user`(
     `email` VARCHAR(32) NOT NULL,
     `password` VARCHAR(64) NOT NULL,
     `password_reset` TINYINT(1) DEFAULT 0,
@@ -16,7 +16,7 @@ CREATE TABLE `admin`(
 CREATE TABLE `role`(
     `id` BIGINT NOT NULL,
     `name` VARCHAR(32) NOT NULL,
-    `admin` TINYINT(1) DEFAULT 0,
+    `user` TINYINT(1) DEFAULT 0,
     `admin` TINYINT(1) DEFAULT 0,
     `staff` TINYINT(1) DEFAULT 0,
     PRIMARY KEY(id)
@@ -25,7 +25,7 @@ CREATE TABLE `role`(
 CREATE TABLE `company`(
     `id` BIGINT AUTO_INCREMENT NOT NULL,
     `company_name` VARCHAR(64) NOT NULL,
-    `company_type` ENUM('VCVStaff', 'Dealership', 'Insurance', 'Garage', 'Mechanic', 'Casual') DEFAULT 'Casual',
+    `company_type` ENUM('VCV_Staff', 'Dealership', 'Insurance', 'Garage', 'Mechanic', 'Casual') DEFAULT 'Casual',
     `subscription_start_date` TIMESTAMP NOT NULL,
     `subscription_end_date` TIMESTAMP NOT NULL,
     `rating` INT DEFAULT 0,
@@ -44,7 +44,7 @@ CREATE TABLE `policy`(
     `company_id` BIGINT NOT NULL,
     `policy_number` VARCHAR(64) NOT NULL,
     `policy_owner` VARCHAR(64) NOT NULL,
-    `policy_type` ENUM('ThirdParty', 'Comprehensive') DEFAULT 'Comprehensive',
+    `policy_type` ENUM('Third_Party', 'Comprehensive') DEFAULT 'Comprehensive',
     `policy_date` TIMESTAMP NOT NULL,
     `financer` VARCHAR(64) DEFAULT '',
     `valid` TINYINT(1) DEFAULT 1,
@@ -58,7 +58,7 @@ CREATE TABLE `policy`(
 CREATE TABLE `claim`(
     `company_id` BIGINT NOT NULL,
     `claim_number` VARCHAR(64) NOT NULL,
-    `claim_type` ENUM('PersonalInjury', 'TotalLoss', 'Liability', 'Accident') DEFAULT 'Accident',
+    `claim_type` ENUM('Personal_Injury', 'Total_Loss', 'Liability', 'Accident') DEFAULT 'Accident',
     `claim_date` TIMESTAMP NOT NULL,
     `claim_details` TEXT DEFAULT '',
     `value` BIGINT NOT NULL,
@@ -97,7 +97,7 @@ CREATE TABLE `vehicle`(
     `colour` VARCHAR(64),
     `value` INT NOT NULL,
     `mileage` INT,
-    `dealership` BIGINT NOT NULL,
+    `dealership` VARCHAR(64) NOT NULL,
     `manufacturer` VARCHAR(64),
     `transmission` VARCHAR(64),
     `fuel_type` VARCHAR(64),
@@ -126,8 +126,8 @@ CREATE TABLE `vehicle`(
 ) ENGINE = InnoDB;
 
 ALTER TABLE `job`     ADD CONSTRAINT `job_vehicle_fk`    FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
-ALTER TABLE `admin`    ADD CONSTRAINT `user_role_fk`      FOREIGN KEY(role_id)                     REFERENCES `role`(id);
-ALTER TABLE `admin`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `company`(id);
+ALTER TABLE `user`    ADD CONSTRAINT `user_role_fk`      FOREIGN KEY(role_id)                     REFERENCES `role`(id);
+ALTER TABLE `user`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `company`(id);
 ALTER TABLE `claim`   ADD CONSTRAINT `claim_policy_fk`   FOREIGN KEY(company_id, policy_number)   REFERENCES `policy`(company_id, policy_number);
 ALTER TABLE `claim`   ADD CONSTRAINT `claim_vehicle_fk`  FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
 ALTER TABLE `policy`  ADD CONSTRAINT `policy_vehicle_fk` FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
@@ -135,11 +135,11 @@ ALTER TABLE `policy`  ADD CONSTRAINT `policy_vehicle_fk` FOREIGN KEY(vin)       
 # ==============================================================
 # = Adding in roles
 # ==============================================================
-INSERT INTO `role` VALUES (1, 'admin',  1, 0, 0);       # = admin
+INSERT INTO `role` VALUES (1, 'User',  1, 0, 0);       # = User
 INSERT INTO `role` VALUES (2, 'Admin', 1, 1, 0);       # = Admin
 INSERT INTO `role` VALUES (3, 'Staff', 1, 1, 1);       # = Staff
 
 # ==============================================================
 # = Adding VCV as a company
 # ==============================================================
-INSERT INTO `company` VALUES (1, 'VCV', 'VCVStaff', '2019-04-01 00:00:00', '2020-04-01 00:00:00', 5, 'https://vcv.com', 'RSJMorris@gmail.com', 0, 1);
+INSERT INTO `company` VALUES (1, 'VCV', 'VCV_Staff', '2019-04-01 00:00:00', '2020-04-01 00:00:00', 5, 'https://vcv.com', 'RSJMorris@gmail.com', 0, 1);

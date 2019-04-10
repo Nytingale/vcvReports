@@ -75,7 +75,7 @@ public class DecoderService {
 
                     return vehicle;
                 } else throw new DecoderServiceException("Error 710: updateVehicle(vehicle) has found a difference in length of VIN Information versus what is Available");
-            } else throw new DecoderServiceException("Error 700: updateVehicle(vehicle) has returned null");
+            } else return vehicle;
         } else return vehicle;
     }
 
@@ -108,7 +108,9 @@ public class DecoderService {
             String response = restTemplate.getForObject(uri, String.class);
             if(response != null) {
                 JSONObject jsonObject = new JSONObject(response);
-                return jsonObject.getJSONArray("decode");
+                if(jsonObject.has("decode"))
+                    return jsonObject.getJSONArray("decode");
+                else return new JSONArray();
             } else throw new DecoderServiceException("Error 700: check(vin) returned null");
         } else throw new DecoderServiceException("Error 705: check(vin) failed to build a URI from the VIN");
     }

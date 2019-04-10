@@ -119,5 +119,6 @@ public class MechanicTest {
         ResponseEntity<MessageView.JobReport> response = restTemplate.postForEntity(uri, updatedJob, MessageView.JobReport.class);
         assertThat(response.getBody().equals(new MessageView.JobReport().build(updatedJob, "Successfully Updated the Mechanic Job"))).isTrue();
         vehicleRepository.delete(newVehicle);
+        jobRepository.delete(updatedJob);
     }
 }

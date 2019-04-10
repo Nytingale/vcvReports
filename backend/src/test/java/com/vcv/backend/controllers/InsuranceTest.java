@@ -25,7 +25,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,7 +63,7 @@ public class InsuranceTest {
             .setPolicyNumber("D78FDG785563")
             .setPolicyOwner("Bobby Reynolds")
             .setPolicyDate(Timestamp.valueOf(LocalDateTime.now()))
-            .setPolicyType(PolicyType.ThirdParty)
+            .setPolicyType(PolicyType.Third_Party)
             .setFinancer("")
             .setValid(true)
             .setVin("JMYSTC3A4U000993 ")
@@ -174,6 +173,8 @@ public class InsuranceTest {
         ResponseEntity<MessageView.InsuranceReport> response = restTemplate.postForEntity(uri, updatedClaim, MessageView.InsuranceReport.class);
         assertThat(response.getBody().equals(new MessageView.InsuranceReport().build(updatedClaim, testInsuranceCompany, "Successfully Updated Claim"))).isTrue();
         vehicleRepository.delete(newVehicle);
+        claimRepository.delete(updatedClaim);
+        policyRepository.delete(newPolicy);
     }
 
     @Test

@@ -47,6 +47,7 @@ public class AdminTest {
 
     String baseURL;
 
+    User user;
     User admin;
     Company company;
     Company renewedCompany;
@@ -55,22 +56,13 @@ public class AdminTest {
     List<User> testUsers;
     List<Company> testCompanies;
 
-    public class UserViewList {
-        List<UserView> userViews;
-
-        public UserViewList() {
-            userViews = new ArrayList<>();
-        }
-        public List<UserView> getUserViews() {
-            return userViews;
-        }
-    }
-
     @Before
     public void setup() {
         admin = userRepository.findById(adminEmailString).get();
         company = companyRepository.findById(2L).get();
         testUsers = userRepository.findByCompanyId(2L);
+
+        user = userRepository.findById(emailString).get();
 
         renewedCompany = company;
         renewedCompany.setSubscriptionStartDate(new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().toEpochDay()));
@@ -91,8 +83,8 @@ public class AdminTest {
     @Test
     public void canGetEmployees() throws URISyntaxException, UserServiceException {
         URI uri = new URI(baseURL + "/getEmployees");
-        ResponseEntity<UserViewList> response = restTemplate.postForEntity(uri, admin, UserViewList.class);
-        assertThat(response.getBody().getUserViews().equals(new UserView().build(testUsers, testCompanies))).isTrue();
+        ResponseEntity<UserView[]> response = restTemplate.postForEntity(uri, admin, UserView[].class);
+        assertThat(Arrays.equals(response.getBody(), new UserView().build(testUsers, testCompanies).toArray())).isTrue();
     }
 
     @Test
@@ -118,6 +110,8 @@ public class AdminTest {
         ResponseEntity<MessageView> response = restTemplate.postForEntity(uri, map, MessageView.class);
         assertThat(response.getBody().equals(new MessageView().build(emailString + "'s Password has been Successfully Reset. The next time they attempt " +
                 "to login, they will be prompted to Enter a new Password"))).isTrue();
+        user.setPasswordReset(false);
+        userRepository.save(user);
     }
 
     @Test
@@ -127,9 +121,9 @@ public class AdminTest {
             File file = new File(classLoader.getResource("test.jpg").getFile());
             MultipartFile image = new MockMultipartFile("Owl.jpg", new FileInputStream(file));
 
-            JSONObject map = new JSONObject();
-            map.put("Admin", admin);
-            map.put("Image", image);
+            RequestWrapper.Image map = new RequestWrapper.Image();
+            map.setAdmin(admin);
+            map.setImage(image);
             URI uri = new URI(baseURL + "/uploadImage");
             ResponseEntity<MessageView.FileUpload> response = restTemplate.postForEntity(uri, map, MessageView.FileUpload.class);
             assertThat(response.getBody().equals(new MessageView.FileUpload().build(image, company.getCompanyName(), "Successfully Uploaded Image"))).isTrue();

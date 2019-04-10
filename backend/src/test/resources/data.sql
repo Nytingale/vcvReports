@@ -10,7 +10,7 @@ INSERT INTO `company` VALUES
     (5, 'MQI',                   'Dealership', '2019-04-01 00:00:00', '2020-04-01 00:00:00', 0, 'https://mqi.com',        'YKlint@mqi.bb.com',        0, 1),
     (6, 'Sagicor Car Insurance', 'Insurance',  '2019-04-01 00:00:00', '2019-04-01 00:00:00', 0, 'https://sagicor.com',    'T_man@hotmail.com',        0, 1);
 
-INSERT INTO `admin` VALUES
+INSERT INTO `user` VALUES
     ('RSJMorris@gmail.com',      'abcxyz123',     0, 3, 1),
     ('JaneDoe@trident.com',      'tridentRUs',    0, 1, 2),
     ('GeorgeOrwell@trident.com', 'p@ssw0rd65',    0, 2, 2),
@@ -30,19 +30,19 @@ INSERT INTO `vehicle` VALUES
     ('JM0UFY0W500132109', 1998, 'Mazda',  'B2500',        null, 7000,  155625, 'MQI', null, null, null, null, null, null, null, 5, 5, 0, 0, '2018-11-16 00:00:00', '2015-06-05 00:00:00', 1, 0, 0, 2, 1, 2, 'EDTHRT234BDF');
 
 INSERT INTO `policy` VALUES
-    (2, 'ABC123JKL789', 'Frank Johnson',   'ThirdParty',    '2015-06-25 00:00:00', 'Royal Bank of Canada',               1, 'MPATFS85HCT102885'),
-    (2, 'JUFOP48985K4', 'Sina Dawson',     'ThirdParty',    '2004-12-12 00:00:00', 'Capita Finance',                     1, 'JSZYA215195102215'),
-    (2, '4JMIYLE423SD', 'Gina Gibbins',    'ThirdParty',    '1992-05-23 00:00:00', 'Capita Finance',                     0, 'JN1CNUD22Z0003314'),
+    (2, 'ABC123JKL789', 'Frank Johnson',   'Third_Party',   '2015-06-25 00:00:00', 'Royal Bank of Canada',               1, 'MPATFS85HCT102885'),
+    (2, 'JUFOP48985K4', 'Sina Dawson',     'Third_Party',   '2004-12-12 00:00:00', 'Capita Finance',                     1, 'JSZYA215195102215'),
+    (2, '4JMIYLE423SD', 'Gina Gibbins',    'Third_Party',   '1992-05-23 00:00:00', 'Capita Finance',                     0, 'JN1CNUD22Z0003314'),
     (2, 'FDGNFRG345FG', 'Gina Gibbins',    'Comprehensive', '2016-09-03 00:00:00', '',                                   0, 'JN1CNUD22Z0003314'),
-    (6, 'FGHFGH653RVC', 'Gina Gibbins',    'ThirdParty',    '2019-01-13 00:00:00', '',                                   1, 'JN1CNUD22Z0003314'),
+    (6, 'FGHFGH653RVC', 'Gina Gibbins',    'Third_Party',   '2019-01-13 00:00:00', '',                                   1, 'JN1CNUD22Z0003314'),
     (2, 'DTGNKIGHG23S', 'James von Hurst', 'Comprehensive', '2014-03-07 00:00:00', 'Global Finance',                     1, 'JSAFTD02V00200457'),
-    (2, 'EDTHRT234BDF', 'James von Hurst', 'ThirdParty',    '2002-01-19 00:00:00', 'First Caribbean International Bank', 1, 'JM0UFY0W500132109');
+    (2, 'EDTHRT234BDF', 'James von Hurst', 'Third_Party',   '2002-01-19 00:00:00', 'First Caribbean International Bank', 1, 'JM0UFY0W500132109');
 
 INSERT INTO `claim` VALUES
-    (2, 'SDFG1634DSER5TE', 'TotalLoss',      '2014-04-23 00:00:00', 'Flipped into a ravine',                                                          65000, '4JMIYLE423SD', 'JN1CNUD22Z0003314', 1),
-    (2, 'G534JNUK65MTTE4', 'Liability',      '2012-02-04 00:00:00', 'Rear-ended another vehicle, BSDFG@ASDB43WDF@3',                                  700,   'ABC123JKL789', 'MPATFS85HCT102885', 2),
-    (2, 'FSGH7867T23RGBD', 'PersonalInjury', '2002-08-11 00:00:00', 'Accident related from 17/03/2002; Claim # FDHGR765FVASDAF',                      1200,  'JUFOP48985K4', 'MPATFS85HCT102885', 0),
-    (2, 'FDHGR765FVASDAF', 'Accident',       '2009-09-21 00:00:00', 'T-Boned at intersection by vehicle KLAITF45SJD123KA. Contacted Insurance @ CGI', 0,     'JUFOP48985K4', 'JSZYA215195102215', 0);
+    (2, 'SDFG1634DSER5TE', 'Total_Loss',      '2014-04-23 00:00:00', 'Flipped into a ravine',                                                          65000, '4JMIYLE423SD', 'JN1CNUD22Z0003314', 1),
+    (2, 'G534JNUK65MTTE4', 'Liability',       '2012-02-04 00:00:00', 'Rear-ended another vehicle, BSDFG@ASDB43WDF@3',                                  700,   'ABC123JKL789', 'MPATFS85HCT102885', 2),
+    (2, 'FSGH7867T23RGBD', 'Personal_Injury', '2002-08-11 00:00:00', 'Accident related from 17/03/2002; Claim # FDHGR765FVASDAF',                      1200,  'JUFOP48985K4', 'MPATFS85HCT102885', 0),
+    (2, 'FDHGR765FVASDAF', 'Accident',        '2009-09-21 00:00:00', 'T-Boned at intersection by vehicle KLAITF45SJD123KA. Contacted Insurance @ CGI', 0,     'JUFOP48985K4', 'JSZYA215195102215', 0);
 
 INSERT INTO `job` VALUES
     (1, 'Accident', '2009-10-07 00:00:00', 1200, 'Left-back door was completely folded in and needed to be replaced. Side skirts were adjusted. Wheel realignment done', 3, 2, 'FDHGR765FVASDAF', 'JSZYA215195102215'),

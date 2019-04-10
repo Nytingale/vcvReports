@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public enum PolicyType implements Serializable {
     Comprehensive (2, "COM"),
-    ThirdParty    (1, "3PY");
+    Third_Party   (1, "3PY");
 
     int w;
     String a;
@@ -27,7 +27,7 @@ public enum PolicyType implements Serializable {
             case Comprehensive:
                 return "Comprehensive";
 
-            case ThirdParty:
+            case Third_Party:
                 return "Third Party";
 
             default:

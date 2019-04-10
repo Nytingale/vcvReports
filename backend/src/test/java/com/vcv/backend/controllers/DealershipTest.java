@@ -47,7 +47,7 @@ public class DealershipTest {
     List<Vehicle> testVehicles;
 
     Vehicle newVehicle = new Vehicle.Builder()
-            .setVin("JMYSTC3A4U000993 ")
+            .setVin("JMYSTC3A4U000993")
             .setYear(2004)
             .setMake("Mistubishi")
             .setModel("Lancer")
@@ -86,5 +86,6 @@ public class DealershipTest {
         URI uri = new URI(baseURL + "/registerVehicle");
         ResponseEntity<MessageView.Registration> response = restTemplate.postForEntity(uri, newVehicle, MessageView.Registration.class);
         assertThat(response.getBody().equals(new MessageView.Registration().build(newVehicle, "Successfully Registered Vehicle"))).isTrue();
+        vehicleRepository.delete(newVehicle);
     }
 }
