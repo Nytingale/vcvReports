@@ -175,5 +175,19 @@ public class Company {
 
             return company;
         }
+        public Company build(Company company) {
+            this.id = company.getId();
+            this.companyName = company.getCompanyName();
+            this.companyType = company.getCompanyType();
+            this.subscriptionStartDate = company.getSubscriptionStartDate();
+            this.subscriptionEndDate = company.getSubscriptionEndDate();
+            this.rating = company.getRating();
+            this.website = company.getWebsite();
+            this.admin = company.getAdmin();
+            this.blacklisted = company.getBlacklisted();
+            this.valid = company.getValid();
+
+            return this.build();
+        }
     }
 }

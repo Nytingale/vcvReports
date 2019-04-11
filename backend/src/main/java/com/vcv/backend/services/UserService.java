@@ -165,7 +165,7 @@ public class UserService implements UserDetailsService {
         if(employee.isEmpty()) throw new UserServiceException("Error 410: removeEmployee(admin, email) has failed to find an Employee with the Email");
 
         try {
-            Company company = companyRepository.findById(admin.getCompanyId()).get();
+            Company company = companyRepository.findById(employee.get().getCompanyId()).get();
 
             // Third, Remove the Employee from the Database
             userRepository.delete(employee.get());

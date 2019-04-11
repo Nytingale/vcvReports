@@ -35,7 +35,7 @@ public class TestUser {
                 .setEmail("TestEmail@email.com")
                 .setPassword("newEmailTest123")
                 .setPasswordReset(false)
-                .setCompanyId(3L)
+                .setCompanyId(2L)
                 .setRoleId(2L)
                 .build();
         this.users = new ArrayList<>();

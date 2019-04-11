@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -143,8 +144,8 @@ public class CompanyService {
         } else throw new CompanyServiceException("Error 800: renewSubscription(admin) has returned null");
 
         // Third, Renew the Company's Subscription Start and End Date based on the Current Date
-        Timestamp start = new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().toEpochDay());
-        Timestamp end = new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().plusYears(1).toEpochDay());
+        Timestamp start = Timestamp.valueOf(LocalDate.now().atStartOfDay());
+        Timestamp end = Timestamp.valueOf(LocalDate.now().atStartOfDay().plusYears(1));
 
         // Fourth, Update the Company Subscription
         company.get().setSubscriptionStartDate(start);
@@ -176,7 +177,7 @@ public class CompanyService {
         } else throw new CompanyServiceException("Error 800: cancelSubscription(admin) has returned null");
 
         // Third, Update the Company Subscription to be Cancelled
-        company.get().setSubscriptionEndDate(new Timestamp(LocalDate.now().toEpochDay()));
+        company.get().setSubscriptionEndDate(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
         company.get().setValid(false);
 
         try {

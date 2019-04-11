@@ -6,6 +6,7 @@ import com.vcv.backend.enums.CompanyType;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class TestCompany {
     private Company newCompany;
     private Company renewedCompany;
     private Company cancelledComapny;
-
+    private Company blacklistedCompany;
     private List<Company> garages;
     private List<Company> companies;
     private String garageString;
@@ -42,6 +43,7 @@ public class TestCompany {
                 .build();
         this.renewedCompany = null;
         this.cancelledComapny = null;
+        this.blacklistedCompany = null;
         this.garages = new ArrayList<>();
         this.companies = new ArrayList<>();
         this.insurance = null;
@@ -67,6 +69,9 @@ public class TestCompany {
     }
     public Company getCancelledCompany() {
         return cancelledComapny;
+    }
+    public Company getBlacklistedCompany() {
+        return this.blacklistedCompany;
     }
     public Company getInsurance() {
         return insurance;
@@ -96,13 +101,17 @@ public class TestCompany {
     public void setCompany(Company company) {
         this.company = company;
 
-        this.cancelledComapny = company;
-        this.cancelledComapny.setSubscriptionStartDate(new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().toEpochDay()));
-        this.cancelledComapny.setSubscriptionEndDate(new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().plusYears(1).toEpochDay()));
+        this.blacklistedCompany = new Company.Builder().build(company);
+        this.blacklistedCompany.setBlacklisted(true);
 
-        this.renewedCompany = company;
-        this.renewedCompany.setSubscriptionEndDate(new Timestamp(LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate().toEpochDay()));
-        this.renewedCompany.setValid(false);
+        this.cancelledComapny = new Company.Builder().build(company);;
+        this.cancelledComapny.setSubscriptionEndDate(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+        this.cancelledComapny.setValid(false);
+
+        this.renewedCompany = new Company.Builder().build(company);;
+        this.renewedCompany.setSubscriptionStartDate(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+        this.renewedCompany.setSubscriptionEndDate(Timestamp.valueOf(LocalDate.now().atStartOfDay().plusYears(1)));
+        this.renewedCompany.setValid(true);
     }
     public void setInsurance(Company insurance) {
         this.insurance = insurance;

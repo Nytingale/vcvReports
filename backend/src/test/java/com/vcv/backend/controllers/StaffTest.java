@@ -53,8 +53,8 @@ public class StaffTest {
     public void setup() {
         testUser.setVcv(userRepository.findByEmailAndCompanyId("RSJMorris@gmail.com", 1L));
         testUser.setVcvString("RSJMorris@gmail.com");
-        testUser.setClient(userRepository.findById("T_man@hotmail.com").get());
-        testUser.setClientString("T_man@hotmail.com");
+        testUser.setClient(userRepository.findById("GeorgeOrwell@trident.com").get());
+        testUser.setClientString("GeorgeOrwell@trident.com");
         testUser.setAdmin(userRepository.findByEmailAndCompanyId("GeorgeOrwell@trident.com", 2L));
         testUser.setAdminString("GeorgeOrwell@trident.com");
         testUser.setStaff(userRepository.findById("JaneDoe@trident.com").get());
@@ -62,7 +62,7 @@ public class StaffTest {
         testUser.setNewPassword("ThisIsANewPasswordTest");
         testUser.setUsers((List<User>) userRepository.findAll());
         testCompany.setVcv(companyRepository.findById(1L).get());
-        testCompany.setCompany(companyRepository.findById(3L).get());
+        testCompany.setCompany(companyRepository.findById(2L).get());
         testCompany.setCompanyString("Trident_Insurance");
         testCompany.setCompanies(
                 testUser.getUsers().stream()
@@ -130,6 +130,18 @@ public class StaffTest {
     }
 
     @Test
+    public void canRemovedEmployee() throws URISyntaxException {
+        RequestWrapper.Admin map = new RequestWrapper.Employee();
+        map.setAdmin(testUser.getVcv());
+        map.setDetails(testUser.getStaffString());
+        URI uri = new URI(baseURL + "/removeEmployee");
+        ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, map, MessageView.UserReport.class);
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(testUser.getStaff(), testCompany.getCompany(), "Successfully Removed the Employee from the Company"))).isTrue();
+
+        userRepository.save(testUser.getStaff());
+    }
+
+    @Test
     public void canRegisterCompany() throws URISyntaxException {
         RequestWrapper.Registration map = new RequestWrapper.Registration();
         map.setVcv(testUser.getVcv());
@@ -150,23 +162,23 @@ public class StaffTest {
         map.setDetails(testCompany.getCompanyString());
         URI uri = new URI(baseURL + "/blacklistCompany");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, map, MessageView.CompanyReport.class);
-        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany.getCompany(), "Successfully Blacklisted Company"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany.getBlacklistedCompany(), "Successfully Blacklisted Company"))).isTrue();
 
-        testCompany.getCompany().setValid(false);
+        testCompany.getCompany().setValid(true);
         companyRepository.save(testCompany.getCompany());
     }
 
     @Test
     public void canApproveCompany() throws URISyntaxException {
+        testCompany.getCompany().setBlacklisted(true);
+        companyRepository.save(testCompany.getCompany());
+
         RequestWrapper.Admin map = new RequestWrapper.Admin();
         map.setAdmin(testUser.getVcv());
         map.setDetails(testCompany.getCompanyString());
         URI uri = new URI(baseURL + "/approveCompany");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, map, MessageView.CompanyReport.class);
         assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany.getCompany(), "Successfully Approved Company"))).isTrue();
-
-        testCompany.getCompany().setValid(true);
-        companyRepository.save(testCompany.getCompany());
     }
 
     @Test
