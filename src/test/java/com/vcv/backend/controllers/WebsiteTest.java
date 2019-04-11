@@ -1,24 +1,18 @@
 package com.vcv.backend.controllers;
 
-import com.vcv.backend.data.TestClaim;
-import com.vcv.backend.data.TestCompany;
-import com.vcv.backend.data.TestJob;
-import com.vcv.backend.data.TestVehicle;
+import com.vcv.backend.data.*;
+import com.vcv.backend.repositories.*;
+import com.vcv.backend.entities.Company;
 import com.vcv.backend.exceptions.VehicleServiceException;
 import com.vcv.backend.views.CompanyView;
-import com.vcv.backend.repositories.*;
-
 import com.vcv.backend.views.VehicleView;
-import com.vcv.backend.entities.Company;
-import com.vcv.frontend.backend.repositories.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +20,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
+
 import java.util.List;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;

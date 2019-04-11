@@ -1,7 +1,8 @@
-package com.vcv.backend.utilities;
+package com.vcv.utilities;
 
 import com.vcv.backend.entities.User;
 import com.vcv.backend.entities.Company;
+
 import org.springframework.web.multipart.MultipartFile;
 
 public class RequestWrapper {

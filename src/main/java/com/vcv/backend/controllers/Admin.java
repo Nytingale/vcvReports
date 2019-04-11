@@ -1,11 +1,11 @@
 package com.vcv.backend.controllers;
 
+import com.vcv.utilities.Utils;
+import com.vcv.utilities.RequestWrapper;
 import com.vcv.backend.entities.User;
-import com.vcv.backend.utilities.Utils;
 import com.vcv.backend.exceptions.ControllerException;
 import com.vcv.backend.services.CompanyService;
 import com.vcv.backend.services.FileService;
-import com.vcv.backend.utilities.RequestWrapper;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
 import com.vcv.backend.services.UserService;

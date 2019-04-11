@@ -1,7 +1,6 @@
 package com.vcv.backend.views;
 
 import com.vcv.backend.entities.*;
-import com.vcv.frontend.backend.entities.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;

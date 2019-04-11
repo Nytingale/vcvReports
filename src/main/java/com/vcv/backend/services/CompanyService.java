@@ -3,7 +3,7 @@ package com.vcv.backend.services;
 import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.CompanyServiceException;
 import com.vcv.backend.repositories.UserRepository;
-import com.vcv.backend.utilities.Utils;
+import com.vcv.utilities.Utils;
 import com.vcv.backend.views.CompanyView;
 import com.vcv.backend.entities.Company;
 import com.vcv.backend.repositories.CompanyRepository;

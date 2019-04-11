@@ -2,11 +2,11 @@ package com.vcv.backend.controllers;
 
 import com.vcv.backend.entities.Claim;
 import com.vcv.backend.entities.User;
-import com.vcv.backend.utilities.Utils;
+import com.vcv.utilities.Utils;
 import com.vcv.backend.entities.Policy;
 import com.vcv.backend.enums.CompanyType;
 import com.vcv.backend.exceptions.ControllerException;
-import com.vcv.backend.utilities.RequestWrapper;
+import com.vcv.utilities.RequestWrapper;
 import com.vcv.backend.views.ClaimView;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.PolicyView;

@@ -1,7 +1,6 @@
-package com.vcv.backend.utilities;
+package com.vcv.utilities;
 
 import com.vcv.backend.entities.*;
-import com.vcv.frontend.backend.entities.*;
 import com.vcv.backend.enums.CompanyType;
 import org.springframework.web.multipart.MultipartFile;
 

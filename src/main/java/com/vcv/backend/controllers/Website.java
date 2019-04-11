@@ -1,6 +1,6 @@
 package com.vcv.backend.controllers;
 
-import com.vcv.backend.utilities.Utils;
+import com.vcv.utilities.Utils;
 import com.vcv.backend.exceptions.ControllerException;
 import com.vcv.backend.services.CompanyService;
 import com.vcv.backend.services.VehicleService;

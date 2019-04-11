@@ -2,7 +2,7 @@ package com.vcv.backend.services;
 
 import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.DecoderServiceException;
-import com.vcv.backend.utilities.Utils;
+import com.vcv.utilities.Utils;
 import com.vcv.backend.configs.VinDecoderConfig;
 import com.vcv.backend.entities.Vehicle;
 import org.json.JSONArray;

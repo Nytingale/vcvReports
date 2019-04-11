@@ -1,30 +1,29 @@
 package com.vcv.backend.controllers;
 
-import com.vcv.backend.data.TestCompany;
-import com.vcv.backend.data.TestUser;
-import com.vcv.backend.entities.User;
-import com.vcv.backend.exceptions.UserServiceException;
-import com.vcv.backend.repositories.CompanyRepository;
-import com.vcv.backend.repositories.UserRepository;
-import com.vcv.backend.utilities.RequestWrapper;
-import com.vcv.backend.views.CompanyView;
+import com.vcv.utilities.RequestWrapper;
 
-import com.vcv.backend.views.MessageView;
-import com.vcv.backend.views.UserView;
+import com.vcv.backend.views.*;
+import com.vcv.backend.entities.User;
+import com.vcv.backend.data.TestUser;
+import com.vcv.backend.data.TestCompany;
+import com.vcv.backend.repositories.UserRepository;
+import com.vcv.backend.repositories.CompanyRepository;
+import com.vcv.backend.exceptions.UserServiceException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -1,21 +1,18 @@
 package com.vcv.backend.controllers;
 
 import com.vcv.backend.data.*;
-import com.vcv.frontend.backend.data.*;
+import com.vcv.backend.views.*;
 import com.vcv.backend.repositories.*;
-import com.vcv.frontend.backend.repositories.*;
-import com.vcv.backend.views.ClaimView;
-import com.vcv.backend.views.MessageView;
-import com.vcv.backend.views.PolicyView;
-import com.vcv.backend.views.VehicleView;
-import org.junit.Before;
+
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URI;

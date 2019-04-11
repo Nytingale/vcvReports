@@ -6,7 +6,7 @@ import com.vcv.backend.data.TestUser;
 import com.vcv.backend.entities.Company;
 import com.vcv.backend.exceptions.UserServiceException;
 import com.vcv.backend.repositories.CompanyRepository;
-import com.vcv.backend.utilities.RequestWrapper;
+import com.vcv.utilities.RequestWrapper;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.UserView;
 import org.junit.Before;

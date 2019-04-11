@@ -1,10 +1,10 @@
 package com.vcv.backend.controllers;
 
 import com.vcv.backend.entities.User;
-import com.vcv.backend.utilities.Utils;
+import com.vcv.utilities.Utils;
 import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.ControllerException;
-import com.vcv.backend.utilities.RequestWrapper;
+import com.vcv.utilities.RequestWrapper;
 import com.vcv.backend.views.MessageView;
 import com.vcv.backend.views.VehicleView;
 import com.vcv.backend.services.UserService;
