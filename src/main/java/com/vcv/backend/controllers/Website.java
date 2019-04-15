@@ -1,5 +1,7 @@
 package com.vcv.backend.controllers;
 
+import com.vcv.backend.services.ArticleService;
+import com.vcv.backend.views.ArticleView;
 import com.vcv.utilities.Utils;
 import com.vcv.backend.exceptions.ControllerException;
 import com.vcv.backend.services.CompanyService;
@@ -13,10 +15,21 @@ import java.util.List;
 
 @RestController
 public class Website {
+    @Autowired private ArticleService articleService;
     @Autowired private CompanyService companyService;
     @Autowired private VehicleService vehicleService;
 
     /* Casual Users */
+    @GetMapping("/getArticles")
+    public List<ArticleView> getArticles() {
+        try {
+            return articleService.getArticles();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @GetMapping("/getCompanies")
     public List<CompanyView> getCompanies() {
         try {

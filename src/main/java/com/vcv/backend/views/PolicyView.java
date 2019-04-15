@@ -42,16 +42,15 @@ public class PolicyView implements Serializable {
     public PolicyView() {}
     public PolicyView build(Policy policy, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
-        PolicyView view = new PolicyView();
 
-        view.company = insuranceCompany.getCompanyName();
-        view.policyNumber = policy.getPolicyNumber();
-        view.date = LocalDate.ofInstant(policy.getPolicyDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-        view.financer = policy.getFinancer();
-        view.valid = policy.isValid();
-        view.vin = policy.getVin();
+        this.company = insuranceCompany.getCompanyName();
+        this.policyNumber = policy.getPolicyNumber();
+        this.date = LocalDate.ofInstant(policy.getPolicyDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+        this.financer = policy.getFinancer();
+        this.valid = policy.isValid();
+        this.vin = policy.getVin();
 
-        return view;
+        return this;
     }
     public List<PolicyView> build(List<Policy> policies, Company insuranceCompany) {
         List<PolicyView> views = new ArrayList<>();

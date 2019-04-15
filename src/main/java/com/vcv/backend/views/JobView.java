@@ -50,18 +50,17 @@ public class JobView implements Serializable {
     public JobView() {}
     public JobView build(Job job, Company garageCompany, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
-        JobView view = new JobView();
 
-        view.cost = job.getJobCost();
-        view.type = job.getJobType().toString();
-        view.date = LocalDate.ofInstant(job.getJobDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-        view.details = job.getJobDetails();
-        view.garage = garageCompany.getCompanyName();
-        view.insuranceName = insuranceCompany != null ? insuranceCompany.getCompanyName() : null;
-        view.claim = job.getClaimNumber();
-        view.vin = job.getVin();
+        this.cost = job.getJobCost();
+        this.type = job.getJobType().toString();
+        this.date = LocalDate.ofInstant(job.getJobDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+        this.details = job.getJobDetails();
+        this.garage = garageCompany.getCompanyName();
+        this.insuranceName = insuranceCompany != null ? insuranceCompany.getCompanyName() : null;
+        this.claim = job.getClaimNumber();
+        this.vin = job.getVin();
 
-        return view;
+        return this;
     }
     public List<JobView> build(List<Job> jobs, Company garageCompany, Company insuranceCompany) {
         List<JobView> views = new ArrayList<>();

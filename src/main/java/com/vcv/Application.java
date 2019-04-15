@@ -2,7 +2,7 @@ package com.vcv;
 
 import com.vcv.backend.configs.SecurityConfig;
 import com.vcv.backend.services.*;
-import com.vcv.frontend.views.MainView;
+import com.vcv.frontend.Main;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
@@ -12,7 +12,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 @SpringBootApplication(
         scanBasePackageClasses = {
-                MainView.class,
+                Main.class,
 
                 JobService.class,
                 FileService.class,

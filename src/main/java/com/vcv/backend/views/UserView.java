@@ -30,18 +30,16 @@ public class UserView implements Serializable {
 
     public UserView() {}
     public UserView build(User user, Company userCompany) {
-        UserView view = new UserView();
+        this.email = user.getEmail();
+        this.company = userCompany.getCompanyName();
+        this.password = user.getPassword();
 
-        view.email = user.getEmail();
-        view.company = userCompany.getCompanyName();
-        view.password = user.getPassword();
+        if(user.getRoleId() == 1L) this.role = "Admin";
+        else if(user.getRoleId() == 2L) this.role = "Admin";
+        else if(user.getRoleId() == 3L) this.role = "Staff";
+        else this.role = "Creator";
 
-        if(user.getRoleId() == 1L) view.role = "Admin";
-        else if(user.getRoleId() == 2L) view.role = "Admin";
-        else if(user.getRoleId() == 3L) view.role = "Staff";
-        else view.role = "Creator";
-
-        return view;
+        return this;
     }
     public List<UserView> build(List<User> users, Company company) {
         List<UserView> views = new ArrayList<>();

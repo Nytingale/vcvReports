@@ -21,6 +21,7 @@ public class CompanyService {
     @Autowired private UserRepository userRepository;
     @Autowired private CompanyRepository companyRepository;
 
+    /* General */
     public List<CompanyView> getCompanies() throws CompanyServiceException {
         List<Company> companies = (List<Company>) companyRepository.findAll();
         if(!companies.isEmpty()) {
@@ -28,6 +29,7 @@ public class CompanyService {
         } else throw new CompanyServiceException("Error 800: getCompanies() returned null");
     }
 
+    /* Portal (VCV) */
     public CompanyView searchForCompany(User vcv,
                                         String company) throws CompanyServiceException {
         // First, Confirm that the Admin is VCV Staff
@@ -108,6 +110,7 @@ public class CompanyService {
         }
     }
 
+    /* Portal (VCV / Admin) */
     public MessageView.CompanyReport updateWebsite(User admin,
                                                    String website) throws CompanyServiceException {
         // First, Confirm that the Admin is an Admin or VCV Staff
@@ -127,6 +130,7 @@ public class CompanyService {
         }
     }
 
+    /* Portal (Admin) */
     public MessageView.CompanyReport renewSubscription(User admin) throws CompanyServiceException {
         // First, Confirm that the Admin is the Admin and they are Not Blacklisted
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());

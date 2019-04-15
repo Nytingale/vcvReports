@@ -46,17 +46,16 @@ public class ClaimView implements Serializable {
     public ClaimView() {}
     public ClaimView build(Claim claim, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
-        ClaimView view = new ClaimView();
 
-        view.claimNumber = claim.getClaimNumber();
-        view.company = insuranceCompany.getCompanyName();
-        view.type = claim.getClaimType().toString();
-        view.date = LocalDate.ofInstant(claim.getClaimDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-        view.details = claim.getClaimDetails();
-        view.policyNumber = claim.getPolicyNumber();
-        view.vin = claim.getVin();
+        this.claimNumber = claim.getClaimNumber();
+        this.company = insuranceCompany.getCompanyName();
+        this.type = claim.getClaimType().toString();
+        this.date = LocalDate.ofInstant(claim.getClaimDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+        this.details = claim.getClaimDetails();
+        this.policyNumber = claim.getPolicyNumber();
+        this.vin = claim.getVin();
 
-        return view;
+        return this;
     }
     public List<ClaimView> build(List<Claim> claims, Company insuranceCompany) {
         List<ClaimView> views = new ArrayList<>();

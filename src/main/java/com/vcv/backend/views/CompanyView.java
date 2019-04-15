@@ -49,18 +49,17 @@ public class CompanyView implements Serializable {
     public CompanyView() {}
     public CompanyView build(Company company) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
-        CompanyView view = new CompanyView();
 
-        view.name = company.getCompanyName();
-        view.type = company.getCompanyType().toString();
-        view.subscriptionStartDate = LocalDate.ofInstant(company.getSubscriptionStartDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-        view.subscriptionEndDate = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-        view.blacklisted = company.getBlacklisted();
-        view.warning = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).getDayOfYear() - LocalDate.now().getDayOfYear() <= 7;
-        view.website = company.getWebsite();
-        view.valid = company.getValid();
+        this.name = company.getCompanyName();
+        this.type = company.getCompanyType().toString();
+        this.subscriptionStartDate = LocalDate.ofInstant(company.getSubscriptionStartDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+        this.subscriptionEndDate = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+        this.blacklisted = company.getBlacklisted();
+        this.warning = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).getDayOfYear() - LocalDate.now().getDayOfYear() <= 7;
+        this.website = company.getWebsite();
+        this.valid = company.getValid();
 
-        return view;
+        return this;
     }
     public List<CompanyView> build(List<Company> companies) {
         List<CompanyView> views = new ArrayList<>();

@@ -19,11 +19,8 @@ public class MessageView implements Serializable {
 
     public MessageView() {}
     public MessageView build(String message) {
-        MessageView view = new MessageView();
-
-        view.message = message;
-
-        return view;
+        this.message = message;
+        return this;
     }
 
     @Override
@@ -60,15 +57,13 @@ public class MessageView implements Serializable {
 
         public FileUpload() {}
         public FileUpload build(MultipartFile file, String company, String message) {
-            FileUpload view = new FileUpload();
+            this.message = message;
+            this.company = company;
+            this.name = file.getName();
+            this.type = file.getContentType();
+            this.size = file.getSize();
 
-            view.message = message;
-            view.company = company;
-            view.name = file.getName();
-            view.type = file.getContentType();
-            view.size = file.getSize();
-
-            return view;
+            return this;
         }
 
         @Override
@@ -98,12 +93,10 @@ public class MessageView implements Serializable {
 
         public JobReport() {}
         public JobReport build(Job job, String message) {
-            JobReport view = new JobReport();
+            this.id = job.getId();
+            this.message = message;
 
-            view.id = job.getId();
-            view.message = message;
-
-            return view;
+            return this;
         }
 
         @Override
@@ -133,13 +126,11 @@ public class MessageView implements Serializable {
 
         public UserReport() {}
         public UserReport build(User user, Company userCompany, String message) {
-            UserReport view = new UserReport();
+            this.email = user.getEmail();
+            this.company = userCompany.getCompanyName();
+            this.message = message;
 
-            view.email = user.getEmail();
-            view.company = userCompany.getCompanyName();
-            view.message = message;
-
-            return view;
+            return this;
         }
 
         @Override
@@ -170,13 +161,11 @@ public class MessageView implements Serializable {
 
         public StolenReport() {}
         public StolenReport build(Vehicle vehicle, String message) {
-            StolenReport view = new StolenReport();
+            this.vin = vehicle.getVin();
+            this.stolen = vehicle.isStolen();
+            this.message = message;
 
-            view.vin = vehicle.getVin();
-            view.stolen = vehicle.isStolen();
-            view.message = message;
-
-            return view;
+            return this;
         }
 
         @Override
@@ -203,12 +192,10 @@ public class MessageView implements Serializable {
 
         public Registration() {}
         public Registration build(Vehicle vehicle, String message) {
-            Registration view = new Registration();
+            this.vin = vehicle.getVin();
+            this.message = message;
 
-            view.vin = vehicle.getVin();
-            view.message = message;
-
-            return view;
+            return this;
         }
 
         @Override
@@ -238,13 +225,11 @@ public class MessageView implements Serializable {
 
         public SalvageReport() {}
         public SalvageReport build(Vehicle vehicle, String message) {
-            SalvageReport view = new SalvageReport();
+            this.vin = vehicle.getVin();
+            this.amount = vehicle.getNumSalvages();
+            this.message = message;
 
-            view.vin = vehicle.getVin();
-            view.amount = vehicle.getNumSalvages();
-            view.message = message;
-
-            return view;
+            return this;
         }
 
         @Override
@@ -288,16 +273,15 @@ public class MessageView implements Serializable {
         public CompanyReport() {}
         public CompanyReport build(Company company, String message) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
-            CompanyReport view = new CompanyReport();
 
-            view.name = company.getCompanyName();
-            view.type = company.getCompanyType().toString();
-            view.website = company.getWebsite();
-            view.subscriptionStartDate = LocalDate.ofInstant(company.getSubscriptionStartDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-            view.subscriptionEndDate = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-            view.message = message;
+            this.name = company.getCompanyName();
+            this.type = company.getCompanyType().toString();
+            this.website = company.getWebsite();
+            this.subscriptionStartDate = LocalDate.ofInstant(company.getSubscriptionStartDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+            this.subscriptionEndDate = LocalDate.ofInstant(company.getSubscriptionEndDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+            this.message = message;
 
-            return view;
+            return this;
         }
 
         @Override
@@ -331,13 +315,11 @@ public class MessageView implements Serializable {
 
         public AccidentReport() {}
         public AccidentReport build(Vehicle vehicle, String message) {
-            AccidentReport view = new AccidentReport();
+            this.vin = vehicle.getVin();
+            this.stolen = vehicle.isStolen();
+            this.message = message;
 
-            view.vin = vehicle.getVin();
-            view.stolen = vehicle.isStolen();
-            view.message = message;
-
-            return view;
+            return this;
         }
 
         @Override
@@ -368,22 +350,18 @@ public class MessageView implements Serializable {
 
         public InsuranceReport() {}
         public InsuranceReport build(Claim claim, Company insuranceCompany, String message) {
-            InsuranceReport view = new InsuranceReport();
+            this.number = claim.getClaimNumber();
+            this.company = insuranceCompany.getCompanyName();
+            this.message = message;
 
-            view.number = claim.getClaimNumber();
-            view.company = insuranceCompany.getCompanyName();
-            view.message = message;
-
-            return view;
+            return this;
         }
         public InsuranceReport build(Policy policy, Company insuranceCompany, String message) {
-            InsuranceReport view = new InsuranceReport();
+            this.number = policy.getPolicyNumber();
+            this.company = insuranceCompany.getCompanyName();
+            this.message = message;
 
-            view.number = policy.getPolicyNumber();
-            view.company = insuranceCompany.getCompanyName();
-            view.message = message;
-
-            return view;
+            return this;
         }
 
         @Override
@@ -414,13 +392,11 @@ public class MessageView implements Serializable {
 
         public WriteOffReport() {}
         public WriteOffReport build(Vehicle vehicle, String message) {
-            WriteOffReport view = new WriteOffReport();
+            this.vin = vehicle.getVin();
+            this.writtenOff = vehicle.isWrittenOff();
+            this.message = message;
 
-            view.vin = vehicle.getVin();
-            view.writtenOff = vehicle.isWrittenOff();
-            view.message = message;
-
-            return view;
+            return this;
         }
 
         @Override

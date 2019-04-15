@@ -126,6 +126,17 @@ CREATE TABLE `vehicle`(
     PRIMARY KEY(vin)
 ) ENGINE = InnoDB;
 
+CREATE TABLE `article`(
+    `id` BIGINT AUTO_INCREMENT NOT NULL,
+    `title` VARCHAR(64) NOT NULL,
+    `subtitle` VARCHAR(64),
+    `content` TEXT NOT NULL,
+    `date` TIMESTAMP NOT NULL,
+    `tags` VARCHAR(64),
+    INDEX(date),
+    PRIMARY KEY(id)
+) ENGINE = InnoDB;
+
 ALTER TABLE `job`     ADD CONSTRAINT `job_vehicle_fk`    FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
 ALTER TABLE `user`    ADD CONSTRAINT `user_role_fk`      FOREIGN KEY(role_id)                     REFERENCES `role`(id);
 ALTER TABLE `user`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `company`(id);

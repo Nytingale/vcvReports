@@ -232,17 +232,16 @@ public class VehicleView implements Serializable {
     public static class BasicReport extends VehicleView {
         public BasicReport() {}
         public BasicReport build(Vehicle vehicle) {
-            BasicReport view = new BasicReport();
             VehicleView vehicleView = new VehicleView().build(vehicle, null);
 
-            view.vin = vehicleView.vin;
-            view.year = vehicleView.year;
-            view.make = vehicleView.make;
-            view.model = vehicleView.model;
-            view.colour = vehicleView.colour;
-            view.manufacturer = vehicleView.manufacturer;
+            this.vin = vehicleView.vin;
+            this.year = vehicleView.year;
+            this.make = vehicleView.make;
+            this.model = vehicleView.model;
+            this.colour = vehicleView.colour;
+            this.manufacturer = vehicleView.manufacturer;
 
-            return view;
+            return this;
         }
 
         @Override
@@ -280,13 +279,11 @@ public class VehicleView implements Serializable {
 
         public FullReport() {}
         public FullReport build(Vehicle vehicle, Company insuranceCompany, List<Job> jobs, List<Company> garageCompanies, List<Claim> claims) throws VehicleServiceException {
-            FullReport view = new FullReport();
+            this.vehicle = new VehicleView().build(vehicle, insuranceCompany);
+            this.claims = new ClaimView().build(claims, insuranceCompany);
+            this.jobs = new JobView().build(jobs, garageCompanies, insuranceCompany);
 
-            view.vehicle = new VehicleView().build(vehicle, insuranceCompany);
-            view.claims = new ClaimView().build(claims, insuranceCompany);
-            view.jobs = new JobView().build(jobs, garageCompanies, insuranceCompany);
-
-            return view;
+            return this;
         }
 
         @Override
