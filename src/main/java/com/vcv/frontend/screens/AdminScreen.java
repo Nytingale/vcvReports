@@ -14,12 +14,12 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 
 public class AdminScreen extends VerticalLayout {
-    @Autowired private RestTemplate restTemplate;
-
     private User admin;
     private EmployeeGrid grid;
 
     private String baseURL = "http://vcv/admin/";
+
+    @Autowired private RestTemplate restTemplate;
 
     public AdminScreen() throws URISyntaxException {
         URI uri = new URI(baseURL + "/getEmployees");
