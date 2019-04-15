@@ -22,35 +22,35 @@ public class CompanyService {
     @Autowired private CompanyRepository companyRepository;
 
     /* General */
-    public List<CompanyView> getCompanies() throws CompanyServiceException {
+    public List<CompanyView> get() throws CompanyServiceException {
         List<Company> companies = (List<Company>) companyRepository.findAll();
         if(!companies.isEmpty()) {
             return new CompanyView().build(companies);
-        } else throw new CompanyServiceException("Error 800: getCompanies() returned null");
+        } else throw new CompanyServiceException("Error 800: getClaims() returned null");
     }
 
     /* Portal (VCV) */
-    public CompanyView searchForCompany(User vcv,
-                                        String company) throws CompanyServiceException {
+    public CompanyView search(User vcv,
+                              String company) throws CompanyServiceException {
         // First, Confirm that the Admin is VCV Staff
-        if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: searchForCompany(vcv, company) has failed you for VCV Staff Authentication");
+        if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: search(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Find the Company to Return
         Company companyDB = companyRepository.findByCompanyName(company);
         if(companyDB != null) {
             return new CompanyView().build(companyDB);
-        } else throw new CompanyServiceException("Error 800: searchForCompany(vcv, company) returned null");
+        } else throw new CompanyServiceException("Error 800: search(vcv, company) returned null");
     }
 
-    public MessageView.CompanyReport registerCompany(User vcv,
-                                                     User admin,
-                                                     Company company) throws CompanyServiceException {
+    public MessageView.CompanyReport register(User vcv,
+                                              User admin,
+                                              Company company) throws CompanyServiceException {
         // First, Confirm that the Admin is VCV Staff
-        if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: registerCompany(vcv, company) has failed you for VCV Staff Authentication");
+        if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: register(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that no Company with this Name
         Company companyDB = companyRepository.findByCompanyName(company.getCompanyName());
-        if(companyDB != null) throw new CompanyServiceException("Error 805: registerCompany(vcv, company) has found an already-existing Company with this Name");
+        if(companyDB != null) throw new CompanyServiceException("Error 805: register(vcv, company) has found an already-existing Company with this Name");
 
         try {
             // Third, Add the Admin and Company to the Database, with the Admin setup as an Admin
@@ -62,18 +62,18 @@ public class CompanyService {
             return new MessageView.CompanyReport().build(company, "Successfully Created Company");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new CompanyServiceException("Error 815: registerCompany(vcv, company) has failed to register the Company");
+            throw new CompanyServiceException("Error 815: register(vcv, company) has failed to register the Company");
         }
     }
 
-    public MessageView.CompanyReport approveCompany(User vcv,
-                                                    String company) throws CompanyServiceException {
+    public MessageView.CompanyReport approve(User vcv,
+                                             String company) throws CompanyServiceException {
         // First, Confirm that the Admin is VCV Staff
-        if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: approveCompany(vcv, company) has failed you for VCV Staff Authentication");
+        if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: approve(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that the Company Exists
         Company companyDB = companyRepository.findByCompanyName(company);
-        if(companyDB == null) throw new CompanyServiceException("Error 805: approveCompany(vcv, company) has failed to find such an existing Company");
+        if(companyDB == null) throw new CompanyServiceException("Error 805: approve(vcv, company) has failed to find such an existing Company");
 
         // Third, Change the Company to be Approved
         companyDB.setBlacklisted(false);
@@ -84,18 +84,18 @@ public class CompanyService {
             return new MessageView.CompanyReport().build(companyDB, "Successfully Approved Company");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new CompanyServiceException("Error 815: blacklistCompany(vcv, company) has failed to update the Company");
+            throw new CompanyServiceException("Error 815: blacklist(vcv, company) has failed to update the Company");
         }
     }
 
-    public MessageView.CompanyReport blacklistCompany(User vcv,
-                                                      String company) throws CompanyServiceException {
+    public MessageView.CompanyReport blacklist(User vcv,
+                                               String company) throws CompanyServiceException {
         // First, Confirm that the Admin is VCV Staff
-        if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: blacklistCompany(vcv, company) has failed you for VCV Staff Authentication");
+        if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: blacklist(vcv, company) has failed you for VCV Staff Authentication");
 
         // Second, Confirm that the Company Exists
         Company companyDB = companyRepository.findByCompanyName(company);
-        if(companyDB == null) throw new CompanyServiceException("Error 805: blacklistCompany(vcv, company) has failed to find such an existing Company");
+        if(companyDB == null) throw new CompanyServiceException("Error 805: blacklist(vcv, company) has failed to find such an existing Company");
 
         // Third, Change the Company to be Blacklisted
         companyDB.setBlacklisted(true);
@@ -106,7 +106,7 @@ public class CompanyService {
             return new MessageView.CompanyReport().build(companyDB, "Successfully Blacklisted Company");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new CompanyServiceException("Error 815: blacklistCompany(vcv, company) has failed to update the Company");
+            throw new CompanyServiceException("Error 815: blacklist(vcv, company) has failed to update the Company");
         }
     }
 

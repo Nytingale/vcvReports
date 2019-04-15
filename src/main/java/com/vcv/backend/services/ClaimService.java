@@ -32,10 +32,10 @@ public class ClaimService {
         else throw new ClaimServiceException("Error 100: getInsuranceClaims(insurance) returned null");
     }
 
-    public MessageView.InsuranceReport addClaim(Claim claim) throws ClaimServiceException {
+    public MessageView.InsuranceReport add(Claim claim) throws ClaimServiceException {
         // First, Confirm that the VIN in the new Claim Exists
         Optional<Vehicle> vehicle = vehicleRepository.findById(claim.getVin());
-        if(vehicle.isEmpty()) throw new ClaimServiceException("Error 105: addClaim(claim) failed to find a matching VIN that exists");
+        if(vehicle.isEmpty()) throw new ClaimServiceException("Error 105: add(claim) failed to find a matching VIN that exists");
 
         try {
             Company company = companyRepository.findById(claim.getCompanyId()).get();
@@ -44,7 +44,7 @@ public class ClaimService {
             return new MessageView.InsuranceReport().build(claim, company, "Successfully Added Claim");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ClaimServiceException("Error 115: addClaim(claim) failed to add the Claim");
+            throw new ClaimServiceException("Error 115: add(claim) failed to add the Claim");
         }
     }
 
@@ -56,10 +56,10 @@ public class ClaimService {
     }
 
     /* Per Claim */
-    public MessageView.InsuranceReport updateClaim(Claim claim) throws ClaimServiceException {
+    public MessageView.InsuranceReport update(Claim claim) throws ClaimServiceException {
         // First, find the Claim to be Updated in the Database
         if(claimRepository.findById(new Claim.CompositeKey(claim.getClaimNumber(), claim.getCompanyId())).isEmpty()) {
-            throw new ClaimServiceException("Error 105: updateClaim(claim) failed to find a matching Claim that exists");
+            throw new ClaimServiceException("Error 105: update(claim) failed to find a matching Claim that exists");
         }
 
         // Second, Update all Fields of the Database's Claim from the Inputted Claim, except for the PK and FK
@@ -75,24 +75,24 @@ public class ClaimService {
             return new MessageView.InsuranceReport().build(claim, company, "Successfully Updated Claim");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ClaimServiceException("Error 115: updateClaim(claim) failed to update the Claim");
+            throw new ClaimServiceException("Error 115: update(claim) failed to update the Claim");
         }
     }
 
-    public MessageView.InsuranceReport linkJobToClaim(Long id,
-                                                      String number,
-                                                      String insurance) throws ClaimServiceException {
+    public MessageView.InsuranceReport link(Long id,
+                                            String number,
+                                            String insurance) throws ClaimServiceException {
         // First, Confirm that the Job Exists
         Optional<Job> job = jobRepository.findById(id);
-        if(job.isEmpty()) throw new ClaimServiceException("Error 105: linkJobToClaim(id, number, insurance) failed to find a matching Job that exists");
+        if(job.isEmpty()) throw new ClaimServiceException("Error 105: link(id, number, insurance) failed to find a matching Job that exists");
 
         // Second, Find the Insurance Company
         Company company = companyRepository.findByCompanyName(insurance);
-        if(company == null) throw new ClaimServiceException("Error 110: linkJobToClaim(id, number, insurance) failed to find a matching Company by that name");
+        if(company == null) throw new ClaimServiceException("Error 110: link(id, number, insurance) failed to find a matching Company by that name");
 
         // Third, Confirm that the Claim Exists
         Optional<Claim> claim = claimRepository.findById(new Claim.CompositeKey(number, company.getId()));
-        if(claim.isEmpty()) throw new ClaimServiceException("Error 115: linkJobToClaim(id, number, insurance) failed to find a matching Claim that exists");
+        if(claim.isEmpty()) throw new ClaimServiceException("Error 115: link(id, number, insurance) failed to find a matching Claim that exists");
 
         // Fourth, Link the Job to the Claim and the Claim to the Job in their respective FKs
         job.get().setClaimNumber(claim.get().getClaimNumber());
@@ -105,7 +105,7 @@ public class ClaimService {
             return new MessageView.InsuranceReport().build(claim.get(), company, "Successfully Linked Job to Claim");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new ClaimServiceException("Error 120: linkJobToClaim(id, number, insurance) failed to save the Updates to the Job and Claim");
+            throw new ClaimServiceException("Error 120: link(id, number, insurance) failed to save the Updates to the Job and Claim");
         }
     }
 }

@@ -61,7 +61,6 @@ public class AdminTest {
     @Test
     public void canGetEmployees() throws URISyntaxException, UserServiceException {
         URI uri = new URI(baseURL + "/getEmployees");
-        System.out.println("Users: " + testUser.getUsers().size() + ", Companies: " + testCompany.getCompanies().size());
         ResponseEntity<UserView[]> response = restTemplate.postForEntity(uri, testUser.getAdmin(), UserView[].class);
         assertThat(Arrays.equals(response.getBody(), new UserView().build(testUser.getUsers(), testCompany.getCompany()).toArray())).isTrue();
     }

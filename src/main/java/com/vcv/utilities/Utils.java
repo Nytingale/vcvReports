@@ -1,7 +1,6 @@
 package com.vcv.utilities;
 
 import com.vcv.backend.entities.*;
-import com.vcv.backend.enums.CompanyType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Field;
@@ -96,11 +95,5 @@ public class Utils {
             }
         }
         return null;
-    }
-
-    public static String isValidSubscribingCompany(String name, String type) {
-        if(name == null || name.trim().isEmpty() || type == null || type.trim().isEmpty()) return null;
-        else if(CompanyType.valueOf(type).level() > 1) return name.replaceAll("_", " ");
-        else return null;
     }
 }

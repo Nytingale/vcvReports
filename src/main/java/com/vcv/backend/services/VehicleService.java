@@ -40,7 +40,7 @@ public class VehicleService {
                 company.ifPresent(insuranceCompanies::add);
             }
 
-            return new VehicleView().build(decoderService.updateVehicles(vehicles), insuranceCompanies);
+            return new VehicleView().build(decoderService.update(vehicles), insuranceCompanies);
         }
         else throw new VehicleServiceException("Error 500: getRegisteredVehicles(dealership) returned null");
     }
@@ -64,7 +64,7 @@ public class VehicleService {
     public List<VehicleView> getInsuredVehicles(String insurance) throws VehicleServiceException, DecoderServiceException {
         Company insuranceCompany = companyRepository.findByCompanyName(insurance);
         List<Vehicle> vehicles = vehicleRepository.findByInsuranceIdOrderByRegistrationDateDesc(insuranceCompany.getId());
-        if(!vehicles.isEmpty()) return new VehicleView().build(decoderService.updateVehicles(vehicles), insuranceCompany);
+        if(!vehicles.isEmpty()) return new VehicleView().build(decoderService.update(vehicles), insuranceCompany);
         else throw new VehicleServiceException("Error 500: getInsuredVehicles(insurance) returned null");
     }
 
@@ -156,7 +156,7 @@ public class VehicleService {
     /* Private */
     private Vehicle getVehicle(String vin) throws VehicleServiceException, DecoderServiceException {
         Vehicle vehicle = vehicleRepository.findByVin(vin);
-        if(vehicle != null) return decoderService.updateVehicle(vehicle);
+        if(vehicle != null) return decoderService.update(vehicle);
         else throw new VehicleServiceException("Error 500: getVehicle(vin) returned null");
     }
 
@@ -164,7 +164,7 @@ public class VehicleService {
                                String make,
                                String model) throws VehicleServiceException, DecoderServiceException {
         Vehicle vehicle = vehicleRepository.findByYearAndMakeAndModel(year, make, model);
-        if(vehicle != null) return decoderService.updateVehicle(vehicle);
+        if(vehicle != null) return decoderService.update(vehicle);
         else throw new VehicleServiceException("Error 500: getVehicle(year, make, model) returned null");
     }
 }

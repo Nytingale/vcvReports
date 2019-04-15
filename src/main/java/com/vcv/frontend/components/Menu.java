@@ -3,22 +3,15 @@ package com.vcv.frontend.components;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.VaadinServletService;
-import com.vaadin.flow.server.VaadinSession;
 
 public class Menu extends FlexLayout {
-
-    private static final String SHOW_TABS = "show-tabs";
     private Tabs tabs;
 
     public Menu() {
@@ -26,8 +19,8 @@ public class Menu extends FlexLayout {
 
         // Button for toggling the menu visibility on small screens
         final Button showMenu = new Button("Menu", event -> {
-            if (tabs.getClassNames().contains(SHOW_TABS)) tabs.removeClassName(SHOW_TABS);
-            else tabs.addClassName(SHOW_TABS);
+            if (tabs.getClassNames().contains("show-tabs")) tabs.removeClassName("show-tabs");
+            else tabs.addClassName("show-tabs");
         });
         showMenu.setClassName("menu-button");
         showMenu.addThemeVariants(ButtonVariant.LUMO_SMALL);
@@ -41,8 +34,7 @@ public class Menu extends FlexLayout {
         this.add(tabs);
 
         // Login menu item
-        Button loginBtn = new Button("Logout", VaadinIcon.SIGN_IN.create());
-
+        Button loginBtn = new Button("Client Login", VaadinIcon.SIGN_IN.create());
         loginBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
         this.add(loginBtn);
     }

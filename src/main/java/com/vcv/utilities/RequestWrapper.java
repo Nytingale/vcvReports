@@ -1,9 +1,9 @@
 package com.vcv.utilities;
 
-import com.vcv.backend.entities.User;
-import com.vcv.backend.entities.Company;
-
+import com.vcv.backend.entities.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class RequestWrapper {
     private String details;
@@ -27,13 +27,31 @@ public class RequestWrapper {
     }
 
     public static class Image extends Admin {
+        private HttpServletRequest request;
         private MultipartFile image;
 
         public MultipartFile getImage() {
             return image;
         }
+        public HttpServletRequest getRequest() {
+            return request;
+        }
+
+        public void setRequest(HttpServletRequest request) {
+            this.request = request;
+        }
         public void setImage(MultipartFile image) {
             this.image = image;
+        }
+    }
+    public static class Article extends Admin {
+        private Article article;
+
+        public Article getArticle() {
+            return article;
+        }
+        public void setArticle(Article article) {
+            this.article = article;
         }
     }
     public static class Employee extends Admin {
@@ -62,6 +80,64 @@ public class RequestWrapper {
         }
         public void setCompany(Company company) {
             this.company = company;
+        }
+    }
+
+    public static class Company extends Admin {
+        private User user;
+        private Company company;
+
+        public User getUser() {
+            return user;
+        }
+        public Company getCompany() {
+            return company;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+        }
+        public void setCompany(Company company) {
+            this.company = company;
+        }
+    }
+
+    public static class Garage extends Company {
+        private Job job;
+
+        public Job getJob() {
+            return job;
+        }
+        public void setJob(Job job) {
+            this.job = job;
+        }
+    }
+    public static class Insurance extends Company {
+        private Claim claim;
+        private Policy policy;
+
+        public Claim getClaim() {
+            return claim;
+        }
+        public Policy getPolicy() {
+            return policy;
+        }
+
+        public void setClaim(Claim claim) {
+            this.claim = claim;
+        }
+        public void setPolicy(Policy policy) {
+            this.policy = policy;
+        }
+    }
+    public static class Dealership extends Company {
+        private Vehicle vehicle;
+
+        public Vehicle getVehicle() {
+            return vehicle;
+        }
+        public void setVehicle(Vehicle vehicle) {
+            this.vehicle = vehicle;
         }
     }
 }

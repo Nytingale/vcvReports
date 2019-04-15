@@ -29,14 +29,14 @@ public class PolicyService {
         else throw new PolicyServiceException("Error 300: getInsurancePolicies(insurance) returned null");
     }
 
-    public MessageView.InsuranceReport addPolicy(Policy policy) throws PolicyServiceException {
+    public MessageView.InsuranceReport add(Policy policy) throws PolicyServiceException {
         // First, Ensure that the Policy Number does not Already Exist with this Insurance Company
         Policy policyDB = policyRepository.findByCompanyIdAndPolicyNumber(policy.getCompanyId(), policy.getPolicyNumber());
-        if(policyDB != null) throw new PolicyServiceException("Error 305: addPolicy(policy) found an already existing copy of this Policy");
+        if(policyDB != null) throw new PolicyServiceException("Error 305: add(policy) found an already existing copy of this Policy");
 
         // Second, Confirm that the VIN in the new Policy Exists
         Optional<Vehicle> vehicle = vehicleRepository.findById(policy.getVin());
-        if(vehicle.isEmpty()) throw new PolicyServiceException("Error 310: addPolicy(policy) failed to find a matching VIN that exists");
+        if(vehicle.isEmpty()) throw new PolicyServiceException("Error 310: add(policy) failed to find a matching VIN that exists");
 
         // Third, Check whether this VIN Exists on Another Policy and if so, Update to the Latter Policy as Valid
         policyDB = policyRepository.findByVinAndValid(vehicle.get().getVin(), true);
@@ -57,7 +57,7 @@ public class PolicyService {
             return new MessageView.InsuranceReport().build(policy, company, "Successfully Added Policy");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new PolicyServiceException("Error 315: addPolicy(policy) failed to add the Policy");
+            throw new PolicyServiceException("Error 315: add(policy) failed to add the Policy");
         }
     }
 

@@ -1,5 +1,7 @@
 package com.vcv.backend.controllers;
 
+import com.vcv.backend.entities.Article;
+import com.vcv.backend.services.ArticleService;
 import com.vcv.utilities.Utils;
 import com.vcv.utilities.RequestWrapper;
 
@@ -15,6 +17,7 @@ import com.vcv.backend.views.MessageView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -22,18 +25,65 @@ import java.util.List;
 public class Staff {
 
     @Autowired private UserService userService;
+    @Autowired private ArticleService articleService;
     @Autowired private CompanyService companyService;
 
-    @PostMapping("/getUsers")
-    public List<UserView> getUsers(@RequestBody User vcv) {
+    /* Article Management */
+    @PostMapping("/publishArticle")
+    MessageView.ArticleReport publishArticle(@RequestBody RequestWrapper.Article map) {
         try {
-            User validVcv = (User) Utils.isValidEntity(vcv);
+            User validVcv = (User) Utils.isValidEntity(map.getAdmin());
+            Article validArticle = (Article) Utils.isValidEntity(map.getArticle());
+            if(validVcv != null && validArticle != null) {
+                return articleService.publish(validVcv, validArticle);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/editArticle")
+    MessageView.ArticleReport editArticle(@RequestBody RequestWrapper.Article map) {
+        try {
+            User validVcv = (User) Utils.isValidEntity(map.getAdmin());
+            Article validArticle = (Article) Utils.isValidEntity(map.getArticle());
+            if(validVcv != null && validArticle != null) {
+                return articleService.edit(validVcv, validArticle);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/removeArticle")
+    MessageView.ArticleReport removeArticle(@RequestBody RequestWrapper.Admin map) {
+        try {
+            User validVcv = (User) Utils.isValidEntity(map.getAdmin());
+            Long validId = Utils.isValidLong(map.getDetails());
+            if(validVcv != null && validId != null) {
+                return articleService.remove(validVcv, validId);
+            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+    /* User/Client Management */
+    @PostMapping("/getUsers")
+    public List<UserView> getUsers(@RequestBody RequestWrapper.Admin map) {
+        try {
+            User validVcv = (User) Utils.isValidEntity(map.getAdmin());
             if(validVcv != null) {
                 return userService.getUsers(validVcv);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -71,7 +121,7 @@ public class Staff {
             User validVcv = (User) Utils.isValidEntity(map.getAdmin());
             String validCompany = Utils.isValidString(map.getDetails());
             if(validVcv != null && validCompany != null) {
-                return companyService.searchForCompany(validVcv, validCompany);
+                return companyService.search(validVcv, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -128,7 +178,7 @@ public class Staff {
             User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
             Company validCompany = (Company) Utils.isValidEntity(map.getCompany());
             if(validVcv != null && validAdmin != null && validCompany != null) {
-                return companyService.registerCompany(validVcv, validAdmin, validCompany);
+                return companyService.register(validVcv, validAdmin, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -142,7 +192,7 @@ public class Staff {
             User validVcv = (User) Utils.isValidEntity(map.getAdmin());
             String validCompany = Utils.isValidString(map.getDetails());
             if(validVcv != null && validCompany != null) {
-                return companyService.approveCompany(validVcv, validCompany);
+                return companyService.approve(validVcv, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -156,7 +206,7 @@ public class Staff {
             User validVcv = (User) Utils.isValidEntity(map.getAdmin());
             String validCompany = Utils.isValidString(map.getDetails());
             if(validVcv != null && validCompany != null) {
-                return companyService.blacklistCompany(validVcv, validCompany);
+                return companyService.blacklist(validVcv, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();

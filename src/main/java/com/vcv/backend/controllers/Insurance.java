@@ -1,20 +1,19 @@
 package com.vcv.backend.controllers;
 
 import com.vcv.backend.entities.Claim;
-import com.vcv.backend.entities.User;
-import com.vcv.utilities.Utils;
 import com.vcv.backend.entities.Policy;
-import com.vcv.backend.enums.CompanyType;
+import com.vcv.backend.entities.User;
 import com.vcv.backend.exceptions.ControllerException;
-import com.vcv.utilities.RequestWrapper;
-import com.vcv.backend.views.ClaimView;
-import com.vcv.backend.views.MessageView;
-import com.vcv.backend.views.PolicyView;
-import com.vcv.backend.views.VehicleView;
 import com.vcv.backend.services.ClaimService;
 import com.vcv.backend.services.PolicyService;
 import com.vcv.backend.services.UserService;
 import com.vcv.backend.services.VehicleService;
+import com.vcv.backend.views.ClaimView;
+import com.vcv.backend.views.MessageView;
+import com.vcv.backend.views.PolicyView;
+import com.vcv.backend.views.VehicleView;
+import com.vcv.utilities.RequestWrapper;
+import com.vcv.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,11 +81,11 @@ public class Insurance {
     }
 
     @PostMapping("/addPolicy")
-    public MessageView.InsuranceReport addPolicy(@RequestBody Policy policy) {
+    public MessageView.InsuranceReport addPolicy(@RequestBody RequestWrapper.Insurance map) {
         try {
-            Policy validPolicy = (Policy) Utils.isValidEntity(policy);
+            Policy validPolicy = (Policy) Utils.isValidEntity(map.getPolicy());
             if(validPolicy != null) {
-                return policyService.addPolicy(validPolicy);
+                return policyService.add(validPolicy);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -95,11 +94,11 @@ public class Insurance {
     }
 
     @PostMapping("/addClaim")
-    public MessageView.InsuranceReport addClaim(@RequestBody Claim claim) {
+    public MessageView.InsuranceReport addClaim(@RequestBody RequestWrapper.Insurance map) {
         try {
-            Claim validClaim = (Claim) Utils.isValidEntity(claim);
+            Claim validClaim = (Claim) Utils.isValidEntity(map.getClaim());
             if(validClaim != null) {
-                return claimService.addClaim(validClaim);
+                return claimService.add(validClaim);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,11 +107,11 @@ public class Insurance {
     }
 
     @PostMapping("/updateClaim")
-    public MessageView.InsuranceReport updateClaim(@RequestBody Claim claim) {
+    public MessageView.InsuranceReport updateClaim(@RequestBody RequestWrapper.Insurance map) {
         try {
-            Claim validClaim = (Claim) Utils.isValidEntity(claim);
+            Claim validClaim = (Claim) Utils.isValidEntity(map.getClaim());
             if (validClaim != null) {
-                return claimService.updateClaim(validClaim);
+                return claimService.update(validClaim);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,9 +191,9 @@ public class Insurance {
         try {
             Long validId = Utils.isValidLong(id);
             String validNumber = Utils.isValidString(number);
-            String validCompany = Utils.isValidSubscribingCompany(company, CompanyType.Insurance.toString());
+            String validCompany = Utils.isValidString(company);
             if(validId != null) {
-                return claimService.linkJobToClaim(validId, validNumber, validCompany);
+                return claimService.link(validId, validNumber, validCompany);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();

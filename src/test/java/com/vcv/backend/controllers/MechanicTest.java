@@ -63,7 +63,7 @@ public class MechanicTest {
     public void canAddJob() throws URISyntaxException {
         vehicleRepository.save(testVehicle.getNewVehicle());
 
-        URI uri = new URI(baseURL + "/addJob");
+        URI uri = new URI(baseURL + "/add");
         ResponseEntity<MessageView.JobReport> response = restTemplate.postForEntity(uri, testJob.getNewJob(), MessageView.JobReport.class);
         assertThat(response.getBody().equals(new MessageView.JobReport().build(testJob.getNewJob(), "Successfully Saved the Mechanic Job"))).isTrue();
 
@@ -76,7 +76,7 @@ public class MechanicTest {
         vehicleRepository.save(testVehicle.getNewVehicle());
         jobRepository.save(testJob.getNewJob());
 
-        URI uri = new URI(baseURL + "/updateJob");
+        URI uri = new URI(baseURL + "/update");
         ResponseEntity<MessageView.JobReport> response = restTemplate.postForEntity(uri, testJob.getUpdatedJob(), MessageView.JobReport.class);
         assertThat(response.getBody().equals(new MessageView.JobReport().build(testJob.getUpdatedJob(), "Successfully Updated the Mechanic Job"))).isTrue();
 

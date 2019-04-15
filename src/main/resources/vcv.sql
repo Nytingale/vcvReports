@@ -134,6 +134,7 @@ CREATE TABLE `article`(
     `date` TIMESTAMP NOT NULL,
     `tags` VARCHAR(64),
     INDEX(date),
+    INDEX(tags),
     PRIMARY KEY(id)
 ) ENGINE = InnoDB;
 

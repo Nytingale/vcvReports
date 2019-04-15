@@ -30,10 +30,10 @@ public class Website {
         }
     }
 
-    @GetMapping("/getCompanies")
+    @GetMapping("/getClaims")
     public List<CompanyView> getCompanies() {
         try {
-            return companyService.getCompanies();
+            return companyService.get();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

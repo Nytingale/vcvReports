@@ -1,14 +1,14 @@
 package com.vcv.backend.controllers;
 
 import com.vcv.backend.entities.User;
-import com.vcv.utilities.Utils;
 import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.ControllerException;
-import com.vcv.utilities.RequestWrapper;
-import com.vcv.backend.views.MessageView;
-import com.vcv.backend.views.VehicleView;
 import com.vcv.backend.services.UserService;
 import com.vcv.backend.services.VehicleService;
+import com.vcv.backend.views.MessageView;
+import com.vcv.backend.views.VehicleView;
+import com.vcv.utilities.RequestWrapper;
+import com.vcv.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,12 +34,13 @@ public class Dealership {
     }
 
     @PostMapping("/registerVehicle")
-    public MessageView.Registration registerVehicle(@RequestBody Vehicle vehicle) {
+    public MessageView.Registration registerVehicle(@RequestBody RequestWrapper.Dealership map) {
         try {
-            Vehicle validVehicle = (Vehicle) Utils.isValidEntity(vehicle);
+            Vehicle validVehicle = (Vehicle) Utils.isValidEntity(map.getVehicle());
             if(validVehicle != null) {
                 return vehicleService.register(validVehicle);
-            } else throw new ControllerException("Error 001: No Valid Parameters Used");
+            }
+            throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
             return null;

@@ -65,7 +65,7 @@ public class WebsiteTest {
 
     @Test
     public void canGetCompanies() throws URISyntaxException {
-        URI uri = new URI(baseURL + "/getCompanies");
+        URI uri = new URI(baseURL + "/getClaims");
         ResponseEntity<CompanyView[]> response = restTemplate.getForEntity(uri, CompanyView[].class);
         assertThat(Arrays.equals(response.getBody(), new CompanyView().build(testCompany.getCompanies()).toArray())).isTrue();
     }

@@ -20,7 +20,7 @@ public class DecoderService {
 
     @Autowired private VinDecoderConfig vinDecoderConfig;
 
-    Vehicle updateVehicle(Vehicle vehicle) throws DecoderServiceException {
+    Vehicle update(Vehicle vehicle) throws DecoderServiceException {
         if(vehicle.isDecoded() == false &&
                 (vehicle.getManufacturer() == null ||
                         vehicle.getTransmission() == null ||
@@ -81,11 +81,11 @@ public class DecoderService {
         return vehicle;
     }
 
-    List<Vehicle> updateVehicles(List<Vehicle> vehicles) throws DecoderServiceException {
+    List<Vehicle> update(List<Vehicle> vehicles) throws DecoderServiceException {
         List<Vehicle> result = new ArrayList<>();
 
         for(Vehicle vehicle: vehicles) {
-            vehicle = updateVehicle(vehicle);
+            vehicle = update(vehicle);
             result.add(vehicle);
         }
 

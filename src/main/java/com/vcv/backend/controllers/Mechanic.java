@@ -34,11 +34,11 @@ public class Mechanic {
     }
 
     @PostMapping("/addJob")
-    public MessageView.JobReport addJob(@RequestBody Job job) {
+    public MessageView.JobReport addJob(@RequestBody RequestWrapper.Garage map) {
         try {
-            Job validJob = (Job) Utils.isValidEntity(job);
+            Job validJob = (Job) Utils.isValidEntity(map.getJob());
             if(validJob != null) {
-                return jobService.addJob(job);
+                return jobService.add(validJob);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();
@@ -47,11 +47,11 @@ public class Mechanic {
     }
 
     @PostMapping("/updateJob")
-    public MessageView.JobReport updateJob(@RequestBody Job job) {
+    public MessageView.JobReport updateJob(@RequestBody RequestWrapper.Garage map) {
         try {
-            Job validJob = (Job) Utils.isValidEntity(job);
+            Job validJob = (Job) Utils.isValidEntity(map.getJob());
             if(validJob != null) {
-                return jobService.updateJob(job);
+                return jobService.update(validJob);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
         } catch(Exception e) {
             e.printStackTrace();

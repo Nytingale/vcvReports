@@ -32,11 +32,11 @@ public class JobService {
         else throw new JobServiceException("Error 200: getMechanicJobs(garage) returned null");
     }
 
-    public MessageView.JobReport addJob(Job job) throws JobServiceException {
+    public MessageView.JobReport add(Job job) throws JobServiceException {
         // First, Confirm that the VIN exists
         Optional<Vehicle> vehicle = vehicleRepository.findById(job.getVin());
         if(vehicle.isEmpty()) {
-            throw new JobServiceException("Error 220: addJob(job) has failed to a matching VIN that exists");
+            throw new JobServiceException("Error 220: add(job) has failed to a matching VIN that exists");
         }
 
         try {
@@ -45,28 +45,28 @@ public class JobService {
             return new MessageView.JobReport().build(job, "Successfully Saved the Mechanic Job");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new JobServiceException("Error 215: addJob(job) failed to add the Job");
+            throw new JobServiceException("Error 215: add(job) failed to add the Job");
         }
     }
 
-    public MessageView.JobReport updateJob(Job job) throws JobServiceException {
+    public MessageView.JobReport update(Job job) throws JobServiceException {
         // First, Confirm that the Job Exists
         if(jobRepository.findById(job.getId()).isEmpty()) {
-            throw new JobServiceException("Error 205: updateJob(job) failed to find a matching Job that exists");
+            throw new JobServiceException("Error 205: update(job) failed to find a matching Job that exists");
         }
 
         // Second, Confirm that any Claims Attached to the Job, Exists
         if(job.getClaimNumber() != null && !job.getClaimNumber().equals("")) {
             Optional<Claim> claim = claimRepository.findById(new Claim.CompositeKey(job.getClaimNumber(), job.getInsuranceId()));
             if (claim.isEmpty()) {
-                throw new JobServiceException("Error 210: updateJob(job) failed to find a matching Claim with that Number/Insurance");
+                throw new JobServiceException("Error 210: update(job) failed to find a matching Claim with that Number/Insurance");
             }
         }
 
         // Third, Confirm that the Job's VIN exists
         Optional<Vehicle> vehicle = vehicleRepository.findById(job.getVin());
         if(vehicle.isEmpty()) {
-            throw new JobServiceException("Error 220: updateJob(job) has failed to a matching VIN that exists");
+            throw new JobServiceException("Error 220: update(job) has failed to a matching VIN that exists");
         }
 
         try {
@@ -75,7 +75,7 @@ public class JobService {
             return new MessageView.JobReport().build(job, "Successfully Updated the Mechanic Job");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new JobServiceException("Error 215: addJob(job) failed to add the Job");
+            throw new JobServiceException("Error 215: add(job) failed to add the Job");
         }
     }
 

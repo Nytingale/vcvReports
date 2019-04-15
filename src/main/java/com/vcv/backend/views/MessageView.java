@@ -85,6 +85,7 @@ public class MessageView implements Serializable {
     }
 
     public static class JobReport extends MessageView {
+
         private Long id;
 
         public Long getId() {
@@ -412,6 +413,36 @@ public class MessageView implements Serializable {
         @Override
         public int hashCode() {
             return Objects.hash(vin, writtenOff, message);
+        }
+    }
+
+    public static class ArticleReport extends MessageView {
+        private String title;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public ArticleReport() {}
+        public ArticleReport build(Article article, String message) {
+            this.title = article.getTitle();
+            this.message = message;
+
+            return this;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof ArticleReport)) return false;
+            if (!super.equals(o)) return false;
+            ArticleReport that = (ArticleReport) o;
+            return title.equals(that.title);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), title);
         }
     }
 }

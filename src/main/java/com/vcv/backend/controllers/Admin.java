@@ -2,13 +2,15 @@ package com.vcv.backend.controllers;
 
 import com.vcv.utilities.Utils;
 import com.vcv.utilities.RequestWrapper;
+
 import com.vcv.backend.entities.User;
-import com.vcv.backend.exceptions.ControllerException;
-import com.vcv.backend.services.CompanyService;
 import com.vcv.backend.services.FileService;
-import com.vcv.backend.views.MessageView;
-import com.vcv.backend.views.UserView;
 import com.vcv.backend.services.UserService;
+import com.vcv.backend.services.CompanyService;
+import com.vcv.backend.exceptions.ControllerException;
+import com.vcv.backend.views.UserView;
+import com.vcv.backend.views.MessageView;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +26,9 @@ public class Admin {
     @Autowired private CompanyService companyService;
 
     @PostMapping("/getEmployees")
-    public List<UserView> getEmployees(@RequestBody User admin) {
+    public List<UserView> getEmployees(@RequestBody RequestWrapper.Admin map) {
         try {
-            User validAdmin = (User) Utils.isValidEntity(admin);
+            User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
             if(validAdmin != null) {
                 return userService.getEmployees(validAdmin);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -37,9 +39,9 @@ public class Admin {
     }
 
     @PostMapping("/renewSubscription")
-    public MessageView.CompanyReport rewnewSubscription(@RequestBody User admin) {
+    public MessageView.CompanyReport rewnewSubscription(@RequestBody RequestWrapper.Admin map) {
         try {
-            User validAdmin = (User) Utils.isValidEntity(admin);
+            User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
             if(validAdmin != null) {
                 return companyService.renewSubscription(validAdmin);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -50,9 +52,9 @@ public class Admin {
     }
 
     @PostMapping("/cancelSubscription")
-    public MessageView.CompanyReport cancelSubscription(@RequestBody User admin) {
+    public MessageView.CompanyReport cancelSubscription(@RequestBody RequestWrapper.Admin map) {
         try {
-            User validAdmin = (User) Utils.isValidEntity(admin);
+            User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
             if(validAdmin != null) {
                 return companyService.cancelSubscription(validAdmin);
             } else throw new ControllerException("Error 001: No Valid Parameters Used");
@@ -91,9 +93,9 @@ public class Admin {
     }
 
     @PostMapping("/uploadImage")
-    public MessageView.FileUpload uploadImage(HttpServletRequest request,
-                                              @RequestBody RequestWrapper.Image map) {
+    public MessageView.FileUpload uploadImage(@RequestBody RequestWrapper.Image map) {
         try {
+            HttpServletRequest request = map.getRequest();
             User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
             MultipartFile validImage = Utils.isValidImage(map.getImage());
             if(validAdmin!= null && validImage != null) {
