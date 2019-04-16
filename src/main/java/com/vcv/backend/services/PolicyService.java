@@ -30,7 +30,7 @@ public class PolicyService {
     }
 
     public MessageView.InsuranceReport add(Policy policy) throws PolicyServiceException {
-        // First, Ensure that the Policy Number does not Already Exist with this Insurance Company
+        // First, Ensure that the Policy Number does not Already Exist with this Insurance ClientCompany
         Policy policyDB = policyRepository.findByCompanyIdAndPolicyNumber(policy.getCompanyId(), policy.getPolicyNumber());
         if(policyDB != null) throw new PolicyServiceException("Error 305: add(policy) found an already existing copy of this Policy");
 

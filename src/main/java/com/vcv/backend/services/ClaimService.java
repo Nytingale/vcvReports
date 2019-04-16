@@ -86,9 +86,9 @@ public class ClaimService {
         Optional<Job> job = jobRepository.findById(id);
         if(job.isEmpty()) throw new ClaimServiceException("Error 105: link(id, number, insurance) failed to find a matching Job that exists");
 
-        // Second, Find the Insurance Company
+        // Second, Find the Insurance ClientCompany
         Company company = companyRepository.findByCompanyName(insurance);
-        if(company == null) throw new ClaimServiceException("Error 110: link(id, number, insurance) failed to find a matching Company by that name");
+        if(company == null) throw new ClaimServiceException("Error 110: link(id, number, insurance) failed to find a matching ClientCompany by that name");
 
         // Third, Confirm that the Claim Exists
         Optional<Claim> claim = claimRepository.findById(new Claim.CompositeKey(number, company.getId()));

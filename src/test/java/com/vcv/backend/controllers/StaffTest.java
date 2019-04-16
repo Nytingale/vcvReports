@@ -84,7 +84,7 @@ public class StaffTest {
         map.setEmployee(testUser.getStaff());
         URI uri = new URI(baseURL + "/changeAdmin");
         ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, map, MessageView.UserReport.class);
-        assertThat(response.getBody().equals(new MessageView.UserReport().build(testUser.getStaff(), testCompany.getCompany(), "Successfully Changed Company Admins"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(testUser.getStaff(), testCompany.getCompany(), "Successfully Changed ClientCompany Admins"))).isTrue();
 
         testUser.getAdmin().setRoleId(2L);
         testUser.getStaff().setRoleId(1L);
@@ -119,7 +119,7 @@ public class StaffTest {
         map.setEmployee(testUser.getNewEmployee());
         URI uri = new URI(baseURL + "/addEmployee");
         ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, map, MessageView.UserReport.class);
-        assertThat(response.getBody().equals(new MessageView.UserReport().build(testUser.getNewEmployee(), testCompany.getCompany(), "Successfully Added new Employee to the Company"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(testUser.getNewEmployee(), testCompany.getCompany(), "Successfully Added new Employee to the ClientCompany"))).isTrue();
 
         userRepository.delete(testUser.getNewEmployee());
     }
@@ -131,20 +131,20 @@ public class StaffTest {
         map.setDetails(testUser.getStaffString());
         URI uri = new URI(baseURL + "/removeEmployee");
         ResponseEntity<MessageView.UserReport> response = restTemplate.postForEntity(uri, map, MessageView.UserReport.class);
-        assertThat(response.getBody().equals(new MessageView.UserReport().build(testUser.getStaff(), testCompany.getCompany(), "Successfully Removed the Employee from the Company"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.UserReport().build(testUser.getStaff(), testCompany.getCompany(), "Successfully Removed the Employee from the ClientCompany"))).isTrue();
 
         userRepository.save(testUser.getStaff());
     }
 
     @Test
     public void canRegisterCompany() throws URISyntaxException {
-        RequestWrapper.Registration map = new RequestWrapper.Registration();
-        map.setVcv(testUser.getVcv());
+        RequestWrapper.ClientCompany map = new RequestWrapper.ClientCompany();
+        map.setUser(testUser.getVcv());
         map.setAdmin(testUser.getNewAdmin());
         map.setCompany(testCompany.getNewCompany());
         URI uri = new URI(baseURL + "/register");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, map, MessageView.CompanyReport.class);
-        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany.getNewCompany(), "Successfully Created Company"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany.getNewCompany(), "Successfully Created ClientCompany"))).isTrue();
 
         companyRepository.delete(testCompany.getNewCompany());
         userRepository.delete(testUser.getNewAdmin());
@@ -157,7 +157,7 @@ public class StaffTest {
         map.setDetails(testCompany.getCompanyString());
         URI uri = new URI(baseURL + "/blacklist");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, map, MessageView.CompanyReport.class);
-        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany.getBlacklistedCompany(), "Successfully Blacklisted Company"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany.getBlacklistedCompany(), "Successfully Blacklisted ClientCompany"))).isTrue();
 
         testCompany.getCompany().setValid(true);
         companyRepository.save(testCompany.getCompany());
@@ -173,7 +173,7 @@ public class StaffTest {
         map.setDetails(testCompany.getCompanyString());
         URI uri = new URI(baseURL + "/approve");
         ResponseEntity<MessageView.CompanyReport> response = restTemplate.postForEntity(uri, map, MessageView.CompanyReport.class);
-        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany.getCompany(), "Successfully Approved Company"))).isTrue();
+        assertThat(response.getBody().equals(new MessageView.CompanyReport().build(testCompany.getCompany(), "Successfully Approved ClientCompany"))).isTrue();
     }
 
     @Test

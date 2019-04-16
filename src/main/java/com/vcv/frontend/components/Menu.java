@@ -32,11 +32,6 @@ public class Menu extends FlexLayout {
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         this.setFlexGrow(1, tabs);
         this.add(tabs);
-
-        // Login menu item
-        Button loginBtn = new Button("Client Login", VaadinIcon.SIGN_IN.create());
-        loginBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-        this.add(loginBtn);
     }
 
     /**

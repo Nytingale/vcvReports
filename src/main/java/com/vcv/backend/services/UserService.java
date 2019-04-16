@@ -61,12 +61,12 @@ public class UserService implements UserDetailsService {
 
 
 
-    /* Company Admin / VCV Staff */
+    /* ClientCompany Admin / VCV Staff */
     public MessageView resetPassword(User admin,
                                      String email) throws UserServiceException {
         // First, Confirm that the Admin is an Admin or VCV Staff
         if (!Utils.isValidStaffOrAdmin(admin)) {
-            throw new UserServiceException("Error 420: resetPassword(admin, email) has failed to identify the Admin as a Company Admin or VCV Staff");
+            throw new UserServiceException("Error 420: resetPassword(admin, email) has failed to identify the Admin as a ClientCompany Admin or VCV Staff");
         }
 
         // Second, Find the Employee to Reset Password
@@ -90,13 +90,13 @@ public class UserService implements UserDetailsService {
     public MessageView.UserReport changeAdmin(User admin,
                                               User employee) throws UserServiceException {
         // First, Confirm that the Admin is an Admin or VCV Staff
-        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: changeAdmin(admin, employee) has failed to identify the Admin as a Company Admin or VCV Staff");
+        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: changeAdmin(admin, employee) has failed to identify the Admin as a ClientCompany Admin or VCV Staff");
 
-        // Second, Find the Company of the Employee
+        // Second, Find the ClientCompany of the Employee
         Company company = companyRepository.findById(employee.getCompanyId()).get();
         if(admin != null) {
 
-            // Third, Find the Admin and of the Employee's Company
+            // Third, Find the Admin and of the Employee's ClientCompany
             User adminDB = userRepository.findByEmailAndCompanyId(company.getAdmin(), company.getId());
 
             // Fourth, Swap the Roles and Website Information of the Employee and Admin
@@ -108,10 +108,10 @@ public class UserService implements UserDetailsService {
                 // Fifth, Update the new records of the Employee and the Admin
                 userRepository.save(adminDB);
                 userRepository.save(employee);
-                return new MessageView.UserReport().build(employee, company, "Successfully Changed Company Admins");
+                return new MessageView.UserReport().build(employee, company, "Successfully Changed ClientCompany Admins");
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new UserServiceException("Error 415: changeAdmin(admin, employee) failed to change the Company Admin");
+                throw new UserServiceException("Error 415: changeAdmin(admin, employee) failed to change the ClientCompany Admin");
             }
         } else throw new UserServiceException("Error 400: changeAdmin(admin, employee) returned null");
     }
@@ -119,7 +119,7 @@ public class UserService implements UserDetailsService {
     public MessageView.UserReport addEmployee(User admin,
                                               User employee) throws UserServiceException {
         // First, Confirm that the Admin is an Admin or VCV Staff
-        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: addEmployee(admin, employee) has failed to identify the Admin as a Company Admin or VCV Staff");
+        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: addEmployee(admin, employee) has failed to identify the Admin as a ClientCompany Admin or VCV Staff");
 
         // Third, Ensure the Email doesn't Already Exist
         Optional<User> employeeDB = userRepository.findById(employee.getEmail());
@@ -132,7 +132,7 @@ public class UserService implements UserDetailsService {
             throw new UserServiceException("Error 430: addEmployee(admin, employee) cannot add this Employee as the Password is not valid");
         }
 
-        // Fifth, Ensure that the Employee's Company Name and Type are the same as the Admin's
+        // Fifth, Ensure that the Employee's ClientCompany Name and Type are the same as the Admin's
         employee.setCompanyId(admin.getCompanyId());
 
         // Sixth, Encode the Employee's Password
@@ -148,7 +148,7 @@ public class UserService implements UserDetailsService {
 
             // Seventh, Save the new Employee to the Database
             userRepository.save(employee);
-            return new MessageView.UserReport().build(employee, company, "Successfully Added new Employee to the Company");
+            return new MessageView.UserReport().build(employee, company, "Successfully Added new Employee to the ClientCompany");
         } catch(Exception e) {
             e.printStackTrace();
             throw new UserServiceException("Error 415: addEmployee(admin, employee) has failed to add the new Employee to the Database");
@@ -158,7 +158,7 @@ public class UserService implements UserDetailsService {
     public MessageView.UserReport removeEmployee(User admin,
                                                  String email) throws UserServiceException {
         // First, Confirm that the Admin is an Admin or VCV Staff
-        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: removeEmployee(admin, employee) has failed to identify the Admin as a Company Admin or VCV Staff");
+        if(!Utils.isValidStaffOrAdmin(admin)) throw new UserServiceException("Error 420: removeEmployee(admin, employee) has failed to identify the Admin as a ClientCompany Admin or VCV Staff");
 
         // Second, Confirm that the Employee Exists
         Optional<User> employee = userRepository.findById(email);
@@ -169,7 +169,7 @@ public class UserService implements UserDetailsService {
 
             // Third, Remove the Employee from the Database
             userRepository.delete(employee.get());
-            return new MessageView.UserReport().build(employee.get(), company, "Successfully Removed the Employee from the Company");
+            return new MessageView.UserReport().build(employee.get(), company, "Successfully Removed the Employee from the ClientCompany");
         } catch(Exception e) {
             e.printStackTrace();
             throw new UserServiceException("Error 415: removeEmployee(admin, email) has failed to add the new Employee to the Database");
@@ -177,7 +177,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    /* Company Admin */
+    /* ClientCompany Admin */
     public List<UserView> getEmployees(User admin) throws UserServiceException {
         // First, Confirm that the Admin is the Admin and they are Not Blacklisted
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
@@ -186,9 +186,9 @@ public class UserService implements UserDetailsService {
                 throw new UserServiceException("Error 405: getEmployees(admin) has failed you for Admin Authentication");
             }
 
-            // Second, Confirm that the Company is not Blacklisted
+            // Second, Confirm that the ClientCompany is not Blacklisted
             if (company.get().getBlacklisted()) {
-                throw new UserServiceException("Error 410: getEmployees(admin) has failed you for Company Approved Authentication");
+                throw new UserServiceException("Error 410: getEmployees(admin) has failed you for ClientCompany Approved Authentication");
             }
         } else throw new UserServiceException("Error 400: getEmployees(admin) has returned null");
 

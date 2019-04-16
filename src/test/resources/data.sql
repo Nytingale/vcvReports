@@ -3,7 +3,7 @@ USE vcv;
 # ==============================================================
 # = Dummy Data
 # ==============================================================
-INSERT INTO `company` VALUES
+INSERT INTO `clientCompany` VALUES
     (2, 'Trident Insurance',     'Insurance',  '2019-04-01 00:00:00', '2020-04-01 00:00:00', 0, 'https://tridentins.com', 'GeorgeOrwell@trident.com', 0, 1),
     (3, 'Courtesy Garage',       'Garage',     '2019-04-01 00:00:00', '2020-04-01 00:00:00', 0, 'https://courtesy.com',   'Jen@courtesy.com',         0, 1),
     (4, 'Tramaine Shop',         'Mechanic',   '2019-04-01 00:00:00', '2019-04-01 00:00:00', 0, '',                       'T_man@hotmail.com',        0, 1),

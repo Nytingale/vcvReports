@@ -35,7 +35,7 @@ public class CompanyService {
         // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: search(vcv, company) has failed you for VCV Staff Authentication");
 
-        // Second, Find the Company to Return
+        // Second, Find the ClientCompany to Return
         Company companyDB = companyRepository.findByCompanyName(company);
         if(companyDB != null) {
             return new CompanyView().build(companyDB);
@@ -48,21 +48,21 @@ public class CompanyService {
         // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: register(vcv, company) has failed you for VCV Staff Authentication");
 
-        // Second, Confirm that no Company with this Name
+        // Second, Confirm that no ClientCompany with this Name
         Company companyDB = companyRepository.findByCompanyName(company.getCompanyName());
-        if(companyDB != null) throw new CompanyServiceException("Error 805: register(vcv, company) has found an already-existing Company with this Name");
+        if(companyDB != null) throw new CompanyServiceException("Error 805: register(vcv, company) has found an already-existing ClientCompany with this Name");
 
         try {
-            // Third, Add the Admin and Company to the Database, with the Admin setup as an Admin
+            // Third, Add the Admin and ClientCompany to the Database, with the Admin setup as an Admin
             admin.setRoleId(2L);
             company.setAdmin(admin.getEmail());
             companyRepository.save(company);
             userRepository.save(admin);
 
-            return new MessageView.CompanyReport().build(company, "Successfully Created Company");
+            return new MessageView.CompanyReport().build(company, "Successfully Created ClientCompany");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new CompanyServiceException("Error 815: register(vcv, company) has failed to register the Company");
+            throw new CompanyServiceException("Error 815: register(vcv, company) has failed to register the ClientCompany");
         }
     }
 
@@ -71,20 +71,20 @@ public class CompanyService {
         // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: approve(vcv, company) has failed you for VCV Staff Authentication");
 
-        // Second, Confirm that the Company Exists
+        // Second, Confirm that the ClientCompany Exists
         Company companyDB = companyRepository.findByCompanyName(company);
-        if(companyDB == null) throw new CompanyServiceException("Error 805: approve(vcv, company) has failed to find such an existing Company");
+        if(companyDB == null) throw new CompanyServiceException("Error 805: approve(vcv, company) has failed to find such an existing ClientCompany");
 
-        // Third, Change the Company to be Approved
+        // Third, Change the ClientCompany to be Approved
         companyDB.setBlacklisted(false);
 
         try {
-            // Fourth, Save the Updated Company to the Database
+            // Fourth, Save the Updated ClientCompany to the Database
             companyRepository.save(companyDB);
-            return new MessageView.CompanyReport().build(companyDB, "Successfully Approved Company");
+            return new MessageView.CompanyReport().build(companyDB, "Successfully Approved ClientCompany");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new CompanyServiceException("Error 815: blacklist(vcv, company) has failed to update the Company");
+            throw new CompanyServiceException("Error 815: blacklist(vcv, company) has failed to update the ClientCompany");
         }
     }
 
@@ -93,20 +93,20 @@ public class CompanyService {
         // First, Confirm that the Admin is VCV Staff
         if(!Utils.isValidStaff(vcv)) throw new CompanyServiceException("Error 820: blacklist(vcv, company) has failed you for VCV Staff Authentication");
 
-        // Second, Confirm that the Company Exists
+        // Second, Confirm that the ClientCompany Exists
         Company companyDB = companyRepository.findByCompanyName(company);
-        if(companyDB == null) throw new CompanyServiceException("Error 805: blacklist(vcv, company) has failed to find such an existing Company");
+        if(companyDB == null) throw new CompanyServiceException("Error 805: blacklist(vcv, company) has failed to find such an existing ClientCompany");
 
-        // Third, Change the Company to be Blacklisted
+        // Third, Change the ClientCompany to be Blacklisted
         companyDB.setBlacklisted(true);
 
         try {
-            // Fourth, Save the Updated Company to the Database
+            // Fourth, Save the Updated ClientCompany to the Database
             companyRepository.save(companyDB);
-            return new MessageView.CompanyReport().build(companyDB, "Successfully Blacklisted Company");
+            return new MessageView.CompanyReport().build(companyDB, "Successfully Blacklisted ClientCompany");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new CompanyServiceException("Error 815: blacklist(vcv, company) has failed to update the Company");
+            throw new CompanyServiceException("Error 815: blacklist(vcv, company) has failed to update the ClientCompany");
         }
     }
 
@@ -115,7 +115,7 @@ public class CompanyService {
                                                    String website) throws CompanyServiceException {
         // First, Confirm that the Admin is an Admin or VCV Staff
         if(!Utils.isValidStaffOrAdmin(admin)) {
-            throw new CompanyServiceException("Error 805: updateWebsite(admin, website) has failed to identify the Admin as a Company Admin or VCV Staff");
+            throw new CompanyServiceException("Error 805: updateWebsite(admin, website) has failed to identify the Admin as a ClientCompany Admin or VCV Staff");
         }
 
         try {
@@ -123,10 +123,10 @@ public class CompanyService {
             Company company = companyRepository.findById(admin.getCompanyId()).get();
             company.setWebsite(website);
             companyRepository.save(company);
-            return new MessageView.CompanyReport().build(company,"Successfully Updated Company Website");
+            return new MessageView.CompanyReport().build(company,"Successfully Updated ClientCompany Website");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new CompanyServiceException("Error 815: updateWebsite(admin, website) has failed to update the Company website");
+            throw new CompanyServiceException("Error 815: updateWebsite(admin, website) has failed to update the ClientCompany website");
         }
     }
 
@@ -136,20 +136,20 @@ public class CompanyService {
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
         if(company.isPresent()) {
             if (!Utils.isValidStaffOrAdmin(admin)) {
-                throw new CompanyServiceException("Error 805: renewSubscription(admin) has failed to identify the Admin as a Company Admin or VCV Staff");
+                throw new CompanyServiceException("Error 805: renewSubscription(admin) has failed to identify the Admin as a ClientCompany Admin or VCV Staff");
             }
 
-            // Second, Confirm that the Company is not Blacklisted
+            // Second, Confirm that the ClientCompany is not Blacklisted
             if (company.get().getBlacklisted()) {
-                throw new CompanyServiceException("Error 810: renewSubscription(admin) has failed you for Company Approved Authentication");
+                throw new CompanyServiceException("Error 810: renewSubscription(admin) has failed you for ClientCompany Approved Authentication");
             }
         } else throw new CompanyServiceException("Error 800: renewSubscription(admin) has returned null");
 
-        // Third, Renew the Company's Subscription Start and End Date based on the Current Date
+        // Third, Renew the ClientCompany's Subscription Start and End Date based on the Current Date
         Timestamp start = Timestamp.valueOf(LocalDate.now().atStartOfDay());
         Timestamp end = Timestamp.valueOf(LocalDate.now().atStartOfDay().plusYears(1));
 
-        // Fourth, Update the Company Subscription
+        // Fourth, Update the ClientCompany Subscription
         company.get().setSubscriptionStartDate(start);
         company.get().setSubscriptionEndDate(end);
         company.get().setValid(Boolean.TRUE);
@@ -169,16 +169,16 @@ public class CompanyService {
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
         if(company.isPresent()) {
             if (!Utils.isValidStaffOrAdmin(admin)) {
-                throw new CompanyServiceException("Error 805: cancelSubscription(admin) has failed to identify the Admin as a Company Admin or VCV Staff");
+                throw new CompanyServiceException("Error 805: cancelSubscription(admin) has failed to identify the Admin as a ClientCompany Admin or VCV Staff");
             }
 
-            // Second, Confirm that the Company is not Blacklisted
+            // Second, Confirm that the ClientCompany is not Blacklisted
             if (company.get().getBlacklisted()) {
-                throw new CompanyServiceException("Error 810: cancelSubscription(admin) has failed you for Company Approved Authentication");
+                throw new CompanyServiceException("Error 810: cancelSubscription(admin) has failed you for ClientCompany Approved Authentication");
             }
         } else throw new CompanyServiceException("Error 800: cancelSubscription(admin) has returned null");
 
-        // Third, Update the Company Subscription to be Cancelled
+        // Third, Update the ClientCompany Subscription to be Cancelled
         company.get().setSubscriptionEndDate(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
         company.get().setValid(false);
 

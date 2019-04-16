@@ -27,14 +27,14 @@ public class FileService {
                                               HttpServletRequest request) throws FileServiceException {
         // First, Confirm that the Admin is an Admin or VCV Staff
         if(admin.getRoleId() > 1) {
-            throw new FileServiceException("Error 605: uploadImage(admin, image, request) has failed to identify the Admin as a Company Admin or VCV Staff");
+            throw new FileServiceException("Error 605: uploadImage(admin, image, request) has failed to identify the Admin as a ClientCompany Admin or VCV Staff");
         }
 
-        // Second, Find the Admin's Company
+        // Second, Find the Admin's ClientCompany
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
-        if(company.isEmpty()) throw new FileServiceException("Error 610: uploadImage(admin, image, request) could not find the Admin's Company");
+        if(company.isEmpty()) throw new FileServiceException("Error 610: uploadImage(admin, image, request) could not find the Admin's ClientCompany");
 
-        // Third, Create the Server-Side File Location and Name based on the Company's Name
+        // Third, Create the Server-Side File Location and Name based on the ClientCompany's Name
         File targetImage = new File(request.getServletContext().getRealPath(fileStorageConfig.getImagesDir()), company.get().getCompanyName());
 
         try {

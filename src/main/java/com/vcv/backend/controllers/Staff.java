@@ -172,9 +172,9 @@ public class Staff {
     }
 
     @PostMapping("/registerCompany")
-    public MessageView.CompanyReport registerCompany(@RequestBody RequestWrapper.Registration map) {
+    public MessageView.CompanyReport registerCompany(@RequestBody RequestWrapper.ClientCompany map) {
         try {
-            User validVcv = (User) Utils.isValidEntity(map.getVcv());
+            User validVcv = (User) Utils.isValidEntity(map.getUser());
             User validAdmin = (User) Utils.isValidEntity(map.getAdmin());
             Company validCompany = (Company) Utils.isValidEntity(map.getCompany());
             if(validVcv != null && validAdmin != null && validCompany != null) {

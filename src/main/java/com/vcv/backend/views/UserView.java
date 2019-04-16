@@ -55,7 +55,7 @@ public class UserView implements Serializable {
         List<UserView> views = new ArrayList<>();
 
         if(users.size() != companies.size()) {
-            throw new UserServiceException("build(List<Admin>, List<Company>) does not have equal Lists");
+            throw new UserServiceException("build(List<Admin>, List<ClientCompany>) does not have equal Lists");
         }
 
         for(int x=0; x<users.size(); x++) {

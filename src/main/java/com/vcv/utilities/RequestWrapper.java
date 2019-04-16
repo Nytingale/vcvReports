@@ -64,26 +64,8 @@ public class RequestWrapper {
             this.employee = employee;
         }
     }
-    public static class Registration extends Admin {
-        private User vcv;
-        private Company company;
 
-        public User getVcv() {
-            return vcv;
-        }
-        public Company getCompany() {
-            return company;
-        }
-
-        public void setVcv(User vcv) {
-            this.vcv = vcv;
-        }
-        public void setCompany(Company company) {
-            this.company = company;
-        }
-    }
-
-    public static class Company extends Admin {
+    public static class ClientCompany extends Admin {
         private User user;
         private Company company;
 
@@ -97,12 +79,12 @@ public class RequestWrapper {
         public void setUser(User user) {
             this.user = user;
         }
-        public void setCompany(Company company) {
-            this.company = company;
+        public void setCompany(Company clientCompany) {
+            this.company = clientCompany;
         }
     }
 
-    public static class Garage extends Company {
+    public static class Garage extends ClientCompany {
         private Job job;
 
         public Job getJob() {
@@ -112,7 +94,7 @@ public class RequestWrapper {
             this.job = job;
         }
     }
-    public static class Insurance extends Company {
+    public static class Insurance extends ClientCompany {
         private Claim claim;
         private Policy policy;
 
@@ -130,7 +112,7 @@ public class RequestWrapper {
             this.policy = policy;
         }
     }
-    public static class Dealership extends Company {
+    public static class Dealership extends ClientCompany {
         private Vehicle vehicle;
 
         public Vehicle getVehicle() {
