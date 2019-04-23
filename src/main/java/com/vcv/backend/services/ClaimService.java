@@ -108,4 +108,12 @@ public class ClaimService {
             throw new ClaimServiceException("Error 120: link(id, number, insurance) failed to save the Updates to the Job and Claim");
         }
     }
+
+    public ClaimView getClaimView(String claimNumber,
+                                  String companyName) throws ClaimServiceException {
+        Company company = companyRepository.findByCompanyName(companyName);
+        Optional<Claim> claim = claimRepository.findById(new Claim.CompositeKey(claimNumber, company.getId()));
+        if(claim.isPresent()) { return new ClaimView().build(claim.get(), company); }
+        throw new ClaimServiceException("Error 100: getClaimView(claimNumber, companyName) returned null");
+    }
 }

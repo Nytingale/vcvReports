@@ -59,8 +59,8 @@ public class DealershipTest {
     @Test
     public void canRegisterVehicle() throws URISyntaxException {
         URI uri = new URI(baseURL + "/registerVehicle");
-        ResponseEntity<MessageView.Registration> response = restTemplate.postForEntity(uri, testVehicle.getNewVehicle(), MessageView.Registration.class);
-        assertThat(response.getBody().equals(new MessageView.Registration().build(testVehicle.getNewVehicle(), "Successfully Registered Vehicle"))).isTrue();
+        ResponseEntity<MessageView.VehicleReport> response = restTemplate.postForEntity(uri, testVehicle.getNewVehicle(), MessageView.VehicleReport.class);
+        assertThat(response.getBody().equals(new MessageView.VehicleReport().build(testVehicle.getNewVehicle(), "Successfully Registered Vehicle"))).isTrue();
 
         vehicleRepository.delete(testVehicle.getNewVehicle());
     }

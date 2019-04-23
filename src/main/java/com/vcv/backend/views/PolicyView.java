@@ -39,6 +39,31 @@ public class PolicyView implements Serializable {
         return vin;
     }
 
+    public PolicyView setCompany(String company) {
+        this.company = company;
+        return this;
+    }
+    public PolicyView setPolicyNumber(String policyNumber) {
+        this.policyNumber = policyNumber;
+        return this;
+    }
+    public PolicyView setDate(String date) {
+        this.date = date;
+        return this;
+    }
+    public PolicyView setFinancer(String financer) {
+        this.financer = financer;
+        return this;
+    }
+    public PolicyView setValid(Boolean valid) {
+        this.valid = valid;
+        return this;
+    }
+    public PolicyView setVin(String vin) {
+        this.vin = vin;
+        return this;
+    }
+
     public PolicyView() {}
     public PolicyView build(Policy policy, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);

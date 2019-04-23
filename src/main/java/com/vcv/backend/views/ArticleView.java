@@ -38,24 +38,31 @@ public class ArticleView implements Serializable {
         return tags;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ArticleView that = (ArticleView) o;
-        return id.equals(that.id) &&
-                title.equals(that.title) &&
-                Objects.equals(subtitle, that.subtitle) &&
-                content.equals(that.content) &&
-                date.equals(that.date) &&
-                Objects.equals(tags, that.tags);
+    public ArticleView setId(Long id) {
+        this.id = id;
+        return this;
+    }
+    public ArticleView setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+    public ArticleView setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+        return this;
+    }
+    public ArticleView setContent(String content) {
+        this.content = content;
+        return this;
+    }
+    public ArticleView setDate(String date) {
+        this.date = date;
+        return this;
+    }
+    public ArticleView setTags(String tags) {
+        this.tags = tags;
+        return this;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, subtitle, content, date, tags);
-    }
-    
     public ArticleView build(Article article) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
 
@@ -77,5 +84,23 @@ public class ArticleView implements Serializable {
         }
 
         return views;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ArticleView that = (ArticleView) o;
+        return id.equals(that.id) &&
+                title.equals(that.title) &&
+                Objects.equals(subtitle, that.subtitle) &&
+                content.equals(that.content) &&
+                date.equals(that.date) &&
+                Objects.equals(tags, that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, subtitle, content, date, tags);
     }
 }

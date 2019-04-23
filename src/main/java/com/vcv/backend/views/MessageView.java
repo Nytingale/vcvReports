@@ -184,15 +184,15 @@ public class MessageView implements Serializable {
             return Objects.hash(vin, stolen, message);
         }
     }
-    public static class Registration extends MessageView {
+    public static class VehicleReport extends MessageView {
         private String vin;
 
         public String getVin() {
             return vin;
         }
 
-        public Registration() {}
-        public Registration build(Vehicle vehicle, String message) {
+        public VehicleReport() {}
+        public VehicleReport build(Vehicle vehicle, String message) {
             this.vin = vehicle.getVin();
             this.message = message;
 
@@ -202,8 +202,8 @@ public class MessageView implements Serializable {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof Registration)) return false;
-            Registration that = (Registration) o;
+            if (!(o instanceof VehicleReport)) return false;
+            VehicleReport that = (VehicleReport) o;
             return vin.equals(that.vin) &&
                     message.equals(that.message);
         }

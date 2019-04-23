@@ -28,6 +28,23 @@ public class UserView implements Serializable {
         return role;
     }
 
+    public UserView setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+    public UserView setCompany(String company) {
+        this.company = company;
+        return this;
+    }
+    public UserView setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+    public UserView setRole(String role) {
+        this.role = role;
+        return this;
+    }
+
     public UserView() {}
     public UserView build(User user, Company userCompany) {
         this.email = user.getEmail();

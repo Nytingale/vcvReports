@@ -46,6 +46,39 @@ public class CompanyView implements Serializable {
         return valid;
     }
 
+    public CompanyView setName(String name) {
+        this.name = name;
+        return this;
+    }
+    public CompanyView setType(String type) {
+        this.type = type;
+        return this;
+    }
+    public CompanyView setSubscriptionStartDate(String subscriptionStartDate) {
+        this.subscriptionStartDate = subscriptionStartDate;
+        return this;
+    }
+    public CompanyView setSubscriptionEndDate(String subscriptionEndDate) {
+        this.subscriptionEndDate = subscriptionEndDate;
+        return this;
+    }
+    public CompanyView setBlacklisted(Boolean blacklisted) {
+        this.blacklisted = blacklisted;
+        return this;
+    }
+    public CompanyView setWarning(Boolean warning) {
+        this.warning = warning;
+        return this;
+    }
+    public CompanyView setWebsite(String website) {
+        this.website = website;
+        return this;
+    }
+    public CompanyView setValid(Boolean valid) {
+        this.valid = valid;
+        return this;
+    }
+
     public CompanyView() {}
     public CompanyView build(Company company) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);

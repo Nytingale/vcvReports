@@ -47,6 +47,39 @@ public class JobView implements Serializable {
         return vin;
     }
 
+    public JobView setCost(Integer cost) {
+        this.cost = cost;
+        return this;
+    }
+    public JobView setType(String type) {
+        this.type = type;
+        return this;
+    }
+    public JobView setDate(String date) {
+        this.date = date;
+        return this;
+    }
+    public JobView setGarage(String garage) {
+        this.garage = garage;
+        return this;
+    }
+    public JobView setDetails(String details) {
+        this.details = details;
+        return this;
+    }
+    public JobView setInsuranceName(String insuranceName) {
+        this.insuranceName = insuranceName;
+        return this;
+    }
+    public JobView setClaim(String claim) {
+        this.claim = claim;
+        return this;
+    }
+    public JobView setVin(String vin) {
+        this.vin = vin;
+        return this;
+    }
+
     public JobView() {}
     public JobView build(Job job, Company garageCompany, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);

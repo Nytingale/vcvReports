@@ -34,7 +34,7 @@ public class Dealership {
     }
 
     @PostMapping("/registerVehicle")
-    public MessageView.Registration registerVehicle(@RequestBody RequestWrapper.Dealership map) {
+    public MessageView.VehicleReport registerVehicle(@RequestBody RequestWrapper.Dealership map) {
         try {
             Vehicle validVehicle = (Vehicle) Utils.isValidEntity(map.getVehicle());
             if(validVehicle != null) {

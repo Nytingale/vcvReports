@@ -43,6 +43,35 @@ public class ClaimView implements Serializable {
         return vin;
     }
 
+    public ClaimView setClaimNumber(String claimNumber) {
+        this.claimNumber = claimNumber;
+        return this;
+    }
+    public ClaimView setCompany(String company) {
+        this.company = company;
+        return this;
+    }
+    public ClaimView setType(String type) {
+        this.type = type;
+        return this;
+    }
+    public ClaimView setDate(String date) {
+        this.date = date;
+        return this;
+    }
+    public ClaimView setDetails(String details) {
+        this.details = details;
+        return this;
+    }
+    public ClaimView setPolicyNumber(String policyNumber) {
+        this.policyNumber = policyNumber;
+        return this;
+    }
+    public ClaimView setVin(String vin) {
+        this.vin = vin;
+        return this;
+    }
+
     public ClaimView() {}
     public ClaimView build(Claim claim, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);

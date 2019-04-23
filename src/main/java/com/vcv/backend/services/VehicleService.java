@@ -17,6 +17,7 @@ import com.vcv.backend.views.VehicleView;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class VehicleService {
         else throw new VehicleServiceException("Error 500: getRegisteredVehicles(dealership) returned null");
     }
 
-    public MessageView.Registration register(Vehicle vehicle) throws VehicleServiceException {
+    public MessageView.VehicleReport register(Vehicle vehicle) throws VehicleServiceException {
         try {
             // First, Ensure that a Vehicle with this VIN Doesn't Exist
             Vehicle vehicleDB = vehicleRepository.findByVin(vehicle.getVin());
@@ -53,7 +54,7 @@ public class VehicleService {
 
             // Second, Save the New Vehicle
             vehicleRepository.save(vehicle);
-            return new MessageView.Registration().build(vehicle, "Successfully Registered Vehicle");
+            return new MessageView.VehicleReport().build(vehicle, "Successfully Registered Vehicle");
         } catch (Exception e) {
             e.printStackTrace();
             throw new VehicleServiceException("Error 500: register(vehicle) failed to register the Vehicle");
@@ -151,6 +152,15 @@ public class VehicleService {
         }
 
         return new VehicleView.FullReport().build(vehicle, insuranceCompany, jobs, garageCompanies, claims);
+    }
+
+    public VehicleView getVehicleView(String vin) throws VehicleServiceException, DecoderServiceException {
+        Vehicle vehicle = vehicleRepository.findByVin(vin);
+        if(vehicle != null) {
+            Optional<Company> company = companyRepository.findById(vehicle.getInsuranceId());
+            if (company.isPresent()) return new VehicleView().build(decoderService.update(vehicle), company.get());
+        }
+        throw new VehicleServiceException("Error 500: getVehicleView(vin) returned null");
     }
 
     /* Private */

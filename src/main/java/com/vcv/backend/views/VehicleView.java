@@ -130,6 +130,119 @@ public class VehicleView implements Serializable {
         return policyNumber;
     }
 
+    public VehicleView setVin(String vin) {
+        this.vin = vin;
+        return this;
+    }
+    public VehicleView setYear(Integer year) {
+        this.year = year;
+        return this;
+    }
+    public VehicleView setMake(String make) {
+        this.make = make;
+        return this;
+    }
+    public VehicleView setModel(String model) {
+        this.model = model;
+        return this;
+    }
+    public VehicleView setColour(String colour) {
+        this.colour = colour;
+        return this;
+    }
+    public VehicleView setValue(Integer value) {
+        this.value = value;
+        return this;
+    }
+    public VehicleView setDealership(String dealership) {
+        this.dealership = dealership;
+        return this;
+    }
+    public VehicleView setEvaluationDate(String evaluationDate) {
+        this.evaluationDate = evaluationDate;
+        return this;
+    }
+    public VehicleView setRegistrationDate(String registrationDate) {
+        this.registrationDate = registrationDate;
+        return this;
+    }
+    public VehicleView setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+        return this;
+    }
+    public VehicleView setTransmission(String transmission) {
+        this.transmission = transmission;
+        return this;
+    }
+    public VehicleView setFuelType(String fuelType) {
+        this.fuelType = fuelType;
+        return this;
+    }
+    public VehicleView setSteering(String steering) {
+        this.steering = steering;
+        return this;
+    }
+    public VehicleView setMileage(Integer mileage) {
+        this.mileage = mileage;
+        return this;
+    }
+    public VehicleView setEngine(String engine) {
+        this.engine = engine;
+        return this;
+    }
+    public VehicleView setDrive(String drive) {
+        this.drive = drive;
+        return this;
+    }
+    public VehicleView setBody(String body) {
+        this.body = body;
+        return this;
+    }
+    public VehicleView setNumDoors(Integer numDoors) {
+        this.numDoors = numDoors;
+        return this;
+    }
+    public VehicleView setNumSeats(Integer numSeats) {
+        this.numSeats = numSeats;
+        return this;
+    }
+    public VehicleView setWrittenOff(Boolean writtenOff) {
+        this.writtenOff = writtenOff;
+        return this;
+    }
+    public VehicleView setStolen(Boolean stolen) {
+        this.stolen = stolen;
+        return this;
+    }
+    public VehicleView setNumAccidents(Integer numAccidents) {
+        this.numAccidents = numAccidents;
+        return this;
+    }
+    public VehicleView setNumRobberies(Integer numRobberies) {
+        this.numRobberies = numRobberies;
+        return this;
+    }
+    public VehicleView setNumSalvages(Integer numSalvages) {
+        this.numSalvages = numSalvages;
+        return this;
+    }
+    public VehicleView setNumServices(Integer numServices) {
+        this.numServices = numServices;
+        return this;
+    }
+    public VehicleView setNumOwners(Integer numOwners) {
+        this.numOwners = numOwners;
+        return this;
+    }
+    public VehicleView setInsurance(String insurance) {
+        this.insurance = insurance;
+        return this;
+    }
+    public VehicleView setPolicyNumber(String policyNumber) {
+        this.policyNumber = policyNumber;
+        return this;
+    }
+
     public VehicleView() {}
     public VehicleView build(Vehicle vehicle, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
