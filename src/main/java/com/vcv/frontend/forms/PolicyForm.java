@@ -54,7 +54,7 @@ public class PolicyForm extends Div {
         financer.setWidth("100%");
         financer.setValueChangeMode(ValueChangeMode.EAGER);
 
-        vin = new TextField("Vehicle VIN");
+        vin = new TextField("VIN");
         vin.setWidth("100%");
         vin.setRequired(true);
         vin.setValueChangeMode(ValueChangeMode.EAGER);

@@ -59,7 +59,7 @@ public class ClaimForm extends Div {
         policyNumber.setRequired(true);
         policyNumber.setValueChangeMode(ValueChangeMode.EAGER);
 
-        vin = new TextField("Vehicle VIN");
+        vin = new TextField("VIN");
         vin.setWidth("100%");
         vin.setRequired(true);
         vin.setValueChangeMode(ValueChangeMode.EAGER);

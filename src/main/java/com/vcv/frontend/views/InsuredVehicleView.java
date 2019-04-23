@@ -4,28 +4,25 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
-
 import com.vaadin.flow.router.*;
-
-import com.vcv.backend.entities.Claim;
+import com.vcv.backend.services.VehicleService;
 import com.vcv.backend.views.ClaimView;
 import com.vcv.backend.views.PolicyView;
 import com.vcv.backend.views.UserView;
 import com.vcv.backend.views.VehicleView;
-import com.vcv.backend.services.VehicleService;
-
 import com.vcv.frontend.MainLayout;
 import com.vcv.frontend.forms.ClaimForm;
 import com.vcv.frontend.forms.PolicyForm;
 import com.vcv.frontend.forms.VehicleForm;
 import com.vcv.frontend.grids.VehicleGrid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Route(value = "Insured Vehicles", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
@@ -48,8 +45,16 @@ public class InsuredVehicleView extends HorizontalLayout implements HasUrlParame
         this.setSizeFull();
 
         TextField filter = new TextField();
-        filter.setPlaceholder("Search by VIN, Year, Make, or Model");
+        filter.setPlaceholder("Search by VIN, Year, Make, Model, Insurance, Dealership, Policy Number, Registration Date, or Evaluation Date");
         filter.addValueChangeListener(event -> searchFilter(event.getValue()));
+
+        try {
+            List<VehicleView> vehicles = vehicleService.getInsuredVehicles(user.getCompany());
+            dataProvider = DataProvider.ofCollection(vehicles);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
 
         vehicleGrid = new VehicleGrid();
         vehicleGrid.setDataProvider(dataProvider);
@@ -106,9 +111,15 @@ public class InsuredVehicleView extends HorizontalLayout implements HasUrlParame
 
     private void searchFilter(String filter) {
         dataProvider.setFilter(vehicleView ->
-                vehicleView.getVin().equals(filter) ||
-                vehicleView.getInsurance().equals(filter) ||
-                vehicleView.getPolicyNumber().equals(filter)
+                vehicleView.getVin().contains(filter) ||
+                vehicleView.getMake().contains(filter) ||
+                vehicleView.getModel().contains(filter) ||
+                vehicleView.getInsurance().contains(filter) ||
+                vehicleView.getDealership().contains(filter) ||
+                vehicleView.getPolicyNumber().contains(filter) ||
+                vehicleView.getEvaluationDate().contains(filter) ||
+                vehicleView.getRegistrationDate().contains(filter) ||
+                Integer.toString(vehicleView.getYear()).contains(filter)
         );
     }
 
