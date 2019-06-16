@@ -1,6 +1,7 @@
 package com.vcv.backend.entities;
 
 import com.vcv.backend.enums.JobType;
+import com.vcv.backend.views.JobView;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -159,6 +160,21 @@ public class Job {
             job.setVin(this.vin);
             job.setInsuranceId(this.insuranceId);
             job.setCompanyId(this.companyId);
+
+            return job;
+        }
+        public Job build(JobView view) {
+            Job job = new Job();
+
+            job.setId(view.getId());
+            job.setJobCost(view.getCost());
+            job.setJobType(view.getJType());
+            job.setJobDate(view.getTimestamp());
+            job.setJobDetails(view.getDetails());
+            job.setClaimNumber(view.getClaimNumber());
+            job.setVin(view.getVin());
+            job.setInsuranceId(view.getInsuranceId());
+            job.setCompanyId(view.getGarageId());
 
             return job;
         }

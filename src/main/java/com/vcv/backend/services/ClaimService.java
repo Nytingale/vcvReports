@@ -56,23 +56,23 @@ public class ClaimService {
     }
 
     /* Per Claim */
-    public MessageView.InsuranceReport update(Claim claim) throws ClaimServiceException {
+    public MessageView.InsuranceReport update(Claim claim,
+                                              String claimNumber,
+                                              String policyNumber) throws ClaimServiceException {
         // First, find the Claim to be Updated in the Database
-        if(claimRepository.findById(new Claim.CompositeKey(claim.getClaimNumber(), claim.getCompanyId())).isEmpty()) {
-            throw new ClaimServiceException("Error 105: update(claim) failed to find a matching Claim that exists");
-        }
+        Claim claimDB = claimRepository.findByClaimNumberAndPolicyNumber(claimNumber, policyNumber);
 
         // Second, Update all Fields of the Database's Claim from the Inputted Claim, except for the PK and FK
-        claim.setClaimDate(claim.getClaimDate());
-        claim.setClaimType(claim.getClaimType());
-        claim.setClaimDetails(claim.getClaimDetails());
+        claimDB.setClaimDate(claim.getClaimDate());
+        claimDB.setClaimType(claim.getClaimType());
+        claimDB.setClaimDetails(claim.getClaimDetails());
 
         try {
-            Company company = companyRepository.findById(claim.getCompanyId()).get();
+            Company company = companyRepository.findById(claimDB.getCompanyId()).get();
 
             // Third, Save the Updates
-            claimRepository.save(claim);
-            return new MessageView.InsuranceReport().build(claim, company, "Successfully Updated Claim");
+            claimRepository.save(claimDB);
+            return new MessageView.InsuranceReport().build(claimDB, company, "Successfully Updated Claim");
         } catch (Exception e) {
             e.printStackTrace();
             throw new ClaimServiceException("Error 115: update(claim) failed to update the Claim");
@@ -105,7 +105,7 @@ public class ClaimService {
             return new MessageView.InsuranceReport().build(claim.get(), company, "Successfully Linked Job to Claim");
         } catch(Exception e) {
             e.printStackTrace();
-            throw new ClaimServiceException("Error 120: link(id, number, insurance) failed to save the Updates to the Job and Claim");
+            throw new ClaimServiceException("Error 120: link(id, number, insurance) failed to makeAdminBtn the Updates to the Job and Claim");
         }
     }
 

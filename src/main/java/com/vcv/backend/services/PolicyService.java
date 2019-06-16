@@ -68,4 +68,12 @@ public class PolicyService {
         if(policy != null && company.isPresent()) return new PolicyView().build(policy, company.get());
         else throw new PolicyServiceException("Error 300: getPolicy(vin) returned null");
     }
+
+    public PolicyView getPolicyView(String policyNumber,
+                                    String insurance) throws PolicyServiceException {
+        Company company = companyRepository.findByCompanyName(insurance);
+        Optional<Policy> policy = policyRepository.findById(new Policy.CompositeKey(company.getId(), policyNumber));
+        if(policy.isPresent()) return new PolicyView().build(policy.get(), company);
+        else throw new PolicyServiceException("Error 300: getPolicyView(policyNumber, insurance) returned null");
+    }
 }

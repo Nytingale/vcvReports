@@ -4,19 +4,24 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.*;
+
+import com.vcv.backend.entities.Claim;
+import com.vcv.backend.exceptions.ClaimServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vcv.backend.services.ClaimService;
 import com.vcv.backend.views.ClaimView;
 import com.vcv.backend.views.UserView;
 import com.vcv.frontend.MainLayout;
 import com.vcv.frontend.forms.ClaimForm;
 import com.vcv.frontend.grids.ClaimGrid;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -41,6 +46,11 @@ public class InsuranceClaimView extends HorizontalLayout implements HasUrlParame
         filter.setPlaceholder("Search by Claim Number, Policy Number, or VIN");
         filter.addValueChangeListener(event -> searchFilter(event.getValue()));
 
+        newClaim = new Button("New Claim");
+        newClaim.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        newClaim.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        newClaim.addClickListener(click -> newClaim());
+
         try {
             List<ClaimView> claims = claimService.getInsuranceClaims(user.getCompany());
             dataProvider = DataProvider.ofCollection(claims);
@@ -55,18 +65,20 @@ public class InsuranceClaimView extends HorizontalLayout implements HasUrlParame
 
         claimForm = new ClaimForm("insurance-claim");
 
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.add(filter);
+        horizontalLayout.add(newClaim);
+        horizontalLayout.expand(filter);
+        horizontalLayout.setWidth("100%");
+        horizontalLayout.setVerticalComponentAlignment(Alignment.START, filter);
+
         VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.add(filter);
+        verticalLayout.add(horizontalLayout);
         verticalLayout.add(claimGrid);
         verticalLayout.setFlexGrow(1, claimGrid);
-        verticalLayout.setFlexGrow(0, filter);
+        verticalLayout.setFlexGrow(0, horizontalLayout);
         verticalLayout.setSizeFull();
         verticalLayout.expand(claimGrid);
-
-        newClaim = new Button("New Claim");
-        newClaim.addClickListener(click -> newClaim());
-        newClaim.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        newClaim.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         this.add(verticalLayout);
         this.add(claimForm);
@@ -75,20 +87,44 @@ public class InsuranceClaimView extends HorizontalLayout implements HasUrlParame
     private void newClaim() {
         claimGrid.getSelectionModel().deselectAll();
         UI.getCurrent().navigate(InsuranceClaimView.class, "new claim");
-        claimForm.displayForm(true);
-        claimForm.displayClaim(new ClaimView());
+        openInsuranceClaimDetails(new ClaimView());
+    }
+
+    private void saveClaim(ClaimView claimView) {
+        Claim claim = new Claim.Builder().build(claimView);
+        claimGrid.getSelectionModel().deselectAll();
+        if(claimForm.binder().writeBeanIfValid(claimForm.currentClaim())) {
+            try {
+                if (claim.getClaimNumber() != null &&
+                        claim.getPolicyNumber() != null &&
+                        claim.getCompanyId() != null &&
+                        claim.getClaimDate() != null) {
+                    Notification.show(claimService.update(claim, claim.getClaimNumber(), claim.getPolicyNumber()).getMessage());
+                    dataProvider.refreshItem(claimForm.currentClaim());
+                } else {
+                    claimService.add(claim);
+                    dataProvider.refreshAll();
+                }
+            } catch (ClaimServiceException e) {
+                e.printStackTrace();
+            }
+        }
+
+        claimForm.displayForm(false);
     }
 
     private void openInsuranceClaimDetails(ClaimView claim) {
+        claimForm.saveBtn().addClickListener(click -> saveClaim(claim));
         claimForm.displayForm(true);
         claimForm.displayClaim(claim);
     }
 
     private void searchFilter(String filter) {
         dataProvider.setFilter(claimView ->
-                claimView.getVin().equals(filter) ||
-                claimView.getClaimNumber().equals(filter) ||
-                claimView.getPolicyNumber().equals(filter)
+                claimView.getVin().contains(filter) ||
+                claimView.getDate().contains(filter) ||
+                claimView.getClaimNumber().contains(filter) ||
+                claimView.getPolicyNumber().contains(filter)
         );
     }
 

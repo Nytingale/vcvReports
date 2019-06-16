@@ -1,5 +1,7 @@
 package com.vcv.backend.entities;
 
+import com.vcv.backend.views.VehicleView;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -304,8 +306,8 @@ public class Vehicle {
         private String steering;
         private String drive;
         private String body;
-        private Integer seats;
-        private Integer doors;
+        private Integer numSeats;
+        private Integer numDoors;
         private Boolean decoded;
         private Boolean writtenOff;
         private Boolean stolen;
@@ -385,12 +387,12 @@ public class Vehicle {
             this.body = body;
             return this;
         }
-        public Builder setSeats(Integer seats) {
-            this.seats = seats;
+        public Builder setNumSeats(Integer numSeats) {
+            this.numSeats = numSeats;
             return this;
         }
-        public Builder setDoors(Integer doors) {
-            this.doors = doors;
+        public Builder setNumDoors(Integer numDoors) {
+            this.numDoors = numDoors;
             return this;
         }
         public Builder setDecoded(Boolean decoded) {
@@ -454,8 +456,8 @@ public class Vehicle {
             vehicle.setSteering(this.steering);
             vehicle.setDrive(this.drive);
             vehicle.setBody(this.body);
-            vehicle.setNumSeats(this.seats);
-            vehicle.setNumDoors(this.doors);
+            vehicle.setNumSeats(this.numSeats);
+            vehicle.setNumDoors(this.numDoors);
             vehicle.setDecoded(this.decoded);
             vehicle.setWrittenOff(this.writtenOff);
             vehicle.setStolen(this.stolen);
@@ -466,6 +468,41 @@ public class Vehicle {
             vehicle.setNumOwners(this.numOwners);
             vehicle.setPolicyNumber(this.policyNumber);
             vehicle.setInsuranceId(this.insuranceId);
+
+            return vehicle;
+        }
+        public Vehicle build(VehicleView view) {
+            Vehicle vehicle = new Vehicle();
+
+            vehicle.setVin(view.getVin());
+            vehicle.setYear(view.getYear());
+            vehicle.setMake(view.getMake());
+            vehicle.setModel(view.getModel());
+            vehicle.setManufacturer(view.getManufacturer());
+            vehicle.setEngine(view.getEngine());
+            vehicle.setColour(view.getColour());
+            vehicle.setMileage(view.getMileage());
+            vehicle.setDealership(view.getDealership());
+            vehicle.setValue(view.getValue());
+            vehicle.setEvaluationDate(view.getEvaluationTimestamp());
+            vehicle.setRegistrationDate(view.getRegistrationTimestamp());
+            vehicle.setTransmission(view.getTransmission());
+            vehicle.setFuelType(view.getFuelType());
+            vehicle.setSteering(view.getSteering());
+            vehicle.setDrive(view.getDrive());
+            vehicle.setBody(view.getBody());
+            vehicle.setNumSeats(view.getNumSeats());
+            vehicle.setNumDoors(view.getNumDoors());
+            vehicle.setDecoded(view.getDecoded());
+            vehicle.setWrittenOff(view.getWrittenOff());
+            vehicle.setStolen(view.getStolen());
+            vehicle.setNumAccidents(view.getNumAccidents());
+            vehicle.setNumRobberies(view.getNumRobberies());
+            vehicle.setNumSalvages(view.getNumSalvages());
+            vehicle.setNumServices(view.getNumServices());
+            vehicle.setNumOwners(view.getNumOwners());
+            vehicle.setPolicyNumber(view.getPolicyNumber());
+            vehicle.setInsuranceId(view.getInsuranceId());
 
             return vehicle;
         }

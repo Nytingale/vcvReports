@@ -3,6 +3,7 @@ package com.vcv.backend.views;
 import com.vcv.backend.entities.Article;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +14,7 @@ import java.util.Objects;
 
 public class ArticleView implements Serializable {
     private Long id;
+    private Timestamp timestamp;
     private String title;
     private String subtitle;
     private String content;
@@ -21,6 +23,9 @@ public class ArticleView implements Serializable {
 
     public Long getId() {
         return id;
+    }
+    public Timestamp getTimestamp() {
+        return timestamp;
     }
     public String getTitle() {
         return title;
@@ -40,6 +45,10 @@ public class ArticleView implements Serializable {
 
     public ArticleView setId(Long id) {
         this.id = id;
+        return this;
+    }
+    public ArticleView setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
         return this;
     }
     public ArticleView setTitle(String title) {
@@ -67,6 +76,7 @@ public class ArticleView implements Serializable {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
 
         this.id = article.getId();
+        this.timestamp = article.getDate();
         this.title = article.getTitle();
         this.subtitle = article.getSubtitle();
         this.content = article.getContent();
@@ -92,6 +102,7 @@ public class ArticleView implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         ArticleView that = (ArticleView) o;
         return id.equals(that.id) &&
+                timestamp.equals(that.timestamp) &&
                 title.equals(that.title) &&
                 Objects.equals(subtitle, that.subtitle) &&
                 content.equals(that.content) &&
@@ -101,6 +112,6 @@ public class ArticleView implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, subtitle, content, date, tags);
+        return Objects.hash(id, timestamp, title, subtitle, content, date, tags);
     }
 }

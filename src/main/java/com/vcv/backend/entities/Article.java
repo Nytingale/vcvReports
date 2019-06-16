@@ -1,5 +1,7 @@
 package com.vcv.backend.entities;
 
+import com.vcv.backend.views.ArticleView;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -115,6 +117,18 @@ public class Article {
             article.setContent(this.content);
             article.setDate(this.date);
             article.setTags(this.tags);
+
+            return article;
+        }
+        public Article build(ArticleView view) {
+            Article article = new Article();
+
+            article.setId(view.getId());
+            article.setTitle(view.getTitle());
+            article.setSubtitle(view.getSubtitle());
+            article.setContent(view.getContent());
+            article.setDate(view.getTimestamp());
+            article.setTags(view.getTags());
 
             return article;
         }

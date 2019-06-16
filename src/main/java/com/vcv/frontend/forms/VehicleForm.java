@@ -2,11 +2,13 @@ package com.vcv.frontend.forms;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
@@ -56,6 +58,9 @@ public class VehicleForm extends Div {
     private TextField policyNumber;
 
     private Button close;
+
+    private Button newClaim;
+    private Button newPolicy;
 
     private String window;
 
@@ -172,6 +177,20 @@ public class VehicleForm extends Div {
         close.setWidth("100%");
         close.addClickListener(event -> closeForm());
 
+        newClaim = new Button("New Claim");
+        newClaim.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        newClaim.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        newClaim.setEnabled(false);
+        newClaim.setVisible(false);
+        newClaim.setWidth("100%");
+
+        newPolicy = new Button("New Policy");
+        newPolicy.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        newPolicy.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        newPolicy.setEnabled(false);
+        newPolicy.setVisible(false);
+        newPolicy.setWidth("100%");
+
         binder = new BeanValidationBinder<>(VehicleView.class);
         binder.bindInstanceFields(this);
 
@@ -230,30 +249,26 @@ public class VehicleForm extends Div {
         content.add(
                 horizontalLayout1, horizontalLayout2, horizontalLayout3, horizontalLayout4, horizontalLayout5,
                 horizontalLayout6, horizontalLayout7, horizontalLayout8, horizontalLayout9, horizontalLayout10,
-                horizontalLayout11, close);
+                horizontalLayout11, newClaim, newPolicy, close);
 
         this.add(content);
     }
 
-    private void closeForm() {
-        switch(window) {
-            case "insured-vehicle":
-                UI.getCurrent().navigate(InsuredVehicleView.class, "");
-                break;
-
-            case "registered-vehicle":
-                //UI.getCurrent().navigate(RegisteredVehicleView.class, "");
-                break;
-        }
-        displayForm(false);
+    public Binder<VehicleView> binder() {
+        return this.binder;
     }
 
-    public void addButton(Button btn) {
-        content.add(btn);
+    public Button newClaim() {
+        return newClaim;
     }
 
-    public void removeButton(Button btn) {
-        content.remove(btn);
+    public Button newPolicy() {
+        return newPolicy;
+    }
+
+    public void displayVehicle(VehicleView vehicle) {
+        currentVehicle = vehicle;
+        binder.readBean(vehicle);
     }
 
     public void displayForm(boolean flag) {
@@ -261,8 +276,20 @@ public class VehicleForm extends Div {
         this.setEnabled(flag);
     }
 
-    public void displayVehicle(VehicleView vehicle) {
-        currentVehicle = vehicle;
-        binder.readBean(vehicle);
+    private void closeForm() {
+        switch(window) {
+            case "insured-vehicle":
+                UI.getCurrent().navigate(InsuredVehicleView.class, "");
+                newPolicy.setEnabled(false);
+                newPolicy.setVisible(false);
+                newClaim.setEnabled(false);
+                newClaim.setVisible(false);
+                break;
+
+            case "registered-vehicle":
+                //UI.getCurrent().navigate(RegisteredVehicleView.class, "");
+                break;
+        }
+        displayForm(false);
     }
 }

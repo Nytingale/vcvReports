@@ -8,6 +8,8 @@ import java.util.List;
 
 @Repository
 public interface ClaimRepository extends PagingAndSortingRepository<Claim, Claim.CompositeKey> {
+    Claim findByClaimNumberAndPolicyNumber(String claimNumber, String policyNumber);
+
     List<Claim> findByVinOrderByClaimDateDesc(String vin);
     List<Claim> findByCompanyIdOrderByClaimDateDesc(Long companyId);
 }

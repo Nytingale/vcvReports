@@ -2,9 +2,11 @@ package com.vcv.frontend.forms;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -26,6 +28,8 @@ public class ClaimForm extends Div {
     private Details details;
 
     private Button close;
+
+    private Button save;
 
     private String window;
 
@@ -77,12 +81,42 @@ public class ClaimForm extends Div {
         close.setWidth("100%");
         close.addClickListener(event -> closeForm());
 
+        save = new Button("Save");
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        save.setEnabled(false);
+        save.setVisible(false);
+        save.setWidth("100%");
+
         binder = new BeanValidationBinder<>(ClaimView.class);
         binder.bindInstanceFields(this);
 
-        content.add(claimNumber, type, date, policyNumber, vin, company, details, close);
+        content.add(claimNumber, type, date, policyNumber, vin, company, details, save, close);
 
         this.add(content);
+    }
+
+    public ClaimView currentClaim() {
+        return this.currentClaim;
+    }
+
+    public Binder<ClaimView> binder() {
+        return this.binder;
+    }
+
+    public Button saveBtn() {
+        return save;
+    }
+
+    public void displayClaim(ClaimView claim) {
+        currentClaim = claim;
+        binder.readBean(claim);
+    }
+
+    public void displayForm(boolean flag) {
+        this.setVisible(flag);
+        this.setEnabled(flag);
+        save.setVisible(flag);
+        save.setEnabled(flag);
     }
 
     private void closeForm() {
@@ -98,17 +132,7 @@ public class ClaimForm extends Div {
         displayForm(false);
     }
 
-    public void displayForm(boolean flag) {
-        this.setVisible(flag);
-        this.setEnabled(flag);
-    }
-
-    public void displayClaim(ClaimView claim) {
-        currentClaim = claim;
-        binder.readBean(claim);
-    }
-
-    public void setDetailsContent(String text) {
+    /*public void setDetailsContent(String text) {
         details.addContent(new TextField(text));
-    }
+    }*/
 }

@@ -1,10 +1,12 @@
 package com.vcv.frontend.forms;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
@@ -13,6 +15,7 @@ import com.vaadin.flow.data.binder.Binder;
 
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vcv.backend.views.PolicyView;
+import com.vcv.frontend.views.InsurancePolicyView;
 import com.vcv.frontend.views.InsuredVehicleView;
 
 
@@ -26,6 +29,7 @@ public class PolicyForm extends Div {
     private Checkbox valid;
     private TextField company;
 
+    private Button save;
     private Button close;
 
     private String window;
@@ -70,12 +74,42 @@ public class PolicyForm extends Div {
         close.setWidth("100%");
         close.addClickListener(event -> closeForm());
 
+        save = new Button("Save");
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        save.setEnabled(false);
+        save.setVisible(false);
+        save.setWidth("100%");
+
         binder = new BeanValidationBinder<>(PolicyView.class);
         binder.bindInstanceFields(this);
 
-        content.add(policyNumber, date, financer, vin, valid, company, close);
+        content.add(policyNumber, date, financer, vin, valid, company, save, close);
 
         this.add(content);
+    }
+
+    public PolicyView currentPolicy() {
+        return currentPolicy;
+    }
+
+    public Binder<PolicyView> binder() {
+        return this.binder;
+    }
+
+    public Button saveBtn() {
+        return save;
+    }
+
+    public void displayPolicy(PolicyView policy) {
+        currentPolicy = policy;
+        binder.readBean(policy);
+    }
+
+    public void displayForm(boolean flag) {
+        this.setVisible(flag);
+        this.setEnabled(flag);
+        save.setVisible(flag);
+        save.setEnabled(flag);
     }
 
     private void closeForm() {
@@ -89,15 +123,5 @@ public class PolicyForm extends Div {
                 break;
         }
         displayForm(false);
-    }
-
-    public void displayForm(boolean flag) {
-        this.setVisible(flag);
-        this.setEnabled(flag);
-    }
-
-    public void displayPolicy(PolicyView policy) {
-        currentPolicy = policy;
-        binder.readBean(policy);
     }
 }

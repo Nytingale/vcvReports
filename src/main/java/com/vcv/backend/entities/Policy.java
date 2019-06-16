@@ -1,6 +1,7 @@
 package com.vcv.backend.entities;
 
 import com.vcv.backend.enums.PolicyType;
+import com.vcv.backend.views.PolicyView;
 
 import javax.persistence.*;
 
@@ -172,6 +173,20 @@ public class Policy {
             policy.setFinancer(this.financer);
             policy.setValid(this.valid);
             policy.setVin(this.vin);
+
+            return policy;
+        }
+        public Policy build(PolicyView view) {
+            Policy policy = new Policy();
+
+            policy.setCompanyId(view.getCompanyId());
+            policy.setPolicyNumber(view.getPolicyNumber());
+            policy.setPolicyOwner(view.getOwner());
+            policy.setPolicyDate(view.getTimestamp());
+            policy.setPolicyType(view.getPType());
+            policy.setFinancer(view.getFinancer());
+            policy.setValid(view.getValid());
+            policy.setVin(view.getVin());
 
             return policy;
         }

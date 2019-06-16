@@ -1,6 +1,7 @@
 package com.vcv.backend.entities;
 
 import com.vcv.backend.enums.ClaimType;
+import com.vcv.backend.views.ClaimView;
 
 import javax.persistence.*;
 
@@ -187,6 +188,21 @@ public class Claim {
             claim.setValue(this.value);
             claim.setVin(this.vin);
             claim.setJobId(this.jobId);
+
+            return claim;
+        }
+        public Claim build(ClaimView view) {
+            Claim claim = new Claim();
+
+            claim.setCompanyId(view.getCompanyId());
+            claim.setClaimNumber(view.getClaimNumber());
+            claim.setClaimType(view.getCType());
+            claim.setClaimDate(view.getTimestamp());
+            claim.setClaimDetails(view.getDetails());
+            claim.setPolicyNumber(view.getPolicyNumber());
+            claim.setValue(view.getValue());
+            claim.setJobId(view.getJobId());
+            claim.setVin(view.getVin());
 
             return claim;
         }

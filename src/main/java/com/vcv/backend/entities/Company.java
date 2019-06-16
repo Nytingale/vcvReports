@@ -1,6 +1,7 @@
 package com.vcv.backend.entities;
 
 import com.vcv.backend.enums.CompanyType;
+import com.vcv.backend.views.CompanyView;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -176,18 +177,34 @@ public class Company {
             return company;
         }
         public Company build(Company company) {
-            this.id = company.getId();
-            this.companyName = company.getCompanyName();
-            this.companyType = company.getCompanyType();
-            this.subscriptionStartDate = company.getSubscriptionStartDate();
-            this.subscriptionEndDate = company.getSubscriptionEndDate();
-            this.rating = company.getRating();
-            this.website = company.getWebsite();
-            this.admin = company.getAdmin();
-            this.blacklisted = company.getBlacklisted();
-            this.valid = company.getValid();
+            this.setId(company.getId());
+            this.setCompanyName(company.getCompanyName());
+            this.setCompanyType(company.getCompanyType());
+            this.setSubscriptionStartDate(company.getSubscriptionStartDate());
+            this.setSubscriptionEndDate(company.getSubscriptionEndDate());
+            this.setRating(company.getRating());
+            this.setWebsite(company.getWebsite());
+            this.setAdmin(company.getAdmin());
+            this.setBlacklisted(company.getBlacklisted());
+            this.setValid(company.getValid());
 
             return this.build();
+        }
+        public Company build(CompanyView view) {
+            Company company = new Company();
+
+            company.setId(view.getId());
+            company.setCompanyName(view.getName());
+            company.setCompanyType(view.getCType());
+            company.setSubscriptionStartDate(view.getStartTimestamp());
+            company.setSubscriptionEndDate(view.getEndTimestamp());
+            company.setBlacklisted(view.getBlacklisted());
+            company.setWebsite(view.getWebsite());
+            company.setRating(view.getRating());
+            company.setAdmin(view.getAdmin());
+            company.setValid(view.getValid());
+
+            return company;
         }
     }
 }

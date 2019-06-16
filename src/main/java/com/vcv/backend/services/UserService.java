@@ -177,9 +177,10 @@ public class UserService implements UserDetailsService {
     }
 
 
-    /* ClientCompany Admin */
-    public List<UserView> getEmployees(User admin) throws UserServiceException {
+    /* Company Admin */
+    public List<UserView> getEmployees(String email) throws UserServiceException {
         // First, Confirm that the Admin is the Admin and they are Not Blacklisted
+        User admin = userRepository.findByEmail(email);
         Optional<Company> company = companyRepository.findById(admin.getCompanyId());
         if(company.isPresent()) {
             if (admin.getRoleId() != 2L) {
@@ -200,6 +201,15 @@ public class UserService implements UserDetailsService {
 
 
     /* Miscellaneous */
+    public UserView getUserView(String email) throws UserServiceException {
+        User user = userRepository.findByEmail(email);
+        if(user != null) {
+            Optional<Company> company = companyRepository.findById(user.getCompanyId());
+            if(company.isPresent()) return new UserView().build(user, company.get());
+        }
+        throw new UserServiceException("Error 400: getUser(email) has returned null");
+    }
+
     public MessageView.UserReport changePassword(User user,
                                                  String newPassword) throws UserServiceException {
         // First, Encode the New Password

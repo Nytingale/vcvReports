@@ -1,5 +1,7 @@
 package com.vcv.backend.entities;
 
+import com.vcv.backend.views.UserView;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -99,6 +101,17 @@ public class User {
             user.setPasswordReset(this.passwordReset);
             user.setCompanyId(this.companyId);
             user.setRoleId(this.roleId);
+
+            return user;
+        }
+        public User build(UserView view) {
+            User user = new User();
+
+            user.setEmail(view.getEmail());
+            user.setPassword(view.getPassword());
+            user.setPasswordReset(view.getPasswordReset());
+            user.setCompanyId(view.getCompanyId());
+            user.setRoleId(view.getRoleId());
 
             return user;
         }

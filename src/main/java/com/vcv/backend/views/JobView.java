@@ -2,8 +2,10 @@ package com.vcv.backend.views;
 
 import com.vcv.backend.entities.Company;
 import com.vcv.backend.entities.Job;
+import com.vcv.backend.enums.JobType;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -13,17 +15,22 @@ import java.util.List;
 import java.util.Objects;
 
 public class JobView implements Serializable {
-    private Integer cost;
+    private Long id;
     private String type;
     private String date;
+    private Integer cost;
     private String garage;
     private String details;
-    private String insuranceName;
-    private String claim;
+    private JobType jType;
+    private Timestamp timestamp;
+    private String insurance;
+    private Long insuranceId;
+    private Long garageId;
+    private String claimNumber;
     private String vin;
 
-    public Integer getCost() {
-        return cost;
+    public Long getId() {
+        return id;
     }
     public String getType() {
         return type;
@@ -31,22 +38,41 @@ public class JobView implements Serializable {
     public String getDate() {
         return date;
     }
+    public Integer getCost() {
+        return cost;
+    }
     public String getGarage() {
         return garage;
     }
     public String getDetails() {
         return details;
     }
-    public String getInsuranceName() {
-        return insuranceName;
+    public JobType getJType() {
+        return jType;
     }
-    public String getClaim() {
-        return claim;
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+    public String getInsurance() {
+        return insurance;
+    }
+    public Long getInsuranceId() {
+        return insuranceId;
+    }
+    public Long getGarageId() {
+        return garageId;
+    }
+    public String getClaimNumber() {
+        return claimNumber;
     }
     public String getVin() {
         return vin;
     }
 
+    public JobView setId(Long id) {
+        this.id = id;
+        return this;
+    }
     public JobView setCost(Integer cost) {
         this.cost = cost;
         return this;
@@ -67,12 +93,28 @@ public class JobView implements Serializable {
         this.details = details;
         return this;
     }
-    public JobView setInsuranceName(String insuranceName) {
-        this.insuranceName = insuranceName;
+    public JobView setJType(JobType jType) {
+        this.jType = jType;
         return this;
     }
-    public JobView setClaim(String claim) {
-        this.claim = claim;
+    public JobView setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+        return this;
+    }
+    public JobView setInsurance(String insurance) {
+        this.insurance = insurance;
+        return this;
+    }
+    public JobView setInsuranceId(Long insuranceId) {
+        this.insuranceId = insuranceId;
+        return this;
+    }
+    public JobView setGarageId(Long garageId) {
+        this.garageId = garageId;
+        return this;
+    }
+    public JobView setClaimNumber(String claimNumber) {
+        this.claimNumber = claimNumber;
         return this;
     }
     public JobView setVin(String vin) {
@@ -84,13 +126,18 @@ public class JobView implements Serializable {
     public JobView build(Job job, Company garageCompany, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
 
-        this.cost = job.getJobCost();
+        this.id = job.getId();
+        this.jType = job.getJobType();
         this.type = job.getJobType().toString();
+        this.cost = job.getJobCost();
         this.date = LocalDate.ofInstant(job.getJobDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
         this.details = job.getJobDetails();
+        this.timestamp = job.getJobDate();
         this.garage = garageCompany.getCompanyName();
-        this.insuranceName = insuranceCompany != null ? insuranceCompany.getCompanyName() : null;
-        this.claim = job.getClaimNumber();
+        this.insurance = insuranceCompany != null ? insuranceCompany.getCompanyName() : null;
+        this.insuranceId = job.getInsuranceId();
+        this.garageId = job.getCompanyId();
+        this.claimNumber = job.getClaimNumber();
         this.vin = job.getVin();
 
         return this;
@@ -123,18 +170,22 @@ public class JobView implements Serializable {
         if (this == o) return true;
         if (!(o instanceof JobView)) return false;
         JobView that = (JobView) o;
-        return cost.equals(that.cost) &&
+        return id.equals(that.id) &&
                 type.equals(that.type) &&
                 date.equals(that.date) &&
+                cost.equals(that.cost) &&
                 garage.equals(that.garage) &&
                 details.equals(that.details) &&
-                Objects.equals(insuranceName, that.insuranceName) &&
-                claim.equals(that.claim) &&
+                timestamp.equals(that.timestamp) &&
+                Objects.equals(insurance, that.insurance) &&
+                insuranceId.equals(that.insuranceId) &&
+                garageId.equals(that.garageId) &&
+                claimNumber.equals(that.claimNumber) &&
                 vin.equals(that.vin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cost, type, date, garage, details, insuranceName, claim, vin);
+        return Objects.hash(id, type, cost, date, garage, details, timestamp, insurance, insuranceId, garageId, claimNumber, vin);
     }
 }

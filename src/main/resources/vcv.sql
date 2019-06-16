@@ -22,7 +22,7 @@ CREATE TABLE `role`(
     PRIMARY KEY(id)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `clientCompany`(
+CREATE TABLE `company`(
     `id` BIGINT AUTO_INCREMENT NOT NULL,
     `company_name` VARCHAR(64) NOT NULL,
     `company_type` ENUM('VCV_Staff', 'Dealership', 'Insurance', 'Garage', 'Mechanic', 'Casual') DEFAULT 'Casual',
@@ -55,7 +55,7 @@ CREATE TABLE `policy`(
     PRIMARY KEY(company_id, policy_number)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `claim`(
+CREATE TABLE `claimNumber`(
     `company_id` BIGINT NOT NULL,
     `claim_number` VARCHAR(64) NOT NULL,
     `claim_type` ENUM('Personal_Injury', 'Total_Loss', 'Liability', 'Accident') DEFAULT 'Accident',
@@ -140,9 +140,9 @@ CREATE TABLE `article`(
 
 ALTER TABLE `job`     ADD CONSTRAINT `job_vehicle_fk`    FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
 ALTER TABLE `user`    ADD CONSTRAINT `user_role_fk`      FOREIGN KEY(role_id)                     REFERENCES `role`(id);
-ALTER TABLE `user`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `clientCompany`(id);
-ALTER TABLE `claim`   ADD CONSTRAINT `claim_policy_fk`   FOREIGN KEY(company_id, policy_number)   REFERENCES `policy`(company_id, policy_number);
-ALTER TABLE `claim`   ADD CONSTRAINT `claim_vehicle_fk`  FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
+ALTER TABLE `user`    ADD CONSTRAINT `user_company_fk`   FOREIGN KEY(company_id)                  REFERENCES `company`(id);
+ALTER TABLE `claimNumber`   ADD CONSTRAINT `claim_policy_fk`   FOREIGN KEY(company_id, policy_number)   REFERENCES `policy`(company_id, policy_number);
+ALTER TABLE `claimNumber`   ADD CONSTRAINT `claim_vehicle_fk`  FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
 ALTER TABLE `policy`  ADD CONSTRAINT `policy_vehicle_fk` FOREIGN KEY(vin)                         REFERENCES `vehicle`(vin);
 
 # ==============================================================
@@ -153,6 +153,6 @@ INSERT INTO `role` VALUES (2, 'Admin', 1, 1, 0);       # = Admin
 INSERT INTO `role` VALUES (3, 'Staff', 1, 1, 1);       # = Staff
 
 # ==============================================================
-# = Adding VCV as a clientCompany
+# = Adding VCV as a company
 # ==============================================================
-INSERT INTO `clientCompany` VALUES (1, 'VCV', 'VCV_Staff', '2019-04-01 00:00:00', '2020-04-01 00:00:00', 5, 'https://vcv.com', 'RSJMorris@gmail.com', 0, 1);
+INSERT INTO `company` VALUES (1, 'VCV', 'VCV_Staff', '2019-04-01 00:00:00', '2020-04-01 00:00:00', 5, 'https://vcv.com', 'RSJMorris@gmail.com', 0, 1);

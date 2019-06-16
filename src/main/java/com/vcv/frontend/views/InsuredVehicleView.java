@@ -2,8 +2,6 @@ package com.vcv.frontend.views;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -72,16 +70,6 @@ public class InsuredVehicleView extends HorizontalLayout implements HasUrlParame
         verticalLayout.setSizeFull();
         verticalLayout.expand(vehicleGrid);
 
-        newClaim = new Button("New Claim");
-        newClaim.addClickListener(click -> newClaim());
-        newClaim.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        newClaim.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        newPolicy = new Button("New Policy");
-        newPolicy.addClickListener(click -> newPolicy());
-        newPolicy.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        newPolicy.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
         this.add(verticalLayout);
         this.add(vehicleForm);
     }
@@ -105,8 +93,14 @@ public class InsuredVehicleView extends HorizontalLayout implements HasUrlParame
     private void openInsuredVehicleDetails(VehicleView vehicle) {
         vehicleForm.displayForm(true);
         vehicleForm.displayVehicle(vehicle);
-        vehicleForm.addButton(newClaim);
-        vehicleForm.addButton(newPolicy);
+
+        vehicleForm.newClaim().setEnabled(true);
+        vehicleForm.newClaim().setVisible(true);
+        vehicleForm.newClaim().addClickListener(click -> newClaim());
+
+        vehicleForm.newPolicy().setEnabled(true);
+        vehicleForm.newPolicy().setVisible(true);
+        vehicleForm.newPolicy().addClickListener(click -> newPolicy());
     }
 
     private void searchFilter(String filter) {

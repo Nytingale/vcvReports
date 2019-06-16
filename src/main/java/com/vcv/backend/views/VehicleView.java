@@ -7,6 +7,7 @@ import com.vcv.backend.entities.Vehicle;
 import com.vcv.backend.exceptions.VehicleServiceException;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +26,8 @@ public class VehicleView implements Serializable {
     protected String dealership;
     protected String evaluationDate;
     protected String registrationDate;
+    protected Timestamp evaluationTimestamp;
+    protected Timestamp registrationTimestamp;
     protected String manufacturer;
     protected String transmission;
     protected String fuelType;
@@ -42,7 +45,9 @@ public class VehicleView implements Serializable {
     protected Integer numSalvages;
     protected Integer numServices;
     protected Integer numOwners;
+    protected Boolean decoded;
     protected String insurance;
+    protected Long insuranceId;
     protected String policyNumber;
 
     public String getVin() {
@@ -71,6 +76,12 @@ public class VehicleView implements Serializable {
     }
     public String getRegistrationDate() {
         return registrationDate;
+    }
+    public Timestamp getEvaluationTimestamp() {
+        return evaluationTimestamp;
+    }
+    public Timestamp getRegistrationTimestamp() {
+        return registrationTimestamp;
     }
     public String getManufacturer() {
         return manufacturer;
@@ -123,8 +134,14 @@ public class VehicleView implements Serializable {
     public Integer getNumOwners() {
         return numOwners;
     }
+    public Boolean getDecoded() {
+        return decoded;
+    }
     public String getInsurance() {
         return insurance;
+    }
+    public Long getInsuranceId() {
+        return insuranceId;
     }
     public String getPolicyNumber() {
         return policyNumber;
@@ -164,6 +181,14 @@ public class VehicleView implements Serializable {
     }
     public VehicleView setRegistrationDate(String registrationDate) {
         this.registrationDate = registrationDate;
+        return this;
+    }
+    public VehicleView setEvaluationTimestamp(Timestamp evaluationTimestamp) {
+        this.evaluationTimestamp = evaluationTimestamp;
+        return this;
+    }
+    public VehicleView setRegistrationTimestamp(Timestamp registrationTimestamp) {
+        this.registrationTimestamp = registrationTimestamp;
         return this;
     }
     public VehicleView setManufacturer(String manufacturer) {
@@ -234,8 +259,16 @@ public class VehicleView implements Serializable {
         this.numOwners = numOwners;
         return this;
     }
+    public VehicleView setDecoded(Boolean decoded) {
+        this.decoded = decoded;
+        return this;
+    }
     public VehicleView setInsurance(String insurance) {
         this.insurance = insurance;
+        return this;
+    }
+    public VehicleView setInsuranceId(Long insuranceId) {
+        this.insuranceId = insuranceId;
         return this;
     }
     public VehicleView setPolicyNumber(String policyNumber) {
@@ -246,38 +279,41 @@ public class VehicleView implements Serializable {
     public VehicleView() {}
     public VehicleView build(Vehicle vehicle, Company insuranceCompany) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
-        VehicleView view = new VehicleView();
 
-        view.vin = vehicle.getVin();
-        view.year = vehicle.getYear();
-        view.make = vehicle.getMake();
-        view.model = vehicle.getModel();
-        view.dealership = vehicle.getDealership();
-        view.value = vehicle.getValue();
-        view.evaluationDate = LocalDate.ofInstant(vehicle.getEvaluationDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-        view.registrationDate = LocalDate.ofInstant(vehicle.getRegistrationDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
-        view.manufacturer = vehicle.getManufacturer();
-        view.transmission = vehicle.getTransmission();
-        view.fuelType = vehicle.getFuelType();
-        view.steering = vehicle.getSteering();
-        view.mileage = vehicle.getMileage();
-        view.engine = vehicle.getEngine();
-        view.colour = vehicle.getColour();
-        view.drive = vehicle.getDrive();
-        view.body = vehicle.getBody();
-        view.numDoors = vehicle.getNumDoors();
-        view.numSeats = vehicle.getNumSeats();
-        view.writtenOff = vehicle.isWrittenOff();
-        view.stolen = vehicle.isStolen();
-        view.numAccidents = vehicle.getNumAccidents();
-        view.numRobberies = vehicle.getNumRobberies();
-        view.numSalvages = vehicle.getNumSalvages();
-        view.numServices = vehicle.getNumServices();
-        view.numOwners = vehicle.getNumOwners();
-        view.insurance = insuranceCompany != null ? insuranceCompany.getCompanyName(): null;
-        view.policyNumber = vehicle.getPolicyNumber();
+        this.vin = vehicle.getVin();
+        this.year = vehicle.getYear();
+        this.make = vehicle.getMake();
+        this.model = vehicle.getModel();
+        this.dealership = vehicle.getDealership();
+        this.value = vehicle.getValue();
+        this.evaluationDate = LocalDate.ofInstant(vehicle.getEvaluationDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+        this.registrationDate = LocalDate.ofInstant(vehicle.getRegistrationDate().toInstant(), ZoneId.systemDefault()).format(dateFormatter);
+        this.evaluationTimestamp = vehicle.getEvaluationDate();
+        this.registrationTimestamp = vehicle.getRegistrationDate();
+        this.manufacturer = vehicle.getManufacturer();
+        this.transmission = vehicle.getTransmission();
+        this.fuelType = vehicle.getFuelType();
+        this.steering = vehicle.getSteering();
+        this.mileage = vehicle.getMileage();
+        this.engine = vehicle.getEngine();
+        this.colour = vehicle.getColour();
+        this.drive = vehicle.getDrive();
+        this.body = vehicle.getBody();
+        this.numDoors = vehicle.getNumDoors();
+        this.numSeats = vehicle.getNumSeats();
+        this.writtenOff = vehicle.isWrittenOff();
+        this.stolen = vehicle.isStolen();
+        this.numAccidents = vehicle.getNumAccidents();
+        this.numRobberies = vehicle.getNumRobberies();
+        this.numSalvages = vehicle.getNumSalvages();
+        this.numServices = vehicle.getNumServices();
+        this.numOwners = vehicle.getNumOwners();
+        this.decoded = vehicle.isDecoded();
+        this.insurance = insuranceCompany != null ? insuranceCompany.getCompanyName(): null;
+        this.insuranceId = vehicle.getInsuranceId();
+        this.policyNumber = vehicle.getPolicyNumber();
 
-        return view;
+        return this;
     }
     public List<VehicleView> build(List<Vehicle> vehicles, Company insuranceCompany) {
         List<VehicleView> views = new ArrayList<>();
@@ -316,6 +352,8 @@ public class VehicleView implements Serializable {
                 dealership.equals(that.dealership) &&
                 evaluationDate.equals(that.evaluationDate) &&
                 registrationDate.equals(that.registrationDate) &&
+                evaluationTimestamp.equals(that.evaluationTimestamp) &&
+                registrationTimestamp.equals(that.registrationTimestamp) &&
                 Objects.equals(manufacturer, that.manufacturer) &&
                 Objects.equals(transmission, that.transmission) &&
                 Objects.equals(fuelType, that.fuelType) &&
@@ -339,7 +377,7 @@ public class VehicleView implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(vin, year, make, model, colour, value, dealership, evaluationDate, registrationDate, manufacturer, transmission, fuelType, steering, mileage, engine, drive, body, numDoors, numSeats, writtenOff, stolen, numAccidents, numRobberies, numSalvages, numServices, numOwners, insurance, policyNumber);
+        return Objects.hash(vin, year, make, model, colour, value, dealership, evaluationDate, registrationDate, evaluationTimestamp, registrationTimestamp, manufacturer, transmission, fuelType, steering, mileage, engine, drive, body, numDoors, numSeats, writtenOff, stolen, numAccidents, numRobberies, numSalvages, numServices, numOwners, insurance, insuranceId, policyNumber);
     }
 
     public static class BasicReport extends VehicleView {
